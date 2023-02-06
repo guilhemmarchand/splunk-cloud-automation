@@ -17,7 +17,7 @@ import configparser
 # load libs
 sys.path.append('libs')
 from tools import splunkacs_getidx, splunkacs_postidx, splunkacs_check_index, splunkacs_get_target_index, splunkacs_updateidx, \
-    splunkacs_create_ephemeral_token, splunkacs_delete_ephemeral_token
+    splunkacs_create_ephemeral_token
 
 # Args
 parser = argparse.ArgumentParser()
@@ -191,17 +191,6 @@ if create_token:
 
 if not tokenacs:
     sys.exit(1)
-
-if create_token:
-    tokenacs = None
-    try:    
-        tokenacs_delete_response = splunkacs_delete_ephemeral_token(stack, username, password, tokenid, proxy_dict)
-        logging.info("Ephemeral token deleted successfully")
-
-    except Exception as e:
-        logging.error("An exception was encountered while attempting to delete an ephemeral token from Splunk ACS, exception=\"{}\"".format(str(e)))
-        tokenacs = None
-        raise Exception(str(e)) 
 
 #
 # check requested file
@@ -435,18 +424,6 @@ try:
                 except Exception as e:
                     error_count+=1
                     logging.error("Failed to retrieve the configuration for this index, exception=\"{}\"".format(str(e)))
-
-    # if using ephemeral tokens, delete the token now
-    if create_token:
-        tokenacs = None
-        try:    
-            tokenacs_delete_response = splunkacs_delete_ephemeral_token(stack, username, password, tokenid, proxy_dict)
-            logging.info("Ephemeral token deleted successfully")
-
-        except Exception as e:
-            logging.error("An exception was encountered while attempting to delete an ephemeral token from Splunk ACS, exception=\"{}\"".format(str(e)))
-            tokenacs = None
-            raise Exception(str(e))        
 
     #
     # end
