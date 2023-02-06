@@ -1,0 +1,8 @@
+# Mac OS X cached files
+.DS_Store
+
+# Visual Basic Code
+.vscode
+
+# Py build
+manage-indexes/libs/__pycache__
