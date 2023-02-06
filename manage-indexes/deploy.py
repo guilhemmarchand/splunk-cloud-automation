@@ -192,9 +192,29 @@ if create_token:
 if not tokenacs:
     sys.exit(1)
 
+if create_token:
+    tokenacs = None
+    try:    
+        tokenacs_delete_response = splunkacs_delete_ephemeral_token(stack, username, password, tokenid, proxy_dict)
+        logging.info("Ephemeral token deleted successfully")
+
+    except Exception as e:
+        logging.error("An exception was encountered while attempting to delete an ephemeral token from Splunk ACS, exception=\"{}\"".format(str(e)))
+        tokenacs = None
+        raise Exception(str(e)) 
+
+#
+# check requested file
+#
+
+if not os.path.isfile(os.path.join(app_root, app_dir, "indexes.conf")):
+    raise Exception("Could not load not existing file=\"{}\"".format(os.path.join(app_root, app_dir, "indexes.conf")))
+
 #
 # Get indexes configuration from Splunk ACS
 #
+
+stack_dict_full = {}
 
 try:
     stack_idx_dict = json.loads(splunkacs_getidx(stack, tokenacs, proxy_dict))
@@ -202,6 +222,11 @@ try:
     # store the list of indexes as a list
     for record in stack_idx_dict:
         stack_idx_list.append(record.get('name'))
+
+        stack_dict_full[record.get('name')] = {
+            'maxDataSizeMB': record.get('maxDataSizeMB'),
+            'searchableDays': record.get('searchableDays'),
+        }
 
     logging.info("Splunk Cloud indexes configuration was successfully loaded")
     logging.debug("Splunk Cloud current indexes definition=\"{}\"".format(json.dumps(stack_idx_dict, indent=2)))
@@ -315,8 +340,20 @@ try:
                 logging.info("retrieving the index configuration for index=\"{}\"".format(stanza))
 
                 try:
-                    target_index_config = json.loads(splunkacs_get_target_index(stack, tokenacs, stanza, proxy_dict))
-                    logging.debug("index=\"{}\", definition=\"{}\"".format(stanza, json.dumps(target_index_config, indent=2)))
+
+                    # try retrieving from the dict
+                    try:
+                        target_index_config = stack_dict_full[stanza]
+                        logging.debug("index=\"{}\", definition=\"{}\"".format(stanza, json.dumps(target_index_config, indent=2)))
+
+                    except Exception as e:
+                        logging.warning("Splunk ACS did not return the index with the global index endpoint, will have to retrieve its definition.")
+                        target_index_config = None
+
+                    # unless this failed
+                    if not target_index_config:
+                        target_index_config = json.loads(splunkacs_get_target_index(stack, tokenacs, stanza, proxy_dict))
+                        logging.debug("index=\"{}\", definition=\"{}\"".format(stanza, json.dumps(target_index_config, indent=2)))
 
                     #
                     # local references
@@ -403,7 +440,7 @@ try:
     if create_token:
         tokenacs = None
         try:    
-            tokenacs_delete_response = splunkacs_delete_ephemeral_token(stack, tokenacs, tokenid, proxy_dict)
+            tokenacs_delete_response = splunkacs_delete_ephemeral_token(stack, username, password, tokenid, proxy_dict)
             logging.info("Ephemeral token deleted successfully")
 
         except Exception as e:

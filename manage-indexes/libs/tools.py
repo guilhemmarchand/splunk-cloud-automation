@@ -54,10 +54,15 @@ def splunkacs_create_ephemeral_token(stack, username, password, audience, proxy_
 
 
 # Delete the ephemeral token
-def splunkacs_delete_ephemeral_token(stack, tokenacs, tokenid, proxy_dict):
+def splunkacs_delete_ephemeral_token(stack, username, password, tokenid, proxy_dict):
 
     headers = CaseInsensitiveDict()
-    headers["Authorization"] = "Bearer %s" % tokenacs
+    authorization = username + ':' + password
+    b64_auth = base64.b64encode(authorization.encode()).decode()
+    headers = {
+        'Authorization': 'Basic %s' % b64_auth,
+        'Content-Type': 'application/json',
+    }
 
     # submit
     submit_url = "https://admin.splunk.com/%s/adminconfig/v2/tokens/" % stack
