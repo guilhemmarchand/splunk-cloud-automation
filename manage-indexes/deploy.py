@@ -16,7 +16,8 @@ import configparser
 
 # load libs
 sys.path.append('libs')
-from tools import splunkacs_getidx, splunkacs_postidx, splunkacs_check_index, splunkacs_get_target_index, splunkacs_updateidx
+from tools import splunkacs_getidx, splunkacs_postidx, splunkacs_check_index, splunkacs_get_target_index, splunkacs_updateidx, \
+    splunkacs_create_ephemeral_token, splunkacs_delete_ephemeral_token
 
 # Args
 parser = argparse.ArgumentParser()
@@ -24,6 +25,10 @@ parser.add_argument('--app_root', dest='app_root')
 parser.add_argument('--app_dir', dest='app_dir')
 parser.add_argument('--debug', dest='debug', action='store_true')
 parser.add_argument('--keep', dest='keep', action='store_true')
+parser.add_argument('--create_token', dest='create_token', action='store_true')
+parser.add_argument('--token_audience', dest='token_audience')
+parser.add_argument('--username', dest='username')
+parser.add_argument('--password', dest='password')
 parser.add_argument('--tokenacs', dest='tokenacs')
 parser.add_argument('--stack', dest='stack')
 parser.add_argument('--useproxy', dest='useproxy', action='store_true')
@@ -41,6 +46,31 @@ if args.debug:
     debug = True
 else:
     debug = False
+
+# user login and password (required if create_token is set)
+if args.username:
+    username = args.username
+else:
+    username = False
+
+if args.password:
+    password = args.password
+else:
+    password = False
+
+if args.token_audience:
+    token_audience = args.token_audience
+else:
+    token_audience = False
+
+# Create token boolean
+if args.create_token:
+    create_token = True
+    if not username or not password or not token_audience:
+        logging.error("create_token is enabled, but username, password or token_audience were not provided")
+        sys.exit(1)
+else:
+    create_token = False
 
 # Set useproxy boolean
 if args.useproxy:
@@ -141,6 +171,26 @@ indexes_parsed = 0
 error_count = 0
 result_summary = []
 indexes_creation_requested = []
+
+#
+# If create token is enabled, we first need to create an ephemeral token for to be used in the rest of the operations
+#
+
+if create_token:
+    tokenacs = None
+    try:    
+        tokenacs_creation_response = splunkacs_create_ephemeral_token(stack, username, password, token_audience, proxy_dict)
+        logging.info("Ephemeral token created successfully")
+        tokenacs = json.loads(tokenacs_creation_response).get('token')
+        tokenid = json.loads(tokenacs_creation_response).get('id')
+
+    except Exception as e:
+        logging.error("An exception was encountered while attempting to create an ephemeral token from Splunk ACS, exception=\"{}\"".format(str(e)))
+        tokenacs = None
+        raise Exception(str(e))        
+
+if not tokenacs:
+    sys.exit(1)
 
 #
 # Get indexes configuration from Splunk ACS
@@ -348,6 +398,18 @@ try:
                 except Exception as e:
                     error_count+=1
                     logging.error("Failed to retrieve the configuration for this index, exception=\"{}\"".format(str(e)))
+
+    # if using ephemeral tokens, delete the token now
+    if create_token:
+        tokenacs = None
+        try:    
+            tokenacs_delete_response = splunkacs_delete_ephemeral_token(stack, tokenacs, tokenid, proxy_dict)
+            logging.info("Ephemeral token deleted successfully")
+
+        except Exception as e:
+            logging.error("An exception was encountered while attempting to delete an ephemeral token from Splunk ACS, exception=\"{}\"".format(str(e)))
+            tokenacs = None
+            raise Exception(str(e))        
 
     #
     # end
