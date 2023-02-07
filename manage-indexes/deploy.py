@@ -219,7 +219,7 @@ try:
 
     logging.info("Splunk Cloud indexes configuration was successfully loaded")
     logging.debug("Splunk Cloud current indexes definition=\"{}\"".format(json.dumps(stack_idx_dict, indent=2)))
-    logging.info("Splunk Cloud existing indexes=\"{}\"".format(stack_idx_list))
+    logging.info("Splunk Cloud existing indexes with their parameters, stack_dict_full=\"{}\"".format(stack_dict_full))
 
 except Exception as e:
     logging.error("An exception was encountered while attempting to retrieve indexes definition from Splunk ACS, exception=\"{}\"".format(str(e)))

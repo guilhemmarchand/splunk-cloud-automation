@@ -60,7 +60,7 @@ def splunkacs_getidx(stack, tokenacs, proxy_dict):
     headers["Authorization"] = "Bearer %s" % tokenacs
 
     # submit
-    submit_url = "https://admin.splunk.com/%s/adminconfig/v2/indexes" % stack
+    submit_url = "https://admin.splunk.com/%s/adminconfig/v2/indexes&count=0" % stack
 
     # run
 
