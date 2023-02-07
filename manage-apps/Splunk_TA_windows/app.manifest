@@ -1,0 +1,75 @@
+{
+  "dependencies": null,
+  "incompatibleApps": {
+    "Splunk_TA_microsoft_ad": "<=1.0.0",
+    "Splunk_TA_microsoft_dns": "<=1.0.1"
+  },
+  "info": {
+    "author": [
+      {
+        "name": "Splunk, Inc.",
+        "email": null,
+        "company": null
+      }
+    ],
+    "classification": {
+      "categories": [
+        "IT Operations",
+        "Utilities",
+        "Security, Fraud & Compliance"
+      ],
+      "developmentStatus": "Production/Stable",
+      "intendedAudience": "IT Professionals"
+    },
+    "commonInformationModels": {
+      "Application_State": "==4.15.0",
+      "Authentication": "==4.18.0",
+      "Change": "==4.18.0",
+      "Change_Analysis": "==4.15.0",
+      "Compute_Inventory": "==4.15.0",
+      "Endpoint": "==4.18.0",
+      "Event_Signatures": "==4.18.0",
+      "Network_Sessions": "==4.15.0",
+      "Performance": "==4.15.0",
+      "Updates": "==4.15.0",
+      "Vulnerabilities": "==4.15.0"
+    },
+    "description": "Splunk Add-on for Microsoft Windows",
+    "id": {
+      "group": null,
+      "name": "Splunk_TA_windows",
+      "version": "8.6.0"
+    },
+    "license": {
+      "name": null,
+      "text": "LICENSES/LicenseRef-Splunk-8-2021.txt",
+      "uri": null
+    },
+    "privacyPolicy": {
+      "name": null,
+      "text": null,
+      "uri": null
+    },
+    "releaseDate": null,
+    "releaseNotes": {
+      "name": "README",
+      "text": "./README.txt",
+      "uri": "http://docs.splunk.com/Documentation/WindowsAddOn/latest/User/Releasenotes"
+    },
+    "title": "Splunk Add-on for Microsoft Windows"
+  },
+  "inputGroups": null,
+  "platformRequirements": null,
+  "schemaVersion": "2.0.0",
+  "supportedDeployments": [
+    "_standalone",
+    "_distributed",
+    "_search_head_clustering"
+  ],
+  "targetWorkloads": [
+    "_search_heads",
+    "_forwarders",
+    "_indexers"
+  ],
+  "tasks": null
+}

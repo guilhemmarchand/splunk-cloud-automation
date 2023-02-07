@@ -446,7 +446,7 @@ try:
     # Verify if we have indexes defined on the remote stack which are defined on the local indexes.conf
     # Shall this be the case, generate an error message (but do not fail the job)
     for remote_idx in stack_idx_list:
-        if not remote_idx in local_idx_list and remote_idx not in ("DEFAULT", "default", "main", "summary", "history") and not stanza.startswith("_"):
+        if not remote_idx in local_idx_list and remote_idx not in ("DEFAULT", "default", "main", "summary", "history", "splunklogger", "audit_summary", "cim_modactions", "endpoint_summary", "gia_summary", "ioc", "lastchanceindex", "notable", "notable_summary", "risk", "sequenced_events", "threat_activity", "ubaroute", "ueba", "whois") and not stanza.startswith("_"):
             logging.error("The index=\"{}\" is defined on the Splunk Cloud stack but defined in the local indexes.conf configuration file, add this index in indexes.conf to suppress this message.".format(remote_idx))
 
     #
