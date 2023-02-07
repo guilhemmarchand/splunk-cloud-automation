@@ -26,7 +26,6 @@ parser.add_argument('--app_dir', dest='app_dir')
 parser.add_argument('--debug', dest='debug', action='store_true')
 parser.add_argument('--show_idx_summary', dest='show_idx_summary')
 parser.add_argument('--show_idx_full', dest='show_idx_full')
-parser.add_argument('--keep', dest='keep', action='store_true')
 parser.add_argument('--create_token', dest='create_token', action='store_true')
 parser.add_argument('--token_audience', dest='token_audience')
 parser.add_argument('--username', dest='username')
@@ -39,7 +38,6 @@ parser.add_argument('--proxy_port', dest='proxy_port')
 parser.add_argument('--proxy_username', dest='proxy_username')
 parser.add_argument('--proxy_password', dest='proxy_password')
 parser.set_defaults(debug=False)
-parser.set_defaults(keep=False)
 parser.set_defaults(submitappinspect=False)
 args = parser.parse_args()
 
@@ -181,6 +179,7 @@ else:
 
 # init
 stack_idx_list = []
+local_idx_list = []
 indexes_parsed = 0
 error_count = 0
 result_summary = []
@@ -252,6 +251,9 @@ try:
 
     # loop through the list of indexes
     for stanza in config:
+
+        # Add the local index in the list, we will use this information a the further step
+        local_idx_list.append(stanza)
 
         # Only allowed indexes
         if stanza not in ("DEFAULT", "default", "main", "summary", "history") and not stanza.startswith("_"):
@@ -440,6 +442,12 @@ try:
                 except Exception as e:
                     error_count+=1
                     logging.error("Failed to retrieve the configuration for this index, exception=\"{}\"".format(str(e)))
+
+    # Verify if we have indexes defined on the remote stack which are defined on the local indexes.conf
+    # Shall this be the case, generate an error message (but do not fail the job)
+    for remote_idx in stack_idx_list:
+        if not remote_idx in local_idx_list and remote_idx not in ("DEFAULT", "default", "main", "summary", "history") and not stanza.startswith("_"):
+            logging.error("The index=\"{}\" is defined on the Splunk Cloud stack but defined in the local indexes.conf configuration file, add this index in indexes.conf to suppress this message.".format(remote_idx))
 
     #
     # end
