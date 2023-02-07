@@ -24,6 +24,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--app_root', dest='app_root')
 parser.add_argument('--app_dir', dest='app_dir')
 parser.add_argument('--debug', dest='debug', action='store_true')
+parser.add_argument('--show_idx_summary', dest='show_idx_summary', action='store_true')
+parser.add_argument('--show_idx_full', dest='show_idx_full', action='store_true')
 parser.add_argument('--keep', dest='keep', action='store_true')
 parser.add_argument('--create_token', dest='create_token', action='store_true')
 parser.add_argument('--token_audience', dest='token_audience')
@@ -46,6 +48,18 @@ if args.debug:
     debug = True
 else:
     debug = False
+
+# Set show_idx_summary boolean
+if args.show_idx_summary:
+    show_idx_summary = True
+else:
+    show_idx_summary = False 
+
+# Set show_idx_full boolean
+if args.show_idx_full:
+    show_idx_full = True
+else:
+    show_idx_full = False    
 
 # user login and password (required if create_token is set)
 if args.username:
@@ -218,8 +232,10 @@ try:
         }
 
     logging.info("Splunk Cloud indexes configuration was successfully loaded")
-    logging.debug("Splunk Cloud current indexes definition=\"{}\"".format(json.dumps(stack_idx_dict, indent=2)))
-    logging.info("Splunk Cloud existing indexes with their parameters, stack_dict_full=\"{}\"".format(stack_dict_full))
+    if show_idx_summary:
+        logging.info("Splunk Cloud current indexes definition, stack_idx_list=\"{}\"".format(json.dumps(stack_idx_dict, indent=2)))
+    if show_idx_full:
+        logging.info("Splunk Cloud existing indexes with their parameters, stack_dict_full=\"{}\"".format(json.dumps(show_idx_full, indent=2)))
 
 except Exception as e:
     logging.error("An exception was encountered while attempting to retrieve indexes definition from Splunk ACS, exception=\"{}\"".format(str(e)))
