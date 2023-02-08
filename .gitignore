@@ -6,3 +6,8 @@
 
 # Py build
 manage-indexes/libs/__pycache__
+manage-apps/libs/__pycache__
+
+# output
+manage-apps/output/*
+manage-apps/!output/README.txt

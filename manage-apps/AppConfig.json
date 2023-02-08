@@ -1,0 +1,9 @@
+{
+  "appAuthor": "My Company",
+  "appID": "org_Splunk_TA_windows",
+  "appLabel": "Splunk Add-on for Microsoft Windows",
+  "appDecription": "Splunk Add-on for Microsoft Windows",
+  "appMerge": "True",
+  "appSource": "Splunk_TA_windows",
+  "appVersion": "8.6.0"
+}
