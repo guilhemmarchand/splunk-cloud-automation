@@ -1,17 +1,17 @@
 {
-    "request_id": "c9a56429-830e-49f6-bfe9-e9e97331ec2a",
+    "request_id": "8445aa61-b382-458e-8314-6b78ad12f036",
     "cloc": "",
     "reports": [
         {
             "app_author": "My Company",
             "app_description": "Splunk Add-on for Microsoft Windows",
-            "app_hash": "0302807f3281c0d7ef6825561e5abc1d",
+            "app_hash": "2918126808b2e63a71d8e1f5c72f2d94",
             "app_name": "Splunk Add-on for Microsoft Windows",
             "app_package_id": "org_Splunk_TA_windows",
             "app_version": "8.6.0",
             "metrics": {
-                "start_time": "2023-02-09T10:54:15.619253",
-                "end_time": "2023-02-09T10:54:25.338582",
+                "start_time": "2023-02-09T11:08:42.178932",
+                "end_time": "2023-02-09T11:08:51.861795",
                 "execution_time": 9
             },
             "run_parameters": {
@@ -329,45 +329,6 @@
                     ]
                 },
                 {
-                    "description": "Operating system standards",
-                    "name": "check_potentially_harmful_operations",
-                    "checks": [
-                        {
-                            "description": "Check for the use of malicious shell commands in configuration files or shell scripts to\n corrupt the OS or Splunk instance. Other scripting languages are covered by other checks.",
-                            "name": "check_destructive_commands",
-                            "tags": [
-                                "splunk_appinspect",
-                                "appapproval",
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        }
-                    ]
-                },
-                {
-                    "description": "Malware, viruses, malicious content, user security standards (static checks)",
-                    "name": "check_malware",
-                    "checks": [
-                        {
-                            "description": "Check that no sensitive hostnames/IPs are stored in the app.",
-                            "name": "check_hostnames_and_ips",
-                            "tags": [
-                                "splunk_appinspect",
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        }
-                    ]
-                },
-                {
                     "description": "Bias language (static checks)",
                     "name": "check_bias_language",
                     "checks": [
@@ -386,123 +347,9 @@
                             "messages": [
                                 {
                                     "result": "warning",
-                                    "message": "Bias language is found in the app. 4693,unknown,Detailed Tracking,DPAPI Activity,Recovery of data pr... (lookups/xmlsecurity_eventcode_action.csv:50) [master]. File: xmlsecurity_eventcode_action.csv Line Number: 50",
-                                    "message_filename": "xmlsecurity_eventcode_action.csv",
-                                    "message_line": 50
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4693,\"Recovery of data protection <<<MASTER>>> key was attempted\"... (lookups/windows_signatures_860.csv:211) [master]. File: windows_signatures_860.csv Line Number: 211",
-                                    "message_filename": "windows_signatures_860.csv",
-                                    "message_line": 211
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4692,unknown,Detailed Tracking,DPAPI Activity,Backup of data prot... (lookups/xmlsecurity_eventcode_action.csv:49) [master]. File: xmlsecurity_eventcode_action.csv Line Number: 49",
-                                    "message_filename": "xmlsecurity_eventcode_action.csv",
-                                    "message_line": 49
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4768,failure,0x4,Client's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:40) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 40",
-                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 40
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4768,failure,0x4,Client's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:400) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 400",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 400
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4771,failure,0x5,Server's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:156) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 156",
-                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 156
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4769,failure,0x5,Server's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:99) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 99",
-                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 99
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4768,failure,0x5,Server's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:41) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 41",
-                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 41
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4771,failure,0x4,Client's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:155) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 155",
-                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 155
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4769,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:459) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 459",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 459
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4768,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_action_multiinput.csv:45) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 45",
-                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 45
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4769,failure,0x4,Client's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:98) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 98",
-                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 98
-                                },
-                                {
-                                    "result": "warning",
                                     "message": "Bias language is found in the app. 4692,unknown,-,Backup of data protection <<<MASTER>>> key was att... (lookups/xmlsecurity_eventcode_errorcode_action.csv:48) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 48",
                                     "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
                                     "message_line": 48
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4771,failure,0x4,Client's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:515) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 515",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 515
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4769,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_errorcode_action.csv:463) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 463",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 463
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4692,\"Backup of data protection <<<MASTER>>> key was attempted\",,... (lookups/windows_signatures_860.csv:210) [master]. File: windows_signatures_860.csv Line Number: 210",
-                                    "message_filename": "windows_signatures_860.csv",
-                                    "message_line": 210
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4768,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_errorcode_action.csv:405) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 405",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 405
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4769,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_action_multiinput.csv:103) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 103",
-                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 103
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4771,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:516) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 516",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 516
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4768,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:401) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 401",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 401
                                 },
                                 {
                                     "result": "warning",
@@ -512,9 +359,123 @@
                                 },
                                 {
                                     "result": "warning",
+                                    "message": "Bias language is found in the app. 4692,unknown,Detailed Tracking,DPAPI Activity,Backup of data prot... (lookups/xmlsecurity_eventcode_action.csv:49) [master]. File: xmlsecurity_eventcode_action.csv Line Number: 49",
+                                    "message_filename": "xmlsecurity_eventcode_action.csv",
+                                    "message_line": 49
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4693,unknown,Detailed Tracking,DPAPI Activity,Recovery of data pr... (lookups/xmlsecurity_eventcode_action.csv:50) [master]. File: xmlsecurity_eventcode_action.csv Line Number: 50",
+                                    "message_filename": "xmlsecurity_eventcode_action.csv",
+                                    "message_line": 50
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4768,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_action_multiinput.csv:45) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 45",
+                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
+                                    "message_line": 45
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4769,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_errorcode_action.csv:463) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 463",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
+                                    "message_line": 463
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4768,failure,0x4,Client's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:40) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 40",
+                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
+                                    "message_line": 40
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4771,failure,0x5,Server's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:156) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 156",
+                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
+                                    "message_line": 156
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4768,failure,0x5,Server's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:41) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 41",
+                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
+                                    "message_line": 41
+                                },
+                                {
+                                    "result": "warning",
                                     "message": "Bias language is found in the app. 4693,unknown,-,Recovery of data protection <<<MASTER>>> key was a... (lookups/xmlsecurity_eventcode_errorcode_action.csv:49) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 49",
                                     "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
                                     "message_line": 49
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4768,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:401) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 401",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
+                                    "message_line": 401
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4769,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:459) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 459",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
+                                    "message_line": 459
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4768,failure,0x4,Client's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:400) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 400",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
+                                    "message_line": 400
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4769,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_action_multiinput.csv:103) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 103",
+                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
+                                    "message_line": 103
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4769,failure,0x5,Server's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:99) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 99",
+                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
+                                    "message_line": 99
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4768,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_errorcode_action.csv:405) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 405",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
+                                    "message_line": 405
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4693,\"Recovery of data protection <<<MASTER>>> key was attempted\"... (lookups/windows_signatures_860.csv:211) [master]. File: windows_signatures_860.csv Line Number: 211",
+                                    "message_filename": "windows_signatures_860.csv",
+                                    "message_line": 211
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4769,failure,0x4,Client's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:98) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 98",
+                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
+                                    "message_line": 98
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4771,failure,0x4,Client's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:155) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 155",
+                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
+                                    "message_line": 155
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4771,failure,0x4,Client's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:515) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 515",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
+                                    "message_line": 515
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4692,\"Backup of data protection <<<MASTER>>> key was attempted\",,... (lookups/windows_signatures_860.csv:210) [master]. File: windows_signatures_860.csv Line Number: 210",
+                                    "message_filename": "windows_signatures_860.csv",
+                                    "message_line": 210
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4771,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:516) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 516",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
+                                    "message_line": 516
                                 }
                             ]
                         }
@@ -2685,368 +2646,9 @@
                     ]
                 },
                 {
-                    "description": "Checking for Front-end Libraries\nThis check looks for various front-end libraries inside of apps. \nAs of 03/23/2022, we are looking at Splunk UI and it's predecessor, SplunkJS. \nThis is currently an INFORMATIONAL Check. ",
-                    "name": "check_frontend_libraries",
-                    "checks": [
-                        {
-                            "description": "Check that @splunk/visualizations is being used.",
-                            "name": "check_for_splunkvisualizations",
-                            "tags": [
-                                "splunk_appinspect",
-                                "cloud",
-                                "self-service",
-                                "private_app"
-                            ],
-                            "result": "not_applicable",
-                            "messages": [
-                                {
-                                    "result": "not_applicable",
-                                    "message": "@splunk/visualizations has not been detected inside of this app. Please ignore this message as it has no impact to your Splunk App.",
-                                    "message_filename": null,
-                                    "message_line": null
-                                }
-                            ]
-                        },
-                        {
-                            "description": "Check that @splunk/react-ui is being used.",
-                            "name": "check_for_splunkreactui",
-                            "tags": [
-                                "splunk_appinspect",
-                                "cloud",
-                                "self-service",
-                                "private_app"
-                            ],
-                            "result": "not_applicable",
-                            "messages": [
-                                {
-                                    "result": "not_applicable",
-                                    "message": "@splunk/react-ui has not been detected inside of this app. Please ignore this message as it has no impact to your Splunk App.",
-                                    "message_filename": null,
-                                    "message_line": null
-                                }
-                            ]
-                        },
-                        {
-                            "description": "Check that SplunkJS is being used.",
-                            "name": "check_for_splunkjs",
-                            "tags": [
-                                "splunk_appinspect",
-                                "cloud",
-                                "self-service",
-                                "private_app"
-                            ],
-                            "result": "not_applicable",
-                            "messages": [
-                                {
-                                    "result": "not_applicable",
-                                    "message": "SplunkJS has not been detected inside of this app. Please ignore this message as it has no impact to your Splunk App.",
-                                    "message_filename": null,
-                                    "message_line": null
-                                }
-                            ]
-                        },
-                        {
-                            "description": "Check that @splunk/dashboard-core is being used.",
-                            "name": "check_for_splunkdashboardcore",
-                            "tags": [
-                                "splunk_appinspect",
-                                "cloud",
-                                "self-service",
-                                "private_app"
-                            ],
-                            "result": "not_applicable",
-                            "messages": [
-                                {
-                                    "result": "not_applicable",
-                                    "message": "@splunk/dashboard-core has not been detected inside of this app. Please ignore this message as it has no impact to your Splunk App.",
-                                    "message_filename": null,
-                                    "message_line": null
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
                     "description": "Cloud operations simple application check\nThis group serves to help validate simple applications in an effort to try and automate the validation process for cloud operations.",
                     "name": "check_cloud_simple_app",
                     "checks": [
-                        {
-                            "description": "Check that app does not contain workload_rules.conf in Cloud as it\n automatically trigger actions on running search processes.",
-                            "name": "check_workload_rules_conf_black_list",
-                            "tags": [
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        },
-                        {
-                            "description": "Check that app does not contain workload_pools.conf in Cloud. App should\n not modify workload categories/pools. It should be only controlled by cloud\n administrators.",
-                            "name": "check_workload_pools_conf_black_list",
-                            "tags": [
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        },
-                        {
-                            "description": "Check that app does not contain wmi.conf is as it is prohibited in\n Splunk Cloud due to its ability to configure Splunk to ingest data via\n Windows Management Instrumentation, which should be done via forwarder.\n Forwarders are not permitted in Splunk Cloud.",
-                            "name": "check_wmi_conf_black_list",
-                            "tags": [
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        },
-                        {
-                            "description": "Check that app does not contain user-seed.conf as it is used to\n preconfigure default login and password information.",
-                            "name": "check_user_seed_conf_black_list",
-                            "tags": [
-                                "splunk_appinspect",
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        },
-                        {
-                            "description": "Check that transforms.conf does not contain any transforms with malicious\n command scripts specified by external_cmd=<string> attribute, or does not contain\n a scripted lookup with python2 only script.",
-                            "name": "check_transforms_conf_for_external_cmd",
-                            "tags": [
-                                "cloud",
-                                "manual",
-                                "python_version"
-                            ],
-                            "result": "not_applicable",
-                            "messages": [
-                                {
-                                    "result": "not_applicable",
-                                    "message": "`default/transforms.conf` does not exist.",
-                                    "message_filename": null,
-                                    "message_line": null
-                                }
-                            ]
-                        },
-                        {
-                            "description": "Check that the app does not have default/passwords.conf, otherwise, warn it.",
-                            "name": "check_that_passwords_conf_not_exist",
-                            "tags": [
-                                "splunk_appinspect",
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "not_applicable",
-                            "messages": [
-                                {
-                                    "result": "not_applicable",
-                                    "message": "passwords.conf does not exist.",
-                                    "message_filename": null,
-                                    "message_line": null
-                                }
-                            ]
-                        },
-                        {
-                            "description": "Check that the app does not contain configurations of default source type in props.conf,\n which will overwrite the configurations of default source types in system/default/props.conf\n then it will affect other apps in splunk enterprise/cloud.",
-                            "name": "check_that_no_configurations_of_default_source_type_in_props_conf",
-                            "tags": [
-                                "splunk_appinspect",
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "warning",
-                            "messages": [
-                                {
-                                    "result": "warning",
-                                    "message": "In default/props.conf, stanza source::WMI... has been configured, which will overwrite its default configuration in system/default/props.conf then it will affect other apps in splunk enterprise/cloud. File: default/props.conf",
-                                    "message_filename": "default/props.conf",
-                                    "message_line": null
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "In default/props.conf, stanza ActiveDirectory has been configured, which will overwrite its default configuration in system/default/props.conf then it will affect other apps in splunk enterprise/cloud. File: default/props.conf",
-                                    "message_filename": "default/props.conf",
-                                    "message_line": null
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "In default/props.conf, stanza wmi has been configured, which will overwrite its default configuration in system/default/props.conf then it will affect other apps in splunk enterprise/cloud. File: default/props.conf",
-                                    "message_filename": "default/props.conf",
-                                    "message_line": null
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "In default/props.conf, stanza WinRegistry has been configured, which will overwrite its default configuration in system/default/props.conf then it will affect other apps in splunk enterprise/cloud. File: default/props.conf",
-                                    "message_filename": "default/props.conf",
-                                    "message_line": null
-                                }
-                            ]
-                        },
-                        {
-                            "description": "Check that the app contains MS Windows specific components, which will not\n function correctly in Splunk Cloud whose OS should be Linux x64.",
-                            "name": "check_that_app_contains_any_windows_specific_components",
-                            "tags": [
-                                "cloud",
-                                "manual"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        },
-                        {
-                            "description": "Check that app does not contain telemetry.conf as it controls a\n Splunk-internal feature that should not be configured by apps.",
-                            "name": "check_telemetry_conf_black_list",
-                            "tags": [
-                                "splunk_appinspect",
-                                "cloud",
-                                "telemetry",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        },
-                        {
-                            "description": "Check that only role-mapping stanza is allowed in authenticaiton.conf as long as it doesn't map users to a cloud-internal role.",
-                            "name": "check_stanza_of_authentication_conf",
-                            "tags": [
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "not_applicable",
-                            "messages": [
-                                {
-                                    "result": "not_applicable",
-                                    "message": "`default/authentication.conf` does not exist.",
-                                    "message_filename": null,
-                                    "message_line": null
-                                }
-                            ]
-                        },
-                        {
-                            "description": "Check that app does not contain splunk-launch.conf as it defines\n environment values used at startup time. System-wide environment variables\n should be left up to Splunk administrators.",
-                            "name": "check_splunk_launch_conf_black_list",
-                            "tags": [
-                                "splunk_appinspect",
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        },
-                        {
-                            "description": "Check that app does not contain sourcetypes.conf as it is a\n machine-generated file that stores source type learning rules. props.conf\n should be used to define sourcetypes.",
-                            "name": "check_sourcetypes_conf_black_list",
-                            "tags": [
-                                "splunk_appinspect",
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        },
-                        {
-                            "description": "Check that app does not contain source-classifier.conf.conf as it\n configures system-wide settings for ignoring terms (such as sensitive\n data).",
-                            "name": "check_source_classifier_conf_black_list",
-                            "tags": [
-                                "splunk_appinspect",
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        },
-                        {
-                            "description": "Check that setup.xml does not exist in the app default folder",
-                            "name": "check_setup_xml_in_default",
-                            "tags": [
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        },
-                        {
-                            "description": "Check that app does not contain serverclass.seed.xml.conf as it\n configures deploymentClient to seed a Splunk installation with applications\n at startup time. Apps should leave deployment configuration up to Splunk\n administrators.",
-                            "name": "check_serverclass_seed_xml_conf_black_list",
-                            "tags": [
-                                "splunk_appinspect",
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        },
-                        {
-                            "description": "Check that app does not contain serverclass.conf as it defines\n deployment server classes for use with deployment server. Apps should\n leave deployment configuration up to Splunk administrators.",
-                            "name": "check_serverclass_conf_black_list",
-                            "tags": [
-                                "splunk_appinspect",
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        },
-                        {
-                            "description": "Check that app does not contain segmenters.conf with splunk stanza. A misconfigured\n segmenters.conf can result in unsearchable data that could only be\n addressed by re-indexing and segmenters.conf configuration is system-wide.",
-                            "name": "check_segmenters_conf_black_list",
-                            "tags": [
-                                "splunk_appinspect",
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        },
-                        {
-                            "description": "Check that python version is python3 for scripted inputs defined in inputs.conf.",
-                            "name": "check_scripted_inputs_python_version",
-                            "tags": [
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "not_applicable",
-                            "messages": [
-                                {
-                                    "result": "not_applicable",
-                                    "message": "`default/inputs.conf` does not exist.",
-                                    "message_filename": null,
-                                    "message_line": null
-                                }
-                            ]
-                        },
                         {
                             "description": "Check the cmd path pattern of scripted input defined in inputs.conf.",
                             "name": "check_scripted_inputs_cmd_path_pattern",
@@ -3443,6 +3045,283 @@
                             ]
                         },
                         {
+                            "description": "Check that app does not contain workload_rules.conf in Cloud as it\n automatically trigger actions on running search processes.",
+                            "name": "check_workload_rules_conf_black_list",
+                            "tags": [
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        },
+                        {
+                            "description": "Check that app does not contain workload_pools.conf in Cloud. App should\n not modify workload categories/pools. It should be only controlled by cloud\n administrators.",
+                            "name": "check_workload_pools_conf_black_list",
+                            "tags": [
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        },
+                        {
+                            "description": "Check that app does not contain wmi.conf is as it is prohibited in\n Splunk Cloud due to its ability to configure Splunk to ingest data via\n Windows Management Instrumentation, which should be done via forwarder.\n Forwarders are not permitted in Splunk Cloud.",
+                            "name": "check_wmi_conf_black_list",
+                            "tags": [
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        },
+                        {
+                            "description": "Check that app does not contain user-seed.conf as it is used to\n preconfigure default login and password information.",
+                            "name": "check_user_seed_conf_black_list",
+                            "tags": [
+                                "splunk_appinspect",
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        },
+                        {
+                            "description": "Check that transforms.conf does not contain any transforms with malicious\n command scripts specified by external_cmd=<string> attribute, or does not contain\n a scripted lookup with python2 only script.",
+                            "name": "check_transforms_conf_for_external_cmd",
+                            "tags": [
+                                "cloud",
+                                "manual",
+                                "python_version"
+                            ],
+                            "result": "not_applicable",
+                            "messages": [
+                                {
+                                    "result": "not_applicable",
+                                    "message": "`default/transforms.conf` does not exist.",
+                                    "message_filename": null,
+                                    "message_line": null
+                                }
+                            ]
+                        },
+                        {
+                            "description": "Check that the app does not have default/passwords.conf, otherwise, warn it.",
+                            "name": "check_that_passwords_conf_not_exist",
+                            "tags": [
+                                "splunk_appinspect",
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "not_applicable",
+                            "messages": [
+                                {
+                                    "result": "not_applicable",
+                                    "message": "passwords.conf does not exist.",
+                                    "message_filename": null,
+                                    "message_line": null
+                                }
+                            ]
+                        },
+                        {
+                            "description": "Check that the app does not contain configurations of default source type in props.conf,\n which will overwrite the configurations of default source types in system/default/props.conf\n then it will affect other apps in splunk enterprise/cloud.",
+                            "name": "check_that_no_configurations_of_default_source_type_in_props_conf",
+                            "tags": [
+                                "splunk_appinspect",
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "warning",
+                            "messages": [
+                                {
+                                    "result": "warning",
+                                    "message": "In default/props.conf, stanza source::WMI... has been configured, which will overwrite its default configuration in system/default/props.conf then it will affect other apps in splunk enterprise/cloud. File: default/props.conf",
+                                    "message_filename": "default/props.conf",
+                                    "message_line": null
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "In default/props.conf, stanza ActiveDirectory has been configured, which will overwrite its default configuration in system/default/props.conf then it will affect other apps in splunk enterprise/cloud. File: default/props.conf",
+                                    "message_filename": "default/props.conf",
+                                    "message_line": null
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "In default/props.conf, stanza wmi has been configured, which will overwrite its default configuration in system/default/props.conf then it will affect other apps in splunk enterprise/cloud. File: default/props.conf",
+                                    "message_filename": "default/props.conf",
+                                    "message_line": null
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "In default/props.conf, stanza WinRegistry has been configured, which will overwrite its default configuration in system/default/props.conf then it will affect other apps in splunk enterprise/cloud. File: default/props.conf",
+                                    "message_filename": "default/props.conf",
+                                    "message_line": null
+                                }
+                            ]
+                        },
+                        {
+                            "description": "Check that the app contains MS Windows specific components, which will not\n function correctly in Splunk Cloud whose OS should be Linux x64.",
+                            "name": "check_that_app_contains_any_windows_specific_components",
+                            "tags": [
+                                "cloud",
+                                "manual"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        },
+                        {
+                            "description": "Check that app does not contain telemetry.conf as it controls a\n Splunk-internal feature that should not be configured by apps.",
+                            "name": "check_telemetry_conf_black_list",
+                            "tags": [
+                                "splunk_appinspect",
+                                "cloud",
+                                "telemetry",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        },
+                        {
+                            "description": "Check that only role-mapping stanza is allowed in authenticaiton.conf as long as it doesn't map users to a cloud-internal role.",
+                            "name": "check_stanza_of_authentication_conf",
+                            "tags": [
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "not_applicable",
+                            "messages": [
+                                {
+                                    "result": "not_applicable",
+                                    "message": "`default/authentication.conf` does not exist.",
+                                    "message_filename": null,
+                                    "message_line": null
+                                }
+                            ]
+                        },
+                        {
+                            "description": "Check that app does not contain splunk-launch.conf as it defines\n environment values used at startup time. System-wide environment variables\n should be left up to Splunk administrators.",
+                            "name": "check_splunk_launch_conf_black_list",
+                            "tags": [
+                                "splunk_appinspect",
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        },
+                        {
+                            "description": "Check that app does not contain sourcetypes.conf as it is a\n machine-generated file that stores source type learning rules. props.conf\n should be used to define sourcetypes.",
+                            "name": "check_sourcetypes_conf_black_list",
+                            "tags": [
+                                "splunk_appinspect",
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        },
+                        {
+                            "description": "Check that app does not contain source-classifier.conf.conf as it\n configures system-wide settings for ignoring terms (such as sensitive\n data).",
+                            "name": "check_source_classifier_conf_black_list",
+                            "tags": [
+                                "splunk_appinspect",
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        },
+                        {
+                            "description": "Check that setup.xml does not exist in the app default folder",
+                            "name": "check_setup_xml_in_default",
+                            "tags": [
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        },
+                        {
+                            "description": "Check that app does not contain serverclass.seed.xml.conf as it\n configures deploymentClient to seed a Splunk installation with applications\n at startup time. Apps should leave deployment configuration up to Splunk\n administrators.",
+                            "name": "check_serverclass_seed_xml_conf_black_list",
+                            "tags": [
+                                "splunk_appinspect",
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        },
+                        {
+                            "description": "Check that app does not contain serverclass.conf as it defines\n deployment server classes for use with deployment server. Apps should\n leave deployment configuration up to Splunk administrators.",
+                            "name": "check_serverclass_conf_black_list",
+                            "tags": [
+                                "splunk_appinspect",
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        },
+                        {
+                            "description": "Check that app does not contain segmenters.conf with splunk stanza. A misconfigured\n segmenters.conf can result in unsearchable data that could only be\n addressed by re-indexing and segmenters.conf configuration is system-wide.",
+                            "name": "check_segmenters_conf_black_list",
+                            "tags": [
+                                "splunk_appinspect",
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        },
+                        {
+                            "description": "Check that python version is python3 for scripted inputs defined in inputs.conf.",
+                            "name": "check_scripted_inputs_python_version",
+                            "tags": [
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "not_applicable",
+                            "messages": [
+                                {
+                                    "result": "not_applicable",
+                                    "message": "`default/inputs.conf` does not exist.",
+                                    "message_filename": null,
+                                    "message_line": null
+                                }
+                            ]
+                        },
+                        {
                             "description": "Check whether the app contains java files. Java files will be inspected\n for compliance with Splunk Cloud security policy.",
                             "name": "check_for_java",
                             "tags": [
@@ -3762,6 +3641,127 @@
                                 {
                                     "result": "not_applicable",
                                     "message": "alert_actions.conf does not exist",
+                                    "message_filename": null,
+                                    "message_line": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "description": "Operating system standards",
+                    "name": "check_potentially_harmful_operations",
+                    "checks": [
+                        {
+                            "description": "Check for the use of malicious shell commands in configuration files or shell scripts to\n corrupt the OS or Splunk instance. Other scripting languages are covered by other checks.",
+                            "name": "check_destructive_commands",
+                            "tags": [
+                                "splunk_appinspect",
+                                "appapproval",
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        }
+                    ]
+                },
+                {
+                    "description": "Malware, viruses, malicious content, user security standards (static checks)",
+                    "name": "check_malware",
+                    "checks": [
+                        {
+                            "description": "Check that no sensitive hostnames/IPs are stored in the app.",
+                            "name": "check_hostnames_and_ips",
+                            "tags": [
+                                "splunk_appinspect",
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        }
+                    ]
+                },
+                {
+                    "description": "Checking for Front-end Libraries\nThis check looks for various front-end libraries inside of apps. \nAs of 03/23/2022, we are looking at Splunk UI and it's predecessor, SplunkJS. \nThis is currently an INFORMATIONAL Check. ",
+                    "name": "check_frontend_libraries",
+                    "checks": [
+                        {
+                            "description": "Check that @splunk/visualizations is being used.",
+                            "name": "check_for_splunkvisualizations",
+                            "tags": [
+                                "splunk_appinspect",
+                                "cloud",
+                                "self-service",
+                                "private_app"
+                            ],
+                            "result": "not_applicable",
+                            "messages": [
+                                {
+                                    "result": "not_applicable",
+                                    "message": "@splunk/visualizations has not been detected inside of this app. Please ignore this message as it has no impact to your Splunk App.",
+                                    "message_filename": null,
+                                    "message_line": null
+                                }
+                            ]
+                        },
+                        {
+                            "description": "Check that @splunk/react-ui is being used.",
+                            "name": "check_for_splunkreactui",
+                            "tags": [
+                                "splunk_appinspect",
+                                "cloud",
+                                "self-service",
+                                "private_app"
+                            ],
+                            "result": "not_applicable",
+                            "messages": [
+                                {
+                                    "result": "not_applicable",
+                                    "message": "@splunk/react-ui has not been detected inside of this app. Please ignore this message as it has no impact to your Splunk App.",
+                                    "message_filename": null,
+                                    "message_line": null
+                                }
+                            ]
+                        },
+                        {
+                            "description": "Check that SplunkJS is being used.",
+                            "name": "check_for_splunkjs",
+                            "tags": [
+                                "splunk_appinspect",
+                                "cloud",
+                                "self-service",
+                                "private_app"
+                            ],
+                            "result": "not_applicable",
+                            "messages": [
+                                {
+                                    "result": "not_applicable",
+                                    "message": "SplunkJS has not been detected inside of this app. Please ignore this message as it has no impact to your Splunk App.",
+                                    "message_filename": null,
+                                    "message_line": null
+                                }
+                            ]
+                        },
+                        {
+                            "description": "Check that @splunk/dashboard-core is being used.",
+                            "name": "check_for_splunkdashboardcore",
+                            "tags": [
+                                "splunk_appinspect",
+                                "cloud",
+                                "self-service",
+                                "private_app"
+                            ],
+                            "result": "not_applicable",
+                            "messages": [
+                                {
+                                    "result": "not_applicable",
+                                    "message": "@splunk/dashboard-core has not been detected inside of this app. Please ignore this message as it has no impact to your Splunk App.",
                                     "message_filename": null,
                                     "message_line": null
                                 }
@@ -4127,8 +4127,8 @@
         "success": 126
     },
     "metrics": {
-        "start_time": "2023-02-09T10:54:15.619253",
-        "end_time": "2023-02-09T10:54:25.338582",
+        "start_time": "2023-02-09T11:08:42.178932",
+        "end_time": "2023-02-09T11:08:51.861795",
         "execution_time": 9
     },
     "run_parameters": {
@@ -4141,7 +4141,7 @@
     "links": [
         {
             "rel": "self",
-            "href": "/v1/app/report/c9a56429-830e-49f6-bfe9-e9e97331ec2a"
+            "href": "/v1/app/report/8445aa61-b382-458e-8314-6b78ad12f036"
         }
     ]
 }

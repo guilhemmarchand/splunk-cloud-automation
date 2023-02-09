@@ -225,6 +225,9 @@ else:
     root.setLevel(logging.INFO)
     handler.setLevel(logging.INFO)
 
+# deployConfig.json
+deployconf = "DeployConfig.json"
+
 # appConfig file
 appconf = "AppConfig.json"
 
@@ -234,6 +237,14 @@ output_dir = "output"
 #
 # Program start
 #
+
+if not os.path.isfile(deployconf):
+    logging.error("Could not find expected DeployConfig.json")
+    sys.exit(1)
+else:
+    f = open(deployconf)
+    deployconf = json.load(f)
+    logging.info("Successfully loaded the list of authorized Splunk config files, DeployConfFilesList=\"{}\"".format(json.dumps(deployconf.get('DeployConfFilesList'), indent=2)))
 
 # check appdir
 if not os.path.isdir(appdir):
@@ -390,14 +401,7 @@ else:
                 # handle conf files
                 #
 
-                conf_files = [
-                    'props.conf',
-                    'eventtypes.conf',
-                    'macros.conf',
-                    'transforms.conf',
-                    'tags.conf',
-                    'workflow_actions.conf',
-                ]
+                conf_files = deployconf.get('DeployConfFilesList')
 
                 for conf_file in conf_files:
                     # if we have a file to be merged
