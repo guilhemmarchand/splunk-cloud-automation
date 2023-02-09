@@ -244,7 +244,7 @@ if not os.path.isfile(deployconf):
 else:
     f = open(deployconf)
     deployconf = json.load(f)
-    logging.info("Successfully loaded the list of authorized Splunk config files, DeployConfFilesList=\"{}\"".format(json.dumps(deployconf.get('DeployConfFilesList'), indent=2)))
+    logging.info("Successfully loaded the default list of authorized Splunk config files, DeployConfFilesList=\"{}\"".format(json.dumps(deployconf.get('DeployConfFilesList'), indent=2)))
 
 # check appdir
 if not os.path.isdir(appdir):
@@ -401,7 +401,18 @@ else:
                 # handle conf files
                 #
 
-                conf_files = deployconf.get('DeployConfFilesList')
+                default_conf_files = deployconf.get('DeployConfFilesList')
+
+                try:
+                    local_conf_files = appconf.get('DeployConfFilesList')
+                    logging.info("Successfully loaded a local list of authorized Splunk config files, this will override default allowed config files, DeployConfFilesList=\"{}\"".format(json.dumps(appconf.get('DeployConfFilesList'), indent=2)))
+                except Exception as e:
+                    local_conf_files = default_conf_files
+
+                if local_conf_files:
+                    conf_files = local_conf_files
+                else:
+                    conf_files = default_conf_files
 
                 for conf_file in conf_files:
                     # if we have a file to be merged

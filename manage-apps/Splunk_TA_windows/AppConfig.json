@@ -5,5 +5,12 @@
   "appDecription": "Splunk Add-on for Microsoft Windows",
   "appMerge": "True",
   "appSource": "Splunk_TA_windows",
-  "appVersion": "8.6.0"
+  "appVersion": "8.6.0",
+  "DeployConfFilesList": [
+    "props.conf",
+    "eventtypes.conf",
+    "macros.conf",
+    "transforms.conf",
+    "tags.conf"
+  ]
 }
