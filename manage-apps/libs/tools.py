@@ -10,6 +10,7 @@ __status__ = "PRODUCTION"
 
 import os
 import random
+import base64
 import fnmatch
 import json
 import logging
@@ -161,3 +162,70 @@ def download_jsonreport_appinspect(token, request_id, proxy_dict):
 
     return response.text
 
+
+# Create an ephemeral token for the authentication
+def splunkacs_create_ephemeral_token(stack, username, password, audience, proxy_dict):
+
+    headers = CaseInsensitiveDict()
+    authorization = username + ':' + password
+    b64_auth = base64.b64encode(authorization.encode()).decode()
+    headers = {
+        'Authorization': 'Basic %s' % b64_auth,
+        'Content-Type': 'application/json',
+    }
+
+    data = {
+        "user": username,
+        "audience": audience,
+        "type": "ephemeral",
+    }
+
+    # submit
+    submit_url = "https://admin.splunk.com/%s/adminconfig/v2/tokens" % stack
+
+    # run
+    session = requests.Session()
+
+    try:
+        response = session.post(submit_url, headers=headers, verify=True, data=json.dumps(data), proxies=proxy_dict)
+        if response.status_code not in (200, 201, 204):
+            logging.error("function=splunkacs_create_ephemeral_token, Splunk ACS call has failed, url={},  HTTP Error={}, content={}".format(submit_url, response.status_code, response.text))
+            raise Exception("Splunk ACS call has failed, url=\"{}\", response=\"{}\"".format(submit_url, response.text))
+        else:
+            logging.debug("Splunk ACS call was successful, url=\"{}\", response=\"{}\"".format(submit_url, response.text))
+
+    except Exception as e:
+        logging.error("function=splunkacs_create_ephemeral_token, Splunk ACS call has failed, url=\"{}\", exception=\"{}\"".format(submit_url, e))
+        raise Exception("Splunk ACS call has failed, url=\"{}\", exception=\"{}\"".format(submit_url, e))
+
+    return response.text
+
+
+# Deploy to Splunk Cloud through ACS
+def splunk_acs_deploy_app(tokenacs, tokenappinspect, app, stack, proxy_dict):
+
+    headers = CaseInsensitiveDict()
+    headers["X-Splunk-Authorization"] = "%s" % tokenappinspect
+    headers["Authorization"] = "Bearer %s" % tokenacs
+    headers["ACS-Legal-Ack"] = "Y"
+
+    # submit
+    submit_url = "https://admin.splunk.com/%s/adminconfig/v2/apps/victoria" % stack
+
+    # run
+
+    session = requests.Session()
+
+    with open(app, 'rb') as f:
+
+        try:
+            response = session.post(submit_url, headers=headers, data=f, verify=True, proxies=proxy_dict)
+            if response.status_code not in (200, 201, 204):
+                logging.error("Submission to Splunk ACS API has failed, url={},  HTTP Error={}, content={}".format(submit_url, response.status_code, response.text))
+            else:
+                logging.debug("Submission to Splunk ACS API was successful, url=\"{}\", response=\"{}\"".format(submit_url, response.text))
+
+        except Exception as e:
+            logging.error("Submission to Splunk ACS API has failed, url=\"{}\", exception=\"{}\"".format(submit_url, e))
+
+        return response.text

@@ -19,10 +19,13 @@ import glob
 import subprocess
 import configparser
 import hashlib
+import base64
 
 # load libs
 sys.path.append('libs')
-from tools import cd, gen_build_number, login_appinspect, submit_appinspect, verify_appinspect, download_htmlreport_appinspect, download_jsonreport_appinspect
+from tools import cd, gen_build_number, login_appinspect, submit_appinspect, verify_appinspect,\
+    download_htmlreport_appinspect, download_jsonreport_appinspect, \
+    splunkacs_create_ephemeral_token, splunk_acs_deploy_app
 
 # Args
 parser = argparse.ArgumentParser()
@@ -31,6 +34,13 @@ parser.add_argument('--keep', dest='keep', action='store_true')
 parser.add_argument('--submitappinspect', dest='submitappinspect', action='store_true')
 parser.add_argument('--userappinspect', dest='userappinspect')
 parser.add_argument('--passappinspect', dest='passappinspect')
+parser.add_argument('--deployacs', dest='deployacs')
+parser.add_argument('--create_token', dest='create_token', action='store_true')
+parser.add_argument('--token_audience', dest='token_audience')
+parser.add_argument('--username', dest='username')
+parser.add_argument('--password', dest='password')
+parser.add_argument('--tokenacs', dest='tokenacs')
+parser.add_argument('--stack', dest='stack')
 parser.add_argument('--useproxy', dest='useproxy', action='store_true')
 parser.add_argument('--proxy_url', dest='proxy_url')
 parser.add_argument('--proxy_port', dest='proxy_port')
@@ -39,6 +49,7 @@ parser.add_argument('--proxy_password', dest='proxy_password')
 parser.set_defaults(debug=False)
 parser.set_defaults(keep=False)
 parser.set_defaults(submitappinspect=False)
+parser.set_defaults(deployacs=False)
 args = parser.parse_args()
 
 # Set debug boolean
@@ -52,6 +63,12 @@ if args.keep:
     keep = True
 else:
     keep = False
+
+# Set deployacs boolean
+if args.deployacs == 'True':
+    deployacs = True
+else:
+    deployacs = False 
 
 # Set appinspect_vetting
 if args.submitappinspect:
@@ -70,6 +87,49 @@ if args.passappinspect:
     passappinspect = args.passappinspect
 else:
     passappinspect = False
+
+# Set tokenacs
+if args.tokenacs:
+    tokenacs = args.tokenacs
+else:
+    tokenacs = False
+
+# Set stack
+if args.stack:
+    stack = args.stack
+else:
+    stack = False
+
+# Set deployacs
+if args.deployacs:
+    deployacs = True
+else:
+    deployacs = False
+
+# user login and password (required if create_token is set)
+if args.username:
+    username = args.username
+else:
+    username = False
+
+if args.password:
+    password = args.password
+else:
+    password = False
+
+if args.token_audience:
+    token_audience = args.token_audience
+else:
+    token_audience = False
+
+# Create token boolean
+if args.create_token:
+    create_token = True
+    if not username or not password or not token_audience:
+        logging.error("create_token is enabled, but username, password or token_audience were not provided")
+        sys.exit(1)
+else:
+    create_token = False
 
 # Set useproxy boolean
 if args.useproxy:
@@ -118,6 +178,32 @@ if useproxy:
 else:
     proxy_dict = {}
 
+# Splunk ACS
+# user login and password (required if create_token is set)
+if args.username:
+    username = args.username
+else:
+    username = False
+
+if args.password:
+    password = args.password
+else:
+    password = False
+
+if args.token_audience:
+    token_audience = args.token_audience
+else:
+    token_audience = False
+
+# Create token boolean
+if args.create_token:
+    create_token = True
+    if not username or not password or not token_audience:
+        logging.error("create_token is enabled, but username, password or token_audience were not provided")
+        sys.exit(1)
+else:
+    create_token = False
+
 # set logging
 root = logging.getLogger()
 root.setLevel(logging.DEBUG)
@@ -150,6 +236,15 @@ if os.path.isfile(appconf):
 else:
     logging.error("failed to open non existing AppConfig.json")
     sys.exit(1)
+
+# if deployment to ACS is requested, we need to have some additional information
+if deployacs:
+    if create_token and not username or not password:
+        logging.error("Deployment to ACS has been requested with ephemeral token creation, but username or password were not provided")
+        sys.exit(1)
+    elif not create_token and not tokenacs:
+        logging.error("Deployment to ACS has been requested with a permanent token, but the token was not provided")
+        sys.exit(1)
 
 # get and set
 buildNumber = gen_build_number()
@@ -487,5 +582,60 @@ if submitappinspect and userappinspect and passappinspect:
                 else:
                     logging.error("Appinspect request_id=\"{}\" could not be vetted, review the report for more information, summary=\"{}\"".format(request_id, json.dumps(appinspect_report_dict['summary'], indent=4)))
                     raise ValueError("Appinspect request_id=\"{}\" could not be vetted, review the report for more information, summary=\"{}\"".format(request_id, json.dumps(appinspect_report_dict['summary'], indent=4)))
+
+# if requested, deploy to Splunk ACS
+if deployacs:
+
+    #
+    # If create token is enabled, we first need to create an ephemeral token for to be used in the rest of the operations
+    #
+
+    if create_token:
+        tokenacs = None
+        try:    
+            tokenacs_creation_response = splunkacs_create_ephemeral_token(stack, username, password, token_audience, proxy_dict)
+            logging.info("Ephemeral token created successfully")
+            tokenacs = json.loads(tokenacs_creation_response).get('token')
+            tokenid = json.loads(tokenacs_creation_response).get('id')
+
+        except Exception as e:
+            logging.error("An exception was encountered while attempting to create an ephemeral token from Splunk ACS, exception=\"{}\"".format(str(e)))
+            tokenacs = None
+            raise Exception(str(e))        
+
+    if not tokenacs:
+        sys.exit(1)
+
+    # loop
+    with cd(output_dir):
+
+        # Look through the apps and submit
+        files = glob.glob(os.path.join(appID + '*.tgz'))
+        for file_name in files:
+            if os.path.isfile(file_name):
+                logging.debug('Deploy to Splunk ACS API=\"{}\"'.format(file_name))
+
+                # set None
+                splunkacs_response = None
+
+                # submit
+                splunkacs_response = splunk_acs_deploy_app(tokenacs, appinspect_token, file_name, stack, proxy_dict)
+
+                # check
+                if splunkacs_response:
+                    
+                    try:
+                        splunkacs_response = json.loads(splunkacs_response)
+                        status_acs = splunkacs_response['status']
+
+                        if status_acs == 'installed':
+                            logging.info("Splunk ACS deployment of app=\"{}\" was successful, summary=\"{}\"".format(splunkacs_response['appID'], json.dumps(splunkacs_response, indent=4)))
+                        else:
+                            logging.error("Splunk ACS deployment of app=\"{}\" has failed, summary=\"{}\"".format(file_name, json.dumps(splunkacs_response, indent=4)))
+                            raise ValueError("Splunk ACS deployment of app=\"{}\" has failed, summary=\"{}\"".format(file_name, json.dumps(splunkacs_response, indent=4)))
+
+                    except Exception as e:
+                        logging.error("Splunk ACS deployment of app=\"{}\", an expection was encountered, exception=\"{}\"".format(file_name, e))
+                        raise ValueError("Splunk ACS deployment of app=\"{}\", an expection was encountered, exception=\"{}\"".format(file_name, e))
 
 sys.exit(0)
