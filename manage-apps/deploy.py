@@ -50,7 +50,6 @@ parser.add_argument('--proxy_password', dest='proxy_password')
 parser.set_defaults(debug=False)
 parser.set_defaults(keep=False)
 parser.set_defaults(submitappinspect=False)
-parser.set_defaults(deployacs=False)
 args = parser.parse_args()
 
 # Set appdir
@@ -73,10 +72,14 @@ else:
     keep = False
 
 # Set deployacs boolean
-if args.deployacs == 'True':
-    deployacs = True
+if args.deployacs:
+    deployacs = args.deployacs
+    if deployacs == 'True':
+        deployacs = True
+    else:
+        deployacs = False
 else:
-    deployacs = False 
+    deployacs = False
 
 # Set appinspect_vetting
 if args.submitappinspect:
@@ -107,12 +110,6 @@ if args.stack:
     stack = args.stack
 else:
     stack = False
-
-# Set deployacs
-if args.deployacs:
-    deployacs = True
-else:
-    deployacs = False
 
 # user login and password (required if create_token is set)
 if args.username:

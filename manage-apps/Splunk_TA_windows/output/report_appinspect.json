@@ -1,17 +1,17 @@
 {
-    "request_id": "c500d5a3-0bbc-4165-9b95-5a6cf03c4cb5",
+    "request_id": "c9a56429-830e-49f6-bfe9-e9e97331ec2a",
     "cloc": "",
     "reports": [
         {
             "app_author": "My Company",
             "app_description": "Splunk Add-on for Microsoft Windows",
-            "app_hash": "34f2b1af843d1f49911ccdd06ea7ef86",
+            "app_hash": "0302807f3281c0d7ef6825561e5abc1d",
             "app_name": "Splunk Add-on for Microsoft Windows",
             "app_package_id": "org_Splunk_TA_windows",
             "app_version": "8.6.0",
             "metrics": {
-                "start_time": "2023-02-09T10:08:48.797991",
-                "end_time": "2023-02-09T10:08:58.365477",
+                "start_time": "2023-02-09T10:54:15.619253",
+                "end_time": "2023-02-09T10:54:25.338582",
                 "execution_time": 9
             },
             "run_parameters": {
@@ -386,9 +386,15 @@
                             "messages": [
                                 {
                                     "result": "warning",
-                                    "message": "Bias language is found in the app. 4769,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_errorcode_action.csv:463) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 463",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 463
+                                    "message": "Bias language is found in the app. 4693,unknown,Detailed Tracking,DPAPI Activity,Recovery of data pr... (lookups/xmlsecurity_eventcode_action.csv:50) [master]. File: xmlsecurity_eventcode_action.csv Line Number: 50",
+                                    "message_filename": "xmlsecurity_eventcode_action.csv",
+                                    "message_line": 50
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4693,\"Recovery of data protection <<<MASTER>>> key was attempted\"... (lookups/windows_signatures_860.csv:211) [master]. File: windows_signatures_860.csv Line Number: 211",
+                                    "message_filename": "windows_signatures_860.csv",
+                                    "message_line": 211
                                 },
                                 {
                                     "result": "warning",
@@ -398,57 +404,9 @@
                                 },
                                 {
                                     "result": "warning",
-                                    "message": "Bias language is found in the app. 4692,\"Backup of data protection <<<MASTER>>> key was attempted\",,... (lookups/windows_signatures_860.csv:210) [master]. File: windows_signatures_860.csv Line Number: 210",
-                                    "message_filename": "windows_signatures_860.csv",
-                                    "message_line": 210
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4693,unknown,-,Recovery of data protection <<<MASTER>>> key was a... (lookups/xmlsecurity_eventcode_errorcode_action.csv:49) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 49",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 49
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4768,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_action_multiinput.csv:45) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 45",
+                                    "message": "Bias language is found in the app. 4768,failure,0x4,Client's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:40) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 40",
                                     "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 45
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4768,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_errorcode_action.csv:405) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 405",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 405
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4693,unknown,Detailed Tracking,DPAPI Activity,Recovery of data pr... (lookups/xmlsecurity_eventcode_action.csv:50) [master]. File: xmlsecurity_eventcode_action.csv Line Number: 50",
-                                    "message_filename": "xmlsecurity_eventcode_action.csv",
-                                    "message_line": 50
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4771,failure,0x5,Server's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:156) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 156",
-                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 156
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4771,failure,0x4,Client's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:155) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 155",
-                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 155
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4769,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_action_multiinput.csv:103) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 103",
-                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 103
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4771,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:516) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 516",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 516
+                                    "message_line": 40
                                 },
                                 {
                                     "result": "warning",
@@ -458,15 +416,39 @@
                                 },
                                 {
                                     "result": "warning",
-                                    "message": "Bias language is found in the app. 4768,failure,0x4,Client's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:40) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 40",
+                                    "message": "Bias language is found in the app. 4771,failure,0x5,Server's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:156) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 156",
                                     "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 40
+                                    "message_line": 156
                                 },
                                 {
                                     "result": "warning",
-                                    "message": "Bias language is found in the app. 4769,failure,0x4,Client's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:458) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 458",
+                                    "message": "Bias language is found in the app. 4769,failure,0x5,Server's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:99) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 99",
+                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
+                                    "message_line": 99
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4768,failure,0x5,Server's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:41) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 41",
+                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
+                                    "message_line": 41
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4771,failure,0x4,Client's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:155) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 155",
+                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
+                                    "message_line": 155
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4769,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:459) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 459",
                                     "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 458
+                                    "message_line": 459
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4768,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_action_multiinput.csv:45) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 45",
+                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
+                                    "message_line": 45
                                 },
                                 {
                                     "result": "warning",
@@ -482,39 +464,57 @@
                                 },
                                 {
                                     "result": "warning",
-                                    "message": "Bias language is found in the app. 4769,failure,0x5,Server's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:99) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 99",
-                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 99
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4693,\"Recovery of data protection <<<MASTER>>> key was attempted\"... (lookups/windows_signatures_860.csv:211) [master]. File: windows_signatures_860.csv Line Number: 211",
-                                    "message_filename": "windows_signatures_860.csv",
-                                    "message_line": 211
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4769,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:459) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 459",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 459
-                                },
-                                {
-                                    "result": "warning",
                                     "message": "Bias language is found in the app. 4771,failure,0x4,Client's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:515) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 515",
                                     "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
                                     "message_line": 515
                                 },
                                 {
                                     "result": "warning",
-                                    "message": "Bias language is found in the app. 4768,failure,0x5,Server's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:41) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 41",
+                                    "message": "Bias language is found in the app. 4769,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_errorcode_action.csv:463) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 463",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
+                                    "message_line": 463
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4692,\"Backup of data protection <<<MASTER>>> key was attempted\",,... (lookups/windows_signatures_860.csv:210) [master]. File: windows_signatures_860.csv Line Number: 210",
+                                    "message_filename": "windows_signatures_860.csv",
+                                    "message_line": 210
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4768,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_errorcode_action.csv:405) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 405",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
+                                    "message_line": 405
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4769,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_action_multiinput.csv:103) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 103",
                                     "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 41
+                                    "message_line": 103
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4771,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:516) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 516",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
+                                    "message_line": 516
                                 },
                                 {
                                     "result": "warning",
                                     "message": "Bias language is found in the app. 4768,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:401) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 401",
                                     "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
                                     "message_line": 401
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4769,failure,0x4,Client's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:458) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 458",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
+                                    "message_line": 458
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4693,unknown,-,Recovery of data protection <<<MASTER>>> key was a... (lookups/xmlsecurity_eventcode_errorcode_action.csv:49) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 49",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
+                                    "message_line": 49
                                 }
                             ]
                         }
@@ -2883,13 +2883,13 @@
                                 },
                                 {
                                     "result": "warning",
-                                    "message": "In default/props.conf, stanza WinRegistry has been configured, which will overwrite its default configuration in system/default/props.conf then it will affect other apps in splunk enterprise/cloud. File: default/props.conf",
+                                    "message": "In default/props.conf, stanza wmi has been configured, which will overwrite its default configuration in system/default/props.conf then it will affect other apps in splunk enterprise/cloud. File: default/props.conf",
                                     "message_filename": "default/props.conf",
                                     "message_line": null
                                 },
                                 {
                                     "result": "warning",
-                                    "message": "In default/props.conf, stanza wmi has been configured, which will overwrite its default configuration in system/default/props.conf then it will affect other apps in splunk enterprise/cloud. File: default/props.conf",
+                                    "message": "In default/props.conf, stanza WinRegistry has been configured, which will overwrite its default configuration in system/default/props.conf then it will affect other apps in splunk enterprise/cloud. File: default/props.conf",
                                     "message_filename": "default/props.conf",
                                     "message_line": null
                                 }
@@ -4127,8 +4127,8 @@
         "success": 126
     },
     "metrics": {
-        "start_time": "2023-02-09T10:08:48.797991",
-        "end_time": "2023-02-09T10:08:58.365477",
+        "start_time": "2023-02-09T10:54:15.619253",
+        "end_time": "2023-02-09T10:54:25.338582",
         "execution_time": 9
     },
     "run_parameters": {
@@ -4141,7 +4141,7 @@
     "links": [
         {
             "rel": "self",
-            "href": "/v1/app/report/c500d5a3-0bbc-4165-9b95-5a6cf03c4cb5"
+            "href": "/v1/app/report/c9a56429-830e-49f6-bfe9-e9e97331ec2a"
         }
     ]
 }
