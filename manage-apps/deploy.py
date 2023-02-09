@@ -320,6 +320,28 @@ else:
                     except Exception as e:
                         logging.error('Archive=\"{}\" could not be deleted, exception=\"{}\"'.format(file_name, e))
 
+            # Purge version.txt
+            files = glob.glob(os.path.join('version.txt'))
+            for file_name in files:
+                logging.debug('Attempting to remove file=\"{}\"'.format(file_name))
+                if os.path.isfile(file_name):
+                    try:
+                        os.remove(file_name)
+                        logging.debug('file=\"{}\" was deleted successfully'.format(file_name))
+                    except Exception as e:
+                        logging.error('file=\"{}\" could not be deleted, exception=\"{}\"'.format(file_name, e))
+
+            # Purge build.txt
+            files = glob.glob(os.path.join('build.txt'))
+            for file_name in files:
+                logging.debug('Attempting to remove file=\"{}\"'.format(file_name))
+                if os.path.isfile(file_name):
+                    try:
+                        os.remove(file_name)
+                        logging.debug('file=\"{}\" was deleted successfully'.format(file_name))
+                    except Exception as e:
+                        logging.error('file=\"{}\" could not be deleted, exception=\"{}\"'.format(file_name, e))
+
             # Purge Appinspect previous reports
             files = glob.glob(os.path.join('report_*.html'))
             for file_name in files:
@@ -525,6 +547,13 @@ else:
                     except Exception as e:
                         logging.error("appID=\"{}\", failed to purge the build directory=\"{}\" with exception=\"{}\"".format(appID, appID, e))
                         raise ValueError("appID=\"{}\", failed to purge the build directory=\"{}\" with exception=\"{}\"".format(appID, appID, e))
+
+            # Store version and build into simple text files
+            with open("version.txt", "a") as f:
+                f.write(str(appVersion))
+
+            with open("build.txt", "a") as f:
+                f.write(str(buildNumber))
 
         #
         # Appinspect
