@@ -225,9 +225,6 @@ else:
     root.setLevel(logging.INFO)
     handler.setLevel(logging.INFO)
 
-# deployConfig.json
-deployconf = "DeployConfig.json"
-
 # appConfig file
 appconf = "AppConfig.json"
 
@@ -237,14 +234,6 @@ output_dir = "output"
 #
 # Program start
 #
-
-if not os.path.isfile(deployconf):
-    logging.error("Could not find expected DeployConfig.json")
-    sys.exit(1)
-else:
-    f = open(deployconf)
-    deployconf = json.load(f)
-    logging.info("Successfully loaded the default list of authorized Splunk config files, DeployConfFilesList=\"{}\"".format(json.dumps(deployconf.get('DeployConfFilesList'), indent=2)))
 
 # check appdir
 if not os.path.isdir(appdir):
@@ -276,10 +265,47 @@ else:
         appAuthor = appconf.get("appAuthor")
         appID = appconf.get('appID')
         appLabel = appconf.get('appLabel')
-        appDecription = appconf.get('appDecription')
+        appDescription = appconf.get('appDescription')
         appMerge = appconf.get('appMerge')
-        appSource = appconf.get('appSource')
+
+        # Applies to merging use cases only
+        try:
+            appSource = appconf.get('appSource')
+        except Exception as e:
+            appSource = None
         appVersion = appconf.get('appVersion')
+
+        # optionally restrict which configuration files are allowed
+        try:
+            configFilesAuthorized = appconf.get("configFilesAuthorized")
+        except Exception as e:
+            configFilesAuthorized = None
+
+        # optionally forbid specific configuration files, for instances inputs.conf
+        try:
+            configFilesDenied = appconf.get("configFilesDenied")
+        except Exception as e:
+            configFilesDenied = None
+
+        # optionally allow or disallow incoporating views
+        try:
+            configAllowViews = appconf.get("configAllowViews")
+            if configAllowViews == 'True':
+                configAllowViews = True
+            else:
+                configAllowViews = False
+        except Exception as e:
+            configAllowViews = None
+
+        # optionally allow or disallow incoporating alerts
+        try:
+            configAllowAlerts = appconf.get("configAllowAlerts")
+            if configAllowAlerts == 'True':
+                configAllowAlerts = True
+            else:
+                configAllowAlerts = False
+        except Exception as e:
+            configAllowAlerts = False
 
         # log
         logging.info("Starting build buildNumber=\"{}\", appconf=\"{}\"".format(buildNumber, json.dumps(appconf, indent=2)))
@@ -397,7 +423,7 @@ else:
 
             config_file["launcher"]={
                     "author": appAuthor,
-                    "description": appDecription,
+                    "description": appDescription,
                     "version": appVersion,
                 }    
 
@@ -419,24 +445,45 @@ else:
 
             else:
 
+                ########### conf files ###########
                 #
                 # handle conf files
                 #
+                ##################################
 
-                default_conf_files = deployconf.get('DeployConfFilesList')
+                # set an empty list
+                source_conf_files = []
+                with cd(os.path.join(appSource, "default")):
+                    for filename in glob.iglob(f'*.conf'):
 
-                try:
-                    local_conf_files = appconf.get('DeployConfFilesList')
-                    logging.info("Successfully loaded a local list of authorized Splunk config files, this will override default allowed config files, DeployConfFilesList=\"{}\"".format(json.dumps(appconf.get('DeployConfFilesList'), indent=2)))
-                except Exception as e:
-                    local_conf_files = default_conf_files
+                        # if not restricted, takes all *.conf
+                        if not configFilesAuthorized:
 
-                if local_conf_files:
-                    conf_files = local_conf_files
-                else:
-                    conf_files = default_conf_files
+                            # unless forbidden
+                            if configFilesDenied:
+                                if filename not in configFilesDenied:
+                                    source_conf_files.append(filename)
+                            else:
+                                source_conf_files.append(filename)
 
-                for conf_file in conf_files:
+                        # if restricted, this should be in the allowed list of configuration files
+                        elif configFilesAuthorized:
+                            if filename in configFilesAuthorized:
+
+                                # unless forbidden
+                                if configFilesAuthorized:
+                                    if filename not in configFilesDenied:
+                                        source_conf_files.append(filename)
+                                else:
+                                    source_conf_files.append(filename)
+
+                # remove app.conf
+                source_conf_files.remove("app.conf")
+
+                # wmi.conf is always rejected
+                source_conf_files.remove("wmi.conf")
+
+                for conf_file in source_conf_files:
                     # if we have a file to be merged
                     if os.path.exists(os.path.join(appID, "local", conf_file)):
                         logging.info("Processing to stanza merging of local {} to target default".format(conf_file))
@@ -469,39 +516,190 @@ else:
                         else:
                             shutil.copyfile(os.path.join(appID, "local", conf_file), os.path.join(output_dir, appID, "default", conf_file))
 
-                #
-                # handle lookups
-                #
+                    # there is no local, simply copy
+                    else:
+                        shutil.copyfile(os.path.join(appSource, "default", conf_file), os.path.join(output_dir, appID, "default", conf_file))
 
+                ########### lookup files ###########
+                #
+                # handle lookup files
+                #
+                ####################################
+
+                logging.info("Inspecting lookups now")
+
+                # store source lookups in a list
+                source_lookups = []
                 if os.path.isdir(os.path.join(appSource, "lookups")):
-
-                    logging.info("Inspecting lookups now")
-
                     with cd(os.path.join(appSource, "lookups")):
-
                         for filename in glob.iglob(f'*.csv'):
+                            source_lookups.append(filename)
+                logging.debug("lookups in source=\"{}\"".format(source_lookups))
 
-                            logging.info("Inspecting lookup file=\"{}\"".format(filename))
+                # store local lookups in a list
+                local_lookups = []
+                if os.path.isdir(os.path.join(appID, "lookups")):
+                    with cd(os.path.join(appID, "lookups")):
+                        for filename in glob.iglob(f'*.csv'):
+                            local_lookups.append(filename)
+                logging.debug("lookups in source=\"{}\"".format(local_lookups))
 
-                            # check if we have a local version
-                            if os.path.isfile(os.path.join("../../", appID, "lookups", filename)):
+                # for each local lookups which would not exist in default, get a copy
+                if local_lookups:
+                    for filename in local_lookups:
+                        if not filename in source_lookups:
+                            # copy this version
+                            try:
+                                shutil.copyfile(os.path.join(appID, "lookups", filename), os.path.join(output_dir, appID, "lookups", filename))
+                                logging.info("the lookup filename=\"{}\" only exists in the local application, copying.".format(filename))
+                            except Exception as e:
+                                logging.error("failed to copy the local lookup file, exception=\"{}\"".format(str(e)))
+                                sys.exit(1)
 
-                                logging.info("A local copy of the lookup was found with {}/lookups/{}".format(appID, filename))
+                # manage conflicting lookups
+                if source_lookups and local_lookups:
+
+                    for filename in source_lookups:
+
+                        logging.info("Inspecting lookup file=\"{}\"".format(filename))
+
+                        # check if we have a local version
+                        if filename in local_lookups:
+
+                            logging.info("A local copy of the lookup was found with {}/lookups/{}".format(appID, filename))
+                            # copy this version
+                            try:
+                                shutil.copyfile(os.path.join(appID, "lookups", filename), os.path.join(output_dir, appID, "lookups", filename))
+                            except Exception as e:
+                                logging.error("failed to copy the local lookup file, exception=\"{}\"".format(str(e)))
+                                sys.exit(1)
+
+                        else:
+                            logging.info("There is no local version of this lookup file, copying the vendor version")
+                            # copy the vendor version
+                            try:
+                                shutil.copyfile(os.path.join(appSource, "lookups", filename), os.path.join(output_dir, appID, "lookups", filename))
+                            except Exception as e:
+                                logging.error("failed to copy the vendor lookup file, exception=\"{}\"".format(str(e)))
+                                sys.exit(1)
+
+                ########### views ##############################
+                #
+                # handle views
+                #
+                #################################################
+
+                if configAllowViews:
+
+                    viewsList = []
+                    if os.path.isdir(os.path.join(appSource, "default", "data", "views")):
+                        with cd(os.path.join(appSource, "default", "data", "views")):
+                            for filename in glob.iglob(f'*.xml'):
+                                viewsList.append(filename)                   
+
+                    # create structure
+                    if not os.path.isdir(os.path.join(output_dir, appID, "default", "data")):
+                        os.mkdir(os.path.join(output_dir, appID, "default", "data")) 
+                    os.mkdir(os.path.join(output_dir, appID, "default", "data", "views"))        
+
+                    # take local, if any
+                    if os.path.isdir(os.path.join(appID, "local", "data", "views")):
+                        for filename in viewsList:
+                            if os.path.isfile(os.path.join(appID, "local", "data", "views", filename)):
                                 # copy this version
                                 try:
-                                    shutil.copyfile(os.path.join("../../", appID, "lookups", filename), os.path.join("../../", output_dir, appID, "lookups", filename))
+                                    shutil.copyfile(os.path.join(appID, "local", "data", "views", filename), os.path.join(output_dir, appID, "default", "data", "views", filename))
                                 except Exception as e:
-                                    logging.error("failed to copy the local lookup file, exception=\"{}\"".format(str(e)))
+                                    logging.error("failed to copy the local view file, exception=\"{}\"".format(str(e)))
+                                    sys.exit(1)
+                            else:
+                                # copy vendor version
+                                try:
+                                    shutil.copyfile(os.path.join(appSource, "default", "data", "views", filename), os.path.join(output_dir, appID, "default", "data", "views", filename))
+                                except Exception as e:
+                                    logging.error("failed to copy the local view file, exception=\"{}\"".format(str(e)))
                                     sys.exit(1)
 
-                            else:
-                                logging.info("There is no local version of this lookup file, copying the vendor version")
-                                # copy the vendor version
+                    # handle nav finally
+                    if os.path.isdir(os.path.join(appID, "local", "data", "nav", "default.xml")):
+                        os.mkdir(os.path.join(output_dir, appID, "default", "data", "nav"))
+                        # copy this version
+                        try:
+                            shutil.copyfile(os.path.join(appID, "local", "data", "nav", "default.xml"), os.path.join(output_dir, appID, "default", "data", "nav", "default.xml"))
+                        except Exception as e:
+                            logging.error("failed to copy the local view file, exception=\"{}\"".format(str(e)))
+                            sys.exit(1)
+                    elif os.path.isdir(os.path.join(appSource, "default", "data", "nav", "default.xml")):
+                        os.mkdir(os.path.join(output_dir, appID, "default", "data", "nav"))
+                        # copy vendor version
+                        try:
+                            shutil.copyfile(os.path.join(appSource, "default", "data", "nav", "default.xml"), os.path.join(output_dir, appID, "default", "data", "nav", "default.xml"))
+                        except Exception as e:
+                            logging.error("failed to copy the vendor view file, exception=\"{}\"".format(str(e)))
+                            sys.exit(1)
+
+                ########### alerts ##############################
+                #
+                # handle alerts
+                #
+                #################################################
+
+                if configAllowAlerts:
+
+                    viewsList = []
+                    if os.path.isdir(os.path.join(appSource, "default", "data", "alerts")):
+                        with cd(os.path.join(appSource, "default", "data", "alerts")):
+                            for filename in glob.iglob(f'*.html'):
+                                viewsList.append(filename)                   
+
+                    # create structure
+                    if not os.path.isdir(os.path.join(output_dir, appID, "default", "data")):
+                        os.mkdir(os.path.join(output_dir, appID, "default", "data"))
+                    os.mkdir(os.path.join(output_dir, appID, "default", "data", "alerts"))        
+
+                    # take local, if any
+                    if os.path.isdir(os.path.join(appID, "local", "data", "alerts")):
+                        for filename in viewsList:
+                            if os.path.isfile(os.path.join(appID, "local", "data", "alerts", filename)):
+                                # copy this version
                                 try:
-                                    shutil.copyfile(os.path.join("../../", appSource, "lookups", filename), os.path.join("../../", output_dir, appID, "lookups", filename))
+                                    shutil.copyfile(os.path.join(appID, "local", "data", "alerts", filename), os.path.join(output_dir, appID, "default", "data", "alerts", filename))
                                 except Exception as e:
-                                    logging.error("failed to copy the vendor lookup file, exception=\"{}\"".format(str(e)))
+                                    logging.error("failed to copy the local view file, exception=\"{}\"".format(str(e)))
                                     sys.exit(1)
+                            else:
+                                # copy vendor version
+                                try:
+                                    shutil.copyfile(os.path.join(appSource, "default", "data", "alerts", filename), os.path.join(output_dir, appID, "default", "data", "alerts", filename))
+                                except Exception as e:
+                                    logging.error("failed to copy the local view file, exception=\"{}\"".format(str(e)))
+                                    sys.exit(1)
+
+                ########### others ##############################
+                #
+                # handle other use cases (README, bin, appserver)
+                #
+                #################################################
+
+                other_content = [
+                    'bin',
+                    'README',
+                    'static',
+                    'appserver',
+                    'LICENSES',
+                    'lib',
+                ]
+
+                for directory in other_content:
+                    if os.path.isdir(os.path.join(appSource, directory)):
+
+                        if directory in ('appserver') and not configAllowViews or configAllowAlerts:
+                            logging.info("ignoring appserver as nor configAllowsViews or configAllowsAlerts is set to True")
+                        else:
+                            try:
+                                shutil.copytree(os.path.join(appSource, directory), os.path.join(output_dir, appID, directory))
+                            except Exception as e:
+                                logging.error("Could not copy the directory, exception=\"{}\"".format(str(e)))
 
         else:
 

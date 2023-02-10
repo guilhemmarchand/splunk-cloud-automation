@@ -1,18 +1,18 @@
 {
-    "request_id": "e9bf9cc7-a85f-4b6b-97f9-fae31a7f3e9d",
+    "request_id": "9551e227-4428-44d7-9cd9-5ace1f148c2f",
     "cloc": "",
     "reports": [
         {
             "app_author": "My Company",
             "app_description": "Splunk Add-on for Microsoft Windows",
-            "app_hash": "dd627cab169432a1899efdc83a76b276",
+            "app_hash": "fcdef36a74bc5b18e1802a5be341c8cd",
             "app_name": "Splunk Add-on for Microsoft Windows",
             "app_package_id": "org_Splunk_TA_windows",
             "app_version": "8.6.0",
             "metrics": {
-                "start_time": "2023-02-09T13:52:28.337205",
-                "end_time": "2023-02-09T13:52:38.015432",
-                "execution_time": 9
+                "start_time": "2023-02-10T10:44:02.047316",
+                "end_time": "2023-02-10T10:44:12.272473",
+                "execution_time": 10
             },
             "run_parameters": {
                 "included_tags": [
@@ -25,10 +25,10 @@
                 "error": 0,
                 "failure": 0,
                 "skipped": 0,
-                "manual_check": 0,
-                "not_applicable": 94,
-                "warning": 3,
-                "success": 126
+                "manual_check": 1,
+                "not_applicable": 90,
+                "warning": 5,
+                "success": 127
             },
             "groups": [
                 {
@@ -156,55 +156,6 @@
                                 "future",
                                 "jquery",
                                 "security"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        }
-                    ]
-                },
-                {
-                    "description": "XML file standards",
-                    "name": "check_xml_files",
-                    "checks": [
-                        {
-                            "description": "Check that all XML files are well-formed.",
-                            "name": "check_that_all_xml_files_are_well_formed",
-                            "tags": [
-                                "splunk_appinspect",
-                                "appapproval",
-                                "cloud",
-                                "private_app",
-                                "private_victoria",
-                                "private_classic"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        },
-                        {
-                            "description": "Check any XML files that embed JavaScript via CDATA for compliance\n with Splunk Cloud security policy.",
-                            "name": "check_for_xml_embedded_javascript",
-                            "tags": [
-                                "splunk_appinspect",
-                                "cloud",
-                                "manual"
-                            ],
-                            "result": "success",
-                            "messages": []
-                        }
-                    ]
-                },
-                {
-                    "description": "Platform targets and claimed supported Splunk Enterprise versions",
-                    "name": "check_support_and_installation_standards",
-                    "checks": [
-                        {
-                            "description": "Check that the app can be setup on a distributed system after\n self-service. Warn if setup configures non-search-head features like\n inputs. This makes the app incompatible with distributed environments.",
-                            "name": "check_setup_in_distributed_environment",
-                            "tags": [
-                                "cloud",
-                                "splunk_appinspect",
-                                "self-service",
-                                "manual"
                             ],
                             "result": "success",
                             "messages": []
@@ -386,9 +337,21 @@
                             "messages": [
                                 {
                                     "result": "warning",
-                                    "message": "Bias language is found in the app. 4769,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:459) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 459",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 459
+                                    "message": "Bias language is found in the app. $FSMORoles \t= ($DomainController | Select -Expand Operation<<<MAS... (bin/powershell/2012r2-health.ps1:26) [Master]. File: 2012r2-health.ps1 Line Number: 26",
+                                    "message_filename": "2012r2-health.ps1",
+                                    "message_line": 26
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4692,\"Backup of data protection <<<MASTER>>> key was attempted\",,... (lookups/windows_signatures_860.csv:210) [master]. File: windows_signatures_860.csv Line Number: 210",
+                                    "message_filename": "windows_signatures_860.csv",
+                                    "message_line": 210
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4769,failure,0x5,Server's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:99) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 99",
+                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
+                                    "message_line": 99
                                 },
                                 {
                                     "result": "warning",
@@ -398,21 +361,9 @@
                                 },
                                 {
                                     "result": "warning",
-                                    "message": "Bias language is found in the app. 4693,unknown,Detailed Tracking,DPAPI Activity,Recovery of data pr... (lookups/xmlsecurity_eventcode_action.csv:50) [master]. File: xmlsecurity_eventcode_action.csv Line Number: 50",
-                                    "message_filename": "xmlsecurity_eventcode_action.csv",
-                                    "message_line": 50
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4771,failure,0x4,Client's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:155) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 155",
+                                    "message": "Bias language is found in the app. 4771,failure,0x5,Server's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:156) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 156",
                                     "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 155
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4768,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_action_multiinput.csv:45) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 45",
-                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 45
+                                    "message_line": 156
                                 },
                                 {
                                     "result": "warning",
@@ -422,9 +373,45 @@
                                 },
                                 {
                                     "result": "warning",
+                                    "message": "Bias language is found in the app. for key in (\"apps\", \"slave-apps\", \"<<<MASTER>>>-apps\"): (bin/log.py:107) [master]. File: log.py Line Number: 107",
+                                    "message_filename": "log.py",
+                                    "message_line": 107
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4692,unknown,Detailed Tracking,DPAPI Activity,Backup of data prot... (lookups/xmlsecurity_eventcode_action.csv:49) [master]. File: xmlsecurity_eventcode_action.csv Line Number: 49",
+                                    "message_filename": "xmlsecurity_eventcode_action.csv",
+                                    "message_line": 49
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4768,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:401) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 401",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
+                                    "message_line": 401
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4768,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_action_multiinput.csv:45) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 45",
+                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
+                                    "message_line": 45
+                                },
+                                {
+                                    "result": "warning",
                                     "message": "Bias language is found in the app. 4769,failure,0x9,The client or server has a null key (<<<MASTER>>... (lookups/xmlsecurity_eventcode_action_multiinput.csv:103) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 103",
                                     "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
                                     "message_line": 103
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4771,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:516) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 516",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
+                                    "message_line": 516
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4769,failure,0x4,Client's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:98) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 98",
+                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
+                                    "message_line": 98
                                 },
                                 {
                                     "result": "warning",
@@ -440,39 +427,9 @@
                                 },
                                 {
                                     "result": "warning",
-                                    "message": "Bias language is found in the app. 4769,failure,0x4,Client's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:98) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 98",
+                                    "message": "Bias language is found in the app. 4771,failure,0x4,Client's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:155) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 155",
                                     "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 98
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4693,unknown,-,Recovery of data protection <<<MASTER>>> key was a... (lookups/xmlsecurity_eventcode_errorcode_action.csv:49) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 49",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 49
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4771,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:516) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 516",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 516
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4768,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:401) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 401",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 401
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4768,failure,0x4,Client's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:40) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 40",
-                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 40
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "Bias language is found in the app. 4771,failure,0x5,Server's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:156) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 156",
-                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 156
+                                    "message_line": 155
                                 },
                                 {
                                     "result": "warning",
@@ -482,9 +439,9 @@
                                 },
                                 {
                                     "result": "warning",
-                                    "message": "Bias language is found in the app. 4769,failure,0x5,Server's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:99) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 99",
-                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
-                                    "message_line": 99
+                                    "message": "Bias language is found in the app. 4693,unknown,Detailed Tracking,DPAPI Activity,Recovery of data pr... (lookups/xmlsecurity_eventcode_action.csv:50) [master]. File: xmlsecurity_eventcode_action.csv Line Number: 50",
+                                    "message_filename": "xmlsecurity_eventcode_action.csv",
+                                    "message_line": 50
                                 },
                                 {
                                     "result": "warning",
@@ -494,9 +451,9 @@
                                 },
                                 {
                                     "result": "warning",
-                                    "message": "Bias language is found in the app. 4768,failure,0x4,Client's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:400) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 400",
-                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
-                                    "message_line": 400
+                                    "message": "Bias language is found in the app. for key in (\"apps\", \"<<<SLAVE>>>-apps\", \"master-apps\"): (bin/log.py:107) [slave]. File: log.py Line Number: 107",
+                                    "message_filename": "log.py",
+                                    "message_line": 107
                                 },
                                 {
                                     "result": "warning",
@@ -506,15 +463,27 @@
                                 },
                                 {
                                     "result": "warning",
-                                    "message": "Bias language is found in the app. 4692,unknown,Detailed Tracking,DPAPI Activity,Backup of data prot... (lookups/xmlsecurity_eventcode_action.csv:49) [master]. File: xmlsecurity_eventcode_action.csv Line Number: 49",
-                                    "message_filename": "xmlsecurity_eventcode_action.csv",
+                                    "message": "Bias language is found in the app. 4768,failure,0x4,Client's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:400) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 400",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
+                                    "message_line": 400
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4768,failure,0x4,Client's key encrypted in old <<<MASTER>>> key (lookups/xmlsecurity_eventcode_action_multiinput.csv:40) [master]. File: xmlsecurity_eventcode_action_multiinput.csv Line Number: 40",
+                                    "message_filename": "xmlsecurity_eventcode_action_multiinput.csv",
+                                    "message_line": 40
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "Bias language is found in the app. 4693,unknown,-,Recovery of data protection <<<MASTER>>> key was a... (lookups/xmlsecurity_eventcode_errorcode_action.csv:49) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 49",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
                                     "message_line": 49
                                 },
                                 {
                                     "result": "warning",
-                                    "message": "Bias language is found in the app. 4692,\"Backup of data protection <<<MASTER>>> key was attempted\",,... (lookups/windows_signatures_860.csv:210) [master]. File: windows_signatures_860.csv Line Number: 210",
-                                    "message_filename": "windows_signatures_860.csv",
-                                    "message_line": 210
+                                    "message": "Bias language is found in the app. 4769,failure,0x5,Server's key encrypted in old <<<MASTER>>> key,,... (lookups/xmlsecurity_eventcode_errorcode_action.csv:459) [master]. File: xmlsecurity_eventcode_errorcode_action.csv Line Number: 459",
+                                    "message_filename": "xmlsecurity_eventcode_errorcode_action.csv",
+                                    "message_line": 459
                                 }
                             ]
                         }
@@ -787,8 +756,15 @@
                                 "manual",
                                 "ast"
                             ],
-                            "result": "success",
-                            "messages": []
+                            "result": "manual_check",
+                            "messages": [
+                                {
+                                    "result": "manual_check",
+                                    "message": "The following lines should be inspected during code review. `logging.handlers.RotatingFileHandler` could be used to receive data from outside or log data to outside. File: bin/log.py Line Number: 62",
+                                    "message_filename": "bin/log.py",
+                                    "message_line": 62
+                                }
+                            ]
                         },
                         {
                             "description": "Check for possible file and directory access, they could be used in external file manipulation",
@@ -1011,15 +987,8 @@
                                 "private_victoria",
                                 "private_classic"
                             ],
-                            "result": "not_applicable",
-                            "messages": [
-                                {
-                                    "result": "not_applicable",
-                                    "message": "`workflow_actions.conf` does not exist.",
-                                    "message_filename": null,
-                                    "message_line": null
-                                }
-                            ]
+                            "result": "success",
+                            "messages": []
                         }
                     ]
                 },
@@ -1703,8 +1672,15 @@
                                 "private_victoria",
                                 "private_classic"
                             ],
-                            "result": "success",
-                            "messages": []
+                            "result": "warning",
+                            "messages": [
+                                {
+                                    "result": "warning",
+                                    "message": "2 Python files found. Update these Python scripts to be cross-compatible with Python 2 and 3 for Splunk Enterprise 8.0. See https://docs.splunk.com/Documentation/Splunk/latest/Python3Migration/AboutMigration for more information. If you've finished your update, please disregard this message.",
+                                    "message_filename": null,
+                                    "message_line": null
+                                }
+                            ]
                         },
                         {
                             "description": "Check for the existence of Python code block in Mako templates, which must be upgraded\n to be Python 3-compatible for the Splunk Enterprise 8.0.",
@@ -2521,15 +2497,8 @@
                                 "private_victoria",
                                 "private_classic"
                             ],
-                            "result": "not_applicable",
-                            "messages": [
-                                {
-                                    "result": "not_applicable",
-                                    "message": "No JavaScript files found.",
-                                    "message_filename": null,
-                                    "message_line": null
-                                }
-                            ]
+                            "result": "success",
+                            "messages": []
                         },
                         {
                             "description": "Check if any weak encryption in JavaScript",
@@ -2827,15 +2796,8 @@
                                 "manual",
                                 "python_version"
                             ],
-                            "result": "not_applicable",
-                            "messages": [
-                                {
-                                    "result": "not_applicable",
-                                    "message": "`default/transforms.conf` does not exist.",
-                                    "message_filename": null,
-                                    "message_line": null
-                                }
-                            ]
+                            "result": "success",
+                            "messages": []
                         },
                         {
                             "description": "Check that the app does not have default/passwords.conf, otherwise, warn it.",
@@ -2871,6 +2833,12 @@
                             "messages": [
                                 {
                                     "result": "warning",
+                                    "message": "In default/props.conf, stanza wmi has been configured, which will overwrite its default configuration in system/default/props.conf then it will affect other apps in splunk enterprise/cloud. File: default/props.conf",
+                                    "message_filename": "default/props.conf",
+                                    "message_line": null
+                                },
+                                {
+                                    "result": "warning",
                                     "message": "In default/props.conf, stanza source::WMI... has been configured, which will overwrite its default configuration in system/default/props.conf then it will affect other apps in splunk enterprise/cloud. File: default/props.conf",
                                     "message_filename": "default/props.conf",
                                     "message_line": null
@@ -2886,12 +2854,6 @@
                                     "message": "In default/props.conf, stanza ActiveDirectory has been configured, which will overwrite its default configuration in system/default/props.conf then it will affect other apps in splunk enterprise/cloud. File: default/props.conf",
                                     "message_filename": "default/props.conf",
                                     "message_line": null
-                                },
-                                {
-                                    "result": "warning",
-                                    "message": "In default/props.conf, stanza wmi has been configured, which will overwrite its default configuration in system/default/props.conf then it will affect other apps in splunk enterprise/cloud. File: default/props.conf",
-                                    "message_filename": "default/props.conf",
-                                    "message_line": null
                                 }
                             ]
                         },
@@ -2902,8 +2864,45 @@
                                 "cloud",
                                 "manual"
                             ],
-                            "result": "success",
-                            "messages": []
+                            "result": "warning",
+                            "messages": [
+                                {
+                                    "result": "warning",
+                                    "message": "The app works for MS Windows platform because bin/netsh_address.bat exists, which is DOS batch file, ASCII text. It is only valid at MS Windows platform. File: bin/netsh_address.bat",
+                                    "message_filename": "bin/netsh_address.bat",
+                                    "message_line": null
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "The app works for MS Windows platform because bin/win_timesync_status.bat exists, which is DOS batch file, ASCII text. It is only valid at MS Windows platform. File: bin/win_timesync_status.bat",
+                                    "message_filename": "bin/win_timesync_status.bat",
+                                    "message_line": null
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "The app works for MS Windows platform because bin/runpowershell.cmd exists, which is DOS batch file, ASCII text. It is only valid at MS Windows platform. File: bin/runpowershell.cmd",
+                                    "message_filename": "bin/runpowershell.cmd",
+                                    "message_line": null
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "The app works for MS Windows platform because bin/win_listening_ports.bat exists, which is DOS batch file, ASCII text. It is only valid at MS Windows platform. File: bin/win_listening_ports.bat",
+                                    "message_filename": "bin/win_listening_ports.bat",
+                                    "message_line": null
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "The app works for MS Windows platform because bin/win_timesync_configuration.bat exists, which is DOS batch file, ASCII text. It is only valid at MS Windows platform. File: bin/win_timesync_configuration.bat",
+                                    "message_filename": "bin/win_timesync_configuration.bat",
+                                    "message_line": null
+                                },
+                                {
+                                    "result": "warning",
+                                    "message": "The app works for MS Windows platform because bin/win_installed_apps.bat exists, which is DOS batch file, ASCII text. It is only valid at MS Windows platform. File: bin/win_installed_apps.bat",
+                                    "message_filename": "bin/win_installed_apps.bat",
+                                    "message_line": null
+                                }
+                            ]
                         },
                         {
                             "description": "Check that app does not contain telemetry.conf as it controls a\n Splunk-internal feature that should not be configured by apps.",
@@ -3622,15 +3621,8 @@
                                 "cloud",
                                 "manual"
                             ],
-                            "result": "not_applicable",
-                            "messages": [
-                                {
-                                    "result": "not_applicable",
-                                    "message": "The `static` directory does not exist.",
-                                    "message_filename": null,
-                                    "message_line": null
-                                }
-                            ]
+                            "result": "success",
+                            "messages": []
                         },
                         {
                             "description": "Check that the metadata/ directory only contains .meta files. Ensure malicious files are not passed off as metadata files.",
@@ -3766,6 +3758,55 @@
                                     "message_line": null
                                 }
                             ]
+                        }
+                    ]
+                },
+                {
+                    "description": "XML file standards",
+                    "name": "check_xml_files",
+                    "checks": [
+                        {
+                            "description": "Check that all XML files are well-formed.",
+                            "name": "check_that_all_xml_files_are_well_formed",
+                            "tags": [
+                                "splunk_appinspect",
+                                "appapproval",
+                                "cloud",
+                                "private_app",
+                                "private_victoria",
+                                "private_classic"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        },
+                        {
+                            "description": "Check any XML files that embed JavaScript via CDATA for compliance\n with Splunk Cloud security policy.",
+                            "name": "check_for_xml_embedded_javascript",
+                            "tags": [
+                                "splunk_appinspect",
+                                "cloud",
+                                "manual"
+                            ],
+                            "result": "success",
+                            "messages": []
+                        }
+                    ]
+                },
+                {
+                    "description": "Platform targets and claimed supported Splunk Enterprise versions",
+                    "name": "check_support_and_installation_standards",
+                    "checks": [
+                        {
+                            "description": "Check that the app can be setup on a distributed system after\n self-service. Warn if setup configures non-search-head features like\n inputs. This makes the app incompatible with distributed environments.",
+                            "name": "check_setup_in_distributed_environment",
+                            "tags": [
+                                "cloud",
+                                "splunk_appinspect",
+                                "self-service",
+                                "manual"
+                            ],
+                            "result": "success",
+                            "messages": []
                         }
                     ]
                 },
@@ -4121,15 +4162,15 @@
         "error": 0,
         "failure": 0,
         "skipped": 0,
-        "manual_check": 0,
-        "not_applicable": 94,
-        "warning": 3,
-        "success": 126
+        "manual_check": 1,
+        "not_applicable": 90,
+        "warning": 5,
+        "success": 127
     },
     "metrics": {
-        "start_time": "2023-02-09T13:52:28.337205",
-        "end_time": "2023-02-09T13:52:38.015432",
-        "execution_time": 9
+        "start_time": "2023-02-10T10:44:02.047316",
+        "end_time": "2023-02-10T10:44:12.272473",
+        "execution_time": 10
     },
     "run_parameters": {
         "included_tags": [
@@ -4141,7 +4182,7 @@
     "links": [
         {
             "rel": "self",
-            "href": "/v1/app/report/e9bf9cc7-a85f-4b6b-97f9-fae31a7f3e9d"
+            "href": "/v1/app/report/9551e227-4428-44d7-9cd9-5ace1f148c2f"
         }
     ]
 }
