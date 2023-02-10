@@ -42,6 +42,12 @@ parser.add_argument('--username', dest='username')
 parser.add_argument('--password', dest='password')
 parser.add_argument('--tokenacs', dest='tokenacs')
 parser.add_argument('--stack', dest='stack')
+
+parser.add_argument('--deploy_onprem_standalone', dest='deploy_onprem_standalone')
+parser.add_argument('--deploy_onprem_user', dest='deploy_onprem_user')
+parser.add_argument('--deploy_onprem_target', dest='deploy_onprem_target')
+
+
 parser.add_argument('--useproxy', dest='useproxy', action='store_true')
 parser.add_argument('--proxy_url', dest='proxy_url')
 parser.add_argument('--proxy_port', dest='proxy_port')
@@ -56,7 +62,7 @@ args = parser.parse_args()
 if args.appdir:
     appdir = args.appdir
 else:
-    logging.error("appdir agrument was not provided, this is mandatory")
+    logging.error("appdir argument was not provided, this is mandatory")
     sys.exit(1)
 
 # Set debug boolean
@@ -80,6 +86,28 @@ if args.deployacs:
         deployacs = False
 else:
     deployacs = False
+
+# Set deploy_onprem_standalone boolean
+if args.deploy_onprem_standalone:
+    deploy_onprem_standalone = args.deploy_onprem_standalone
+    if deploy_onprem_standalone == 'True':
+        deploy_onprem_standalone = True
+    else:
+        deploy_onprem_standalone = False
+else:
+    deploy_onprem_standalone = False
+
+# Set deploy_onprem_user
+if args.deploy_onprem_user:
+    deploy_onprem_user = args.deploy_onprem_user
+else:
+    deploy_onprem_user = False
+
+# Set deploy_onprem_target
+if args.deploy_onprem_target:
+    deploy_onprem_target = args.deploy_onprem_target
+else:
+    deploy_onprem_target = False
 
 # Set appinspect_vetting
 if args.submitappinspect:
@@ -846,6 +874,20 @@ else:
                         else:
                             logging.error("Appinspect request_id=\"{}\" could not be vetted, review the report for more information, summary=\"{}\"".format(request_id, json.dumps(appinspect_report_dict['summary'], indent=4)))
                             raise ValueError("Appinspect request_id=\"{}\" could not be vetted, review the report for more information, summary=\"{}\"".format(request_id, json.dumps(appinspect_report_dict['summary'], indent=4)))
+
+        # if requested, deploy to Splunk on-prem standalone
+        if deploy_onprem_standalone and deploy_onprem_user and deploy_onprem_target:
+
+            filename = str(appID) + "_v" + str(appVersion).replace(".", "") + "_" + str(buildNumber) + ".tgz"
+            target = str(deploy_onprem_user) + "@" + str(deploy_onprem_target) + ":/tmp/"
+
+            logging.info("Uploading the tgz build  filename=\"{}\" to the target machine using rsync".format(filename))
+            try:
+                result = subprocess.run(["rsync", "-a", "-v", os.path.join(output_dir, filename), target], capture_output=True)
+                logging.info("ksconf results.stdout=\"{}\"".format(result.stdout))
+                logging.info("ksconf results.stderr=\"{}\"".format(result.stderr))
+            except Exception as e:
+                logging.error("error encountered while attempted to run rsync, exception=\"{}\"".format(str(e)))
 
         # if requested, deploy to Splunk ACS
         if deployacs:
