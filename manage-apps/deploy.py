@@ -747,17 +747,11 @@ else:
         else:
 
             # no merging
-
-            # process .conf
-            with cd(os.path.join(appID, "local")):
-                for filename in glob.iglob(f'*.conf'):
-                    logging.info("Copying source conf file {} to target".format(filename))
-            
-            # process lookups
-            if os.path.isdir(os.path.join(appID, "lookups")):
-                with cd(os.path.join(appID, "lookups")):
-                    for filename in glob.iglob(f'*.csv'):
-                        logging.info("Copying source csv file {} to target".format(filename))
+            # simply copy the application from source to dest
+            try:
+                shutil.copytree(os.path.join(appID, directory), os.path.join(output_dir, appID))
+            except Exception as e:
+                logging.error("Could not copy the directory, exception=\"{}\"".format(str(e)))
 
         #
         # time to build
@@ -889,7 +883,7 @@ else:
                             raise ValueError("Appinspect request_id=\"{}\" could not be vetted, review the report for more information, summary=\"{}\"".format(request_id, json.dumps(appinspect_report_dict['summary'], indent=4)))
 
         # if requested, deploy to Splunk on-prem standalone
-        if deploy_onprem_standalone and deploy_onprem_user and deploy_onprem_target and deploy_onprem_splunk_username and deploy_onprem_splunk_password:
+        if deploy_onprem_standalone:
 
             filename = str(appID) + "_v" + str(appVersion).replace(".", "") + "_" + str(buildNumber) + ".tgz"
             target = str(deploy_onprem_user) + "@" + str(deploy_onprem_target) + ":/tmp/"
@@ -902,17 +896,25 @@ else:
             except Exception as e:
                 logging.error("error encountered while attempted to run rsync, exception=\"{}\"".format(str(e)))
 
-            logging.info("Installing the tgz build filename=\"{}\" to the target machine using ssh".format(filename))
-            target = str(deploy_onprem_user) + "@" + str(deploy_onprem_target)
-            command = "sudo su splunk -c \"/opt/splunk/bin/splunk install app /tmp/" + str(filename) + " -update 1 -auth " + str(deploy_onprem_splunk_username) + ":\'" + str(deploy_onprem_splunk_password) + "\'"
-
+            logging.info("Installing the tgz build filename=\"{}\" to the target machine using ssh".format(filename))         
+            extra_vars = "splunk_appfile=" + "/tmp/" + str(filename) + " " + "splunk_svc_username=" + str(deploy_onprem_splunk_username) + " " + "splunk_svc_password=" + str(deploy_onprem_splunk_password)
+            command = "ansible-playbook ../install_app_pre.yml --extra-vars \"" + str(extra_vars) + "\""
+            
+            f = open("run.sh", "w")
+            f.write("#!/bin/bash\n")
+            f.write(str(command))
+            f.close()
+            
             try:
-                result = subprocess.run(["ssh", "target", "\"" + str(command) + "\"", target], capture_output=True)
-                logging.info("splunk results.stdout=\"{}\"".format(result.stdout))
-                logging.info("splunk results.stderr=\"{}\"".format(result.stderr))
+                result = subprocess.run(["/bin/bash", "run.sh"], capture_output=True)
+                logging.info("rsync results.stdout=\"{}\"".format(result.stdout))
+                logging.info("rsync results.stderr=\"{}\"".format(result.stderr))
             except Exception as e:
-                logging.error("error encountered while attempted to run rsync, exception=\"{}\"".format(str(e)))
-
+                logging.error("error encountered while attempted to run install app pre, exception=\"{}\"".format(str(e)))
+                
+            # remove the run.sh
+            os.remove("run.sh")
+                
         # if requested, deploy to Splunk ACS
         if deployacs:
 
