@@ -46,7 +46,8 @@ parser.add_argument('--stack', dest='stack')
 parser.add_argument('--deploy_onprem_standalone', dest='deploy_onprem_standalone')
 parser.add_argument('--deploy_onprem_user', dest='deploy_onprem_user')
 parser.add_argument('--deploy_onprem_target', dest='deploy_onprem_target')
-
+parser.add_argument('--deploy_onprem_splunk_username', dest='deploy_onprem_splunk_username')
+parser.add_argument('--deploy_onprem_splunk_password', dest='deploy_onprem_splunk_password')
 
 parser.add_argument('--useproxy', dest='useproxy', action='store_true')
 parser.add_argument('--proxy_url', dest='proxy_url')
@@ -108,6 +109,18 @@ if args.deploy_onprem_target:
     deploy_onprem_target = args.deploy_onprem_target
 else:
     deploy_onprem_target = False
+
+# Set deploy_onprem_splunk_username
+if args.deploy_onprem_splunk_username:
+    deploy_onprem_splunk_username = args.deploy_onprem_splunk_username
+else:
+    deploy_onprem_splunk_username = False
+
+# Set deploy_onprem_splunk_password
+if args.deploy_onprem_splunk_password:
+    deploy_onprem_splunk_password = args.deploy_onprem_splunk_password
+else:
+    deploy_onprem_splunk_password = False
 
 # Set appinspect_vetting
 if args.submitappinspect:
@@ -876,16 +889,27 @@ else:
                             raise ValueError("Appinspect request_id=\"{}\" could not be vetted, review the report for more information, summary=\"{}\"".format(request_id, json.dumps(appinspect_report_dict['summary'], indent=4)))
 
         # if requested, deploy to Splunk on-prem standalone
-        if deploy_onprem_standalone and deploy_onprem_user and deploy_onprem_target:
+        if deploy_onprem_standalone and deploy_onprem_user and deploy_onprem_target and deploy_onprem_splunk_username and deploy_onprem_splunk_password:
 
             filename = str(appID) + "_v" + str(appVersion).replace(".", "") + "_" + str(buildNumber) + ".tgz"
             target = str(deploy_onprem_user) + "@" + str(deploy_onprem_target) + ":/tmp/"
 
-            logging.info("Uploading the tgz build  filename=\"{}\" to the target machine using rsync".format(filename))
+            logging.info("Uploading the tgz build filename=\"{}\" to the target machine using rsync".format(filename))
             try:
                 result = subprocess.run(["rsync", "-a", "-v", os.path.join(output_dir, filename), target], capture_output=True)
-                logging.info("ksconf results.stdout=\"{}\"".format(result.stdout))
-                logging.info("ksconf results.stderr=\"{}\"".format(result.stderr))
+                logging.info("rsync results.stdout=\"{}\"".format(result.stdout))
+                logging.info("rsync results.stderr=\"{}\"".format(result.stderr))
+            except Exception as e:
+                logging.error("error encountered while attempted to run rsync, exception=\"{}\"".format(str(e)))
+
+            logging.info("Installing the tgz build filename=\"{}\" to the target machine using ssh".format(filename))
+            target = str(deploy_onprem_user) + "@" + str(deploy_onprem_target)
+            command = "sudo su splunk -c \"/opt/splunk/bin/splunk install app /tmp/" + str(filename) + " -update 1 -auth " + str(deploy_onprem_splunk_username) + ":\'" + str(deploy_onprem_splunk_password) + "\'"
+
+            try:
+                result = subprocess.run(["ssh", "target", "\"" + str(command) + "\"", target], capture_output=True)
+                logging.info("splunk results.stdout=\"{}\"".format(result.stdout))
+                logging.info("splunk results.stderr=\"{}\"".format(result.stderr))
             except Exception as e:
                 logging.error("error encountered while attempted to run rsync, exception=\"{}\"".format(str(e)))
 
