@@ -757,10 +757,36 @@ else:
 
             # no merging
             # simply copy the application from source to dest
-            try:
-                shutil.copytree(os.path.join(appID), os.path.join(output_dir, appID))
-            except Exception as e:
-                logging.error("Could not copy the directory, exception=\"{}\"".format(str(e)))
+            with cd(appSource):
+                content = [
+                    'bin',
+                    'README',
+                    'static',
+                    'appserver',
+                    'LICENSES',
+                    'lib',
+                ]
+
+                for directory in content:
+                    if os.path.isdir(directory):
+                        try:
+                            shutil.copytree(directory, os.path.join("../", output_dir, appID, directory))
+                        except Exception as e:
+                            logging.error("Could not copy the directory, exception=\"{}\"".format(str(e)))
+
+            # handle default
+            with cd(os.path.join(appSource, "default")):
+                for filename in glob.iglob(f'*.conf'):
+                    if filename not in ("app.conf", "wmi.conf"):
+                        try:
+                            shutil.copyfile(filename, os.path.join("../../", output_dir, appID, "default", filename))
+                        except Exception as e:
+                            logging.error("Could not copy the file, exception=\"{}\"".format(str(e)))
+                if os.path.isdir("data"):
+                    try:
+                        shutil.copytree(filename, os.path.join("../../", output_dir, appID, "default", "data"))
+                    except Exception as e:
+                        logging.error("Could not copy the data directory, exception=\"{}\"".format(str(e)))
 
         #
         # time to build

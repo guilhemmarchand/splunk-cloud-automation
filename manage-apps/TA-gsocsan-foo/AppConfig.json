@@ -1,0 +1,9 @@
+{
+  "appAuthor": "My Company",
+  "appID": "org_TA-gsoscsan-foo",
+  "appLabel": "Splunk Add-on of mine",
+  "appDescription": "Splunk Add-on of mine",
+  "appMerge": "False",
+  "appSource": "TA-gsoscsan-foo",
+  "appVersion": "1.0.0"
+}
