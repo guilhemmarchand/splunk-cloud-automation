@@ -478,10 +478,12 @@ else:
                                     source_conf_files.append(filename)
 
                 # remove app.conf
-                source_conf_files.remove("app.conf")
+                if "app.conf" in source_conf_files:
+                    source_conf_files.remove("app.conf")
 
                 # wmi.conf is always rejected
-                source_conf_files.remove("wmi.conf")
+                if "wmi.conf" in source_conf_files:
+                    source_conf_files.remove("wmi.conf")
 
                 for conf_file in source_conf_files:
                     # if we have a file to be merged
