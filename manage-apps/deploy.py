@@ -369,6 +369,15 @@ else:
                 except Exception as e:
                     logging.error("failed to remove existing output directory=\"{}\", exception=\"{}\"".format(appID, str(e)))
                     sys.exit(1)
+
+            # check if directory exists already
+            if os.path.isdir(appSource):
+                try:
+                    shutil.rmtree(appSource)
+                except Exception as e:
+                    logging.error("failed to remove existing output directory=\"{}\", exception=\"{}\"".format(appID, str(e)))
+                    sys.exit(1)
+
             # create
             try:
                 os.mkdir(appID)
@@ -749,7 +758,7 @@ else:
             # no merging
             # simply copy the application from source to dest
             try:
-                shutil.copytree(os.path.join(appID, directory), os.path.join(output_dir, appID))
+                shutil.copytree(os.path.join(appID), os.path.join(output_dir, appID))
             except Exception as e:
                 logging.error("Could not copy the directory, exception=\"{}\"".format(str(e)))
 
