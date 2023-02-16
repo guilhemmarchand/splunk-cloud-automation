@@ -276,6 +276,14 @@ output_dir = "output"
 # Program start
 #
 
+# check ksconf
+
+# verify that ksconf is available
+logging.info("Verifying if ksconf is available")
+result_check_ksconf = subprocess.run(["ksconf"], capture_output=True)
+logging.info("ksconf result_check_ksconf.stdout=\"{}\"".format(result_check_ksconf.stdout))
+logging.info("ksconf result_check_ksconf.stderr=\"{}\"".format(result_check_ksconf.stderr))
+
 # check appdir
 if not os.path.isdir(appdir):
     logging.error("Could not find non existing appdir=\"{}\"".format(appdir))
