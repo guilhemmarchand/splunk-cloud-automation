@@ -638,7 +638,7 @@ else:
                     os.remove(os.path.join(output_dir, "app.conf"))
 
                 # option 2: we have an app.conf in the default of the source package (take this app.conf and promote the build generation information)
-                if os.path.isfile(os.path.join(appSource, "default", "app.conf")):
+                elif os.path.isfile(os.path.join(appSource, "default", "app.conf")):
 
                     # copy
                     shutil.copyfile(os.path.join(appSource, "default", "app.conf"), os.path.join(output_dir, appID, "default", "app.conf"))
