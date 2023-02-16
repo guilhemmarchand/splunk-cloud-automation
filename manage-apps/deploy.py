@@ -597,6 +597,10 @@ else:
                             except Exception as e:
                                 logging.error("error encountered while attempted to run ksconf, exception=\"{}\"".format(str(e)))
 
+                            if result.stderr:
+                                logging.error("ksconf has encountered a configuration issue with the configuration file=\"{}\", please fix the errors, failing the job on purpose.".format(os.path.join(appID, "local", conf_file)))
+                                sys.exit(1)
+
                         # there is no default, simply copy
                         else:
                             shutil.copyfile(os.path.join(appID, "local", conf_file), os.path.join(output_dir, appID, "default", conf_file))
