@@ -13,13 +13,16 @@ import time
 import shutil
 import tarfile
 import json
-import logging
+import coloredlogs,logging
 import argparse
 import glob
 import subprocess
 import configparser
 import hashlib
 import base64
+
+# coloredlogs
+coloredlogs.install(level='DEBUG')
 
 # load libs
 sys.path.append('libs')
