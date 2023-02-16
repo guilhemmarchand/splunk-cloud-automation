@@ -21,9 +21,6 @@ import configparser
 import hashlib
 import base64
 
-# coloredlogs
-coloredlogs.install(level='DEBUG')
-
 # load libs
 sys.path.append('libs')
 from tools import cd, gen_build_number, login_appinspect, submit_appinspect, verify_appinspect,\
@@ -275,6 +272,9 @@ if debug:
 else:
     root.setLevel(logging.INFO)
     handler.setLevel(logging.INFO)
+
+# coloredlogs
+coloredlogs.install(level='DEBUG')
 
 # appConfig file
 appconf = "AppConfig.json"
