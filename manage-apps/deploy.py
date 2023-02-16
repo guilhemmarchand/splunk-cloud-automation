@@ -274,7 +274,7 @@ else:
     handler.setLevel(logging.INFO)
 
 # coloredlogs
-coloredlogs.install(level='DEBUG')
+# coloredlogs.install(level='INFO')
 
 # appConfig file
 appconf = "AppConfig.json"
