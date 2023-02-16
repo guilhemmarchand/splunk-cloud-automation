@@ -589,7 +589,7 @@ else:
                             logging.info("running ksconf promote -k -b {} {}".format(os.path.join(appID, "local", conf_file), os.path.join(output_dir, appID, "default", conf_file)))
 
                             try:
-                                result = subprocess.run([ksconf_bin, "promote", "-k", "-b", os.path.join(appID, "local", conf_file), os.path.join(output_dir, appID, "default", conf_file)], capture_output=True)
+                                result = subprocess.run([ksconf_bin, "promote", "-k", "-b", "--force", os.path.join(appID, "local", conf_file), os.path.join(output_dir, appID, "default", conf_file)], capture_output=True)
                                 logging.info("ksconf results.stdout=\"{}\"".format(result.stdout))
                                 logging.info("ksconf results.stderr=\"{}\"".format(result.stderr))
 
