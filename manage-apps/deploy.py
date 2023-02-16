@@ -466,7 +466,7 @@ else:
                 logging.error("failed to copy metadata, exception=\"{}\"".format(str(e)))
             
 
-        # generate the app.conf in default
+        # generate the app.conf.build in default
         with cd(os.path.join(output_dir, appID, "default")):
 
             config_file = configparser.ConfigParser()
@@ -494,7 +494,7 @@ else:
 
             # save
             try:
-                with open("app.conf","w") as file_object:
+                with open("app.conf.build","w") as file_object:
                     config_file.write(file_object)
             except Exception as e:
                 logging.error("Failed to generate the app.conf, exception=\"{}\"".format(str(e)))
@@ -593,7 +593,6 @@ else:
                                 logging.info("ksconf results.stdout=\"{}\"".format(result.stdout))
                                 logging.info("ksconf results.stderr=\"{}\"".format(result.stderr))
 
-
                             except Exception as e:
                                 logging.error("error encountered while attempted to run ksconf, exception=\"{}\"".format(str(e)))
 
@@ -608,6 +607,60 @@ else:
                     # there is no local, simply copy
                     else:
                         shutil.copyfile(os.path.join(appSource, "default", conf_file), os.path.join(output_dir, appID, "default", conf_file))
+
+                # Manage app.conf
+
+                # option 1: we have an app.conf in the local package (take this app.conf and promote the build generation information)
+                if os.path.isfile(os.path.join(appID, "local", "app.conf")):
+
+                    # copy
+                    shutil.copyfile(os.path.join(appID, "local", "app.conf"), os.path.join(output_dir, appID, "default", "app.conf"))
+
+                    # promote
+                    logging.info("running ksconf promote -k -b {} {}".format(os.path.join(appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")))
+
+                    try:
+                        result = subprocess.run([ksconf_bin, "promote", "-k", "-b", "--force", os.path.join(appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")], capture_output=True)
+                        logging.info("ksconf results.stdout=\"{}\"".format(result.stdout))
+                        logging.info("ksconf results.stderr=\"{}\"".format(result.stderr))
+
+                    except Exception as e:
+                        logging.error("error encountered while attempted to run ksconf, exception=\"{}\"".format(str(e)))
+
+                    if result.stderr:
+                        logging.error("ksconf has encountered a configuration issue with the configuration file=\"{}\", please fix the errors, failing the job on purpose.".format(os.path.join(appID, "local", "app.conf")))
+                        sys.exit(1)
+
+                    # delete app.conf.build
+                    os.remove(os.path.join(appID, "default", "app.conf.build"))
+
+                # option 2: we have an app.conf in the default of the source package (take this app.conf and promote the build generation information)
+                if os.path.isfile(os.path.join(appSource, "default", "app.conf")):
+
+                    # copy
+                    shutil.copyfile(os.path.join(appSource, "default", "app.conf"), os.path.join(output_dir, appID, "default", "app.conf"))
+
+                    # promote
+                    logging.info("running ksconf promote -k -b {} {}".format(os.path.join(appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")))
+
+                    try:
+                        result = subprocess.run([ksconf_bin, "promote", "-k", "-b", "--force", os.path.join(appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")], capture_output=True)
+                        logging.info("ksconf results.stdout=\"{}\"".format(result.stdout))
+                        logging.info("ksconf results.stderr=\"{}\"".format(result.stderr))
+
+                    except Exception as e:
+                        logging.error("error encountered while attempted to run ksconf, exception=\"{}\"".format(str(e)))
+
+                    if result.stderr:
+                        logging.error("ksconf has encountered a configuration issue with the configuration file=\"{}\", please fix the errors, failing the job on purpose.".format(os.path.join(appID, "default", "app.conf")))
+                        sys.exit(1)
+
+                    # delete app.conf.build
+                    os.remove(os.path.join(appID, "default", "app.conf.build"))
+
+                # option 3: only consider the build package
+                else:
+                    os.rename(os.path.join(output_dir, appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf"))
 
                 ########### lookup files ###########
                 #
@@ -824,6 +877,23 @@ else:
                         shutil.copytree(filename, os.path.join("../../", output_dir, appID, "default", "data"))
                     except Exception as e:
                         logging.error("Could not copy the data directory, exception=\"{}\"".format(str(e)))
+
+            # manage app.conf
+
+            # promote
+            logging.info("running ksconf promote -k -b {} {}".format(os.path.join(appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")))
+
+            try:
+                result = subprocess.run([ksconf_bin, "promote", "-k", "-b", "--force", os.path.join(appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")], capture_output=True)
+                logging.info("ksconf results.stdout=\"{}\"".format(result.stdout))
+                logging.info("ksconf results.stderr=\"{}\"".format(result.stderr))
+
+            except Exception as e:
+                logging.error("error encountered while attempted to run ksconf, exception=\"{}\"".format(str(e)))
+
+            if result.stderr:
+                logging.error("ksconf has encountered a configuration issue with the configuration file=\"{}\", please fix the errors, failing the job on purpose.".format(os.path.join(appID, "default", "app.conf")))
+                sys.exit(1)
 
         #
         # time to build
