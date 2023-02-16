@@ -617,10 +617,10 @@ else:
                     shutil.copyfile(os.path.join(appID, "local", "app.conf"), os.path.join(output_dir, appID, "default", "app.conf"))
 
                     # promote
-                    logging.info("running ksconf promote -k -b {} {}".format(os.path.join(appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")))
+                    logging.info("running ksconf promote -k -b {} {}".format(os.path.join(output_dir, appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")))
 
                     try:
-                        result = subprocess.run([ksconf_bin, "promote", "-k", "-b", "--force", os.path.join(appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")], capture_output=True)
+                        result = subprocess.run([ksconf_bin, "promote", "-k", "-b", "--force", os.path.join(output_dir, appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")], capture_output=True)
                         logging.info("ksconf results.stdout=\"{}\"".format(result.stdout))
                         logging.info("ksconf results.stderr=\"{}\"".format(result.stderr))
 
@@ -632,7 +632,7 @@ else:
                         sys.exit(1)
 
                     # delete app.conf.build
-                    os.remove(os.path.join(appID, "default", "app.conf.build"))
+                    os.remove(os.path.join(output_dir, appID, "default", "app.conf.build"))
 
                 # option 2: we have an app.conf in the default of the source package (take this app.conf and promote the build generation information)
                 if os.path.isfile(os.path.join(appSource, "default", "app.conf")):
@@ -641,10 +641,10 @@ else:
                     shutil.copyfile(os.path.join(appSource, "default", "app.conf"), os.path.join(output_dir, appID, "default", "app.conf"))
 
                     # promote
-                    logging.info("running ksconf promote -k -b {} {}".format(os.path.join(appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")))
+                    logging.info("running ksconf promote -k -b {} {}".format(os.path.join(output_dir, appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")))
 
                     try:
-                        result = subprocess.run([ksconf_bin, "promote", "-k", "-b", "--force", os.path.join(appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")], capture_output=True)
+                        result = subprocess.run([ksconf_bin, "promote", "-k", "-b", "--force", os.path.join(output_dir, appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")], capture_output=True)
                         logging.info("ksconf results.stdout=\"{}\"".format(result.stdout))
                         logging.info("ksconf results.stderr=\"{}\"".format(result.stderr))
 
@@ -656,7 +656,7 @@ else:
                         sys.exit(1)
 
                     # delete app.conf.build
-                    os.remove(os.path.join(appID, "default", "app.conf.build"))
+                    os.remove(os.path.join(output_dir, appID, "default", "app.conf.build"))
 
                 # option 3: only consider the build package
                 else:
@@ -881,10 +881,10 @@ else:
             # manage app.conf
 
             # promote
-            logging.info("running ksconf promote -k -b {} {}".format(os.path.join(appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")))
+            logging.info("running ksconf promote -k -b {} {}".format(os.path.join(output_dir, appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")))
 
             try:
-                result = subprocess.run([ksconf_bin, "promote", "-k", "-b", "--force", os.path.join(appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")], capture_output=True)
+                result = subprocess.run([ksconf_bin, "promote", "-k", "-b", "--force", os.path.join(output_dir, appID, "default", "app.conf.build"), os.path.join(output_dir, appID, "default", "app.conf")], capture_output=True)
                 logging.info("ksconf results.stdout=\"{}\"".format(result.stdout))
                 logging.info("ksconf results.stderr=\"{}\"".format(result.stderr))
 
