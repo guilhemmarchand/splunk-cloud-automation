@@ -668,7 +668,7 @@ else:
                 # avoid failing if there is an app.manifest
                 p = configparser.ConfigParser()
                 with open(os.path.join(output_dir, appID, "default", "app.conf"), "r") as f:
-                    p.readfp(f)
+                    p.read_file(f)
                 p.remove_section('id')
 
                 with open(os.path.join(output_dir, appID, "default", "app.conf"), "w") as f:
