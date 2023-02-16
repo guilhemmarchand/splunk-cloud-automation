@@ -845,7 +845,10 @@ else:
 
         else:
 
+            #
             # no merging
+            #
+
             # simply copy the application from source to dest
             with cd(appSource):
                 content = [
@@ -867,14 +870,14 @@ else:
             # handle default
             with cd(os.path.join(appSource, "default")):
                 for filename in glob.iglob(f'*.conf'):
-                    if filename not in ("app.conf", "wmi.conf"):
+                    if filename not in ("wmi.conf"):
                         try:
                             shutil.copyfile(filename, os.path.join("../../", output_dir, appID, "default", filename))
                         except Exception as e:
                             logging.error("Could not copy the file, exception=\"{}\"".format(str(e)))
                 if os.path.isdir("data"):
                     try:
-                        shutil.copytree(filename, os.path.join("../../", output_dir, appID, "default", "data"))
+                        shutil.copytree("data", os.path.join("../../", output_dir, appID, "default", "data"))
                     except Exception as e:
                         logging.error("Could not copy the data directory, exception=\"{}\"".format(str(e)))
 
