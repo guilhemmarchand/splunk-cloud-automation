@@ -499,6 +499,9 @@ else:
             except Exception as e:
                 logging.error("Failed to generate the app.conf, exception=\"{}\"".format(str(e)))
 
+        if os.path.isfile(os.path.join(output_dir), "app.conf"):
+            logging.info("app.conf was generated in {}".format(os.path.join(output_dir), "app.conf"))
+
         # if app merging is requested
         if appMerge == 'True':
             logging.info("appMerge was requested, starting the merge process using ksconf for configuration files")
