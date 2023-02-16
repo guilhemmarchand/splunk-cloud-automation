@@ -555,6 +555,13 @@ else:
 
                             logging.info("current directory=\"{}\"".format(os.getcwd()))
 
+                            # check files
+                            if not os.path.isfile(os.path.join(appID, "local", conf_file)):
+                                logging.error("cannot find the expected file=\"{}\"".format(os.path.join(appID, "local", conf_file)))
+
+                            if not os.path.isfile(os.path.join(output_dir, appID, "default", conf_file)):
+                                logging.error("cannot find the expected file=\"{}\"".format(os.path.join(output_dir, appID, "default", conf_file)))
+
                             #
                             # ksconf merge
                             #
