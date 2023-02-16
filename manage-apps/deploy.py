@@ -662,6 +662,15 @@ else:
                 else:
                     os.rename(os.path.join(output_dir, "app.conf"), os.path.join(output_dir, appID, "default", "app.conf"))
 
+                # avoid failing if there is an app.manifest
+                p = configparser.ConfigParser()
+                with open(os.path.join(output_dir, appID, "default", "app.conf"), "r") as f:
+                    p.readfp(f)
+                p.remove_section('id')
+
+                with open(os.path.join(output_dir, appID, "default", "app.conf"), "w") as f:
+                    p.write(f)
+
                 ########### lookup files ###########
                 #
                 # handle lookup files
