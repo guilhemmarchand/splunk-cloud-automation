@@ -858,6 +858,7 @@ else:
                     'appserver',
                     'LICENSES',
                     'lib',
+                    "app.manifest"
                 ]
 
                 for directory in content:
@@ -866,6 +867,12 @@ else:
                             shutil.copytree(directory, os.path.join("../", output_dir, appID, directory))
                         except Exception as e:
                             logging.error("Could not copy the directory, exception=\"{}\"".format(str(e)))
+                for file in content:
+                    if os.path.isfile(file):
+                        try:
+                            shutil.copyfile(file, os.path.join("../", output_dir, appID, file))
+                        except Exception as e:
+                            logging.error("Could not copy the file, exception=\"{}\"".format(str(e)))
 
             # handle default
             with cd(os.path.join(appSource, "default")):
