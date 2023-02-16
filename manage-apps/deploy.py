@@ -558,9 +558,18 @@ else:
                             # check files
                             if not os.path.isfile(os.path.join(appID, "local", conf_file)):
                                 logging.error("cannot find the expected file=\"{}\"".format(os.path.join(appID, "local", conf_file)))
+                            else:
+                                logging.info("the file {} exists".format(os.path.join(appID, "local", conf_file)))
 
                             if not os.path.isfile(os.path.join(output_dir, appID, "default", conf_file)):
                                 logging.error("cannot find the expected file=\"{}\"".format(os.path.join(output_dir, appID, "default", conf_file)))
+                            else:
+                                logging.info("the file {} exists".format(os.path.join(output_dir, appID, "default", conf_file)))
+
+                            # verify that ksconf is available
+                            result_check_ksconf = subprocess.run(["ksconf"], capture_output=True)
+                            logging.info("ksconf result_check_ksconf.stdout=\"{}\"".format(result_check_ksconf.stdout))
+                            logging.info("ksconf result_check_ksconf.stderr=\"{}\"".format(result_check_ksconf.stderr))
 
                             #
                             # ksconf merge
