@@ -42,6 +42,7 @@ parser.add_argument('--username', dest='username')
 parser.add_argument('--password', dest='password')
 parser.add_argument('--tokenacs', dest='tokenacs')
 parser.add_argument('--stack', dest='stack')
+parser.add_argument('--ksconf_bin', dest='ksconf_bin')
 
 parser.add_argument('--deploy_onprem_standalone', dest='deploy_onprem_standalone')
 parser.add_argument('--deploy_onprem_user', dest='deploy_onprem_user')
@@ -77,6 +78,12 @@ if args.keep:
     keep = True
 else:
     keep = False
+
+# Set ksconf_bin
+if args.ksconf_bin:
+    ksconf_bin = args.ksconf_bin
+else:
+    ksconf_bin = 'ksconf'
 
 # Set deployacs boolean
 if args.deployacs:
@@ -280,7 +287,7 @@ output_dir = "output"
 
 # verify that ksconf is available
 logging.info("Verifying if ksconf is available")
-result_check_ksconf = subprocess.run(["ksconf"], capture_output=True)
+result_check_ksconf = subprocess.run([ksconf_bin], capture_output=True)
 logging.info("ksconf result_check_ksconf.stdout=\"{}\"".format(result_check_ksconf.stdout))
 logging.info("ksconf result_check_ksconf.stderr=\"{}\"".format(result_check_ksconf.stderr))
 
@@ -574,11 +581,6 @@ else:
                             else:
                                 logging.info("the file {} exists".format(os.path.join(output_dir, appID, "default", conf_file)))
 
-                            # verify that ksconf is available
-                            result_check_ksconf = subprocess.run(["ksconf"], capture_output=True)
-                            logging.info("ksconf result_check_ksconf.stdout=\"{}\"".format(result_check_ksconf.stdout))
-                            logging.info("ksconf result_check_ksconf.stderr=\"{}\"".format(result_check_ksconf.stderr))
-
                             #
                             # ksconf merge
                             #
@@ -587,7 +589,7 @@ else:
                             logging.info("running ksconf promote -k -b {} {}".format(os.path.join(appID, "local", conf_file), os.path.join(output_dir, appID, "default", conf_file)))
 
                             try:
-                                result = subprocess.run(["ksconf", "promote", "-k", "-b", os.path.join(appID, "local", conf_file), os.path.join(output_dir, appID, "default", conf_file)], capture_output=True)
+                                result = subprocess.run([ksconf_bin, "promote", "-k", "-b", os.path.join(appID, "local", conf_file), os.path.join(output_dir, appID, "default", conf_file)], capture_output=True)
                                 logging.info("ksconf results.stdout=\"{}\"".format(result.stdout))
                                 logging.info("ksconf results.stderr=\"{}\"".format(result.stderr))
 
