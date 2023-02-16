@@ -553,6 +553,8 @@ else:
                             except Exception as e:
                                 logging.error("error copy with exception=\"{}\"".format(str(e)))
 
+                            logging.info("current directory=\"{}\"".format(os.getcwd()))
+
                             #
                             # ksconf merge
                             #
