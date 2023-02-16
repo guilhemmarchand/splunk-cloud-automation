@@ -725,6 +725,16 @@ else:
                                 logging.error("failed to copy the vendor lookup file, exception=\"{}\"".format(str(e)))
                                 sys.exit(1)
 
+                # otherwise, copy source lookups
+                else:
+                    for filename in source_lookups:
+                        # copy the vendor version
+                        try:
+                            shutil.copyfile(os.path.join(appSource, "lookups", filename), os.path.join(output_dir, appID, "lookups", filename))
+                        except Exception as e:
+                            logging.error("failed to copy the vendor lookup file, exception=\"{}\"".format(str(e)))
+                            sys.exit(1)
+
                 ########### views ##############################
                 #
                 # handle views
@@ -867,6 +877,7 @@ else:
                             shutil.copytree(directory, os.path.join("../", output_dir, appID, directory))
                         except Exception as e:
                             logging.error("Could not copy the directory, exception=\"{}\"".format(str(e)))
+
                 for file in content:
                     if os.path.isfile(file):
                         try:
