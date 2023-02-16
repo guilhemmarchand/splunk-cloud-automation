@@ -499,7 +499,7 @@ else:
             except Exception as e:
                 logging.error("Failed to generate the app.conf, exception=\"{}\"".format(str(e)))
 
-        if os.path.isfile(os.path.join(output_dir), "app.conf"):
+        if os.path.isfile(os.path.join(output_dir, "app.conf")):
             logging.info("app.conf was generated in {}".format(os.path.join(output_dir), "app.conf"))
 
         # if app merging is requested
