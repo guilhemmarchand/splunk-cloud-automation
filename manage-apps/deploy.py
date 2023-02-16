@@ -546,7 +546,12 @@ else:
                             has_default = True
 
                         if has_default:
-                            shutil.copyfile(os.path.join(appSource, "default", conf_file), os.path.join(output_dir, appID, "default", conf_file))
+                            logging.info("copy file=\"{}\" to \"{}\"".format(os.path.join(appSource, "default", conf_file), os.path.join(output_dir, appID, "default", conf_file)))
+
+                            try:
+                                shutil.copyfile(os.path.join(appSource, "default", conf_file), os.path.join(output_dir, appID, "default", conf_file))
+                            except Exception as e:
+                                logging.error("error copy with exception=\"{}\"".format(str(e)))
 
                             #
                             # ksconf merge
