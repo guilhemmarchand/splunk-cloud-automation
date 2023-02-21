@@ -1285,21 +1285,24 @@ else:
             # git commit
             git_commit_message = "Publish release app: " + str(appID) + ", version: " + str(appVersion) + ", build: " + str(buildNumber)
 
-            try:
-                result = subprocess.run(["git", "commit", "-m", git_commit_message], capture_output=True)
-                logging.info("rsync results.stdout=\"{}\"".format(result.stdout))
-                logging.info("rsync results.stderr=\"{}\"".format(result.stderr))
-            except Exception as e:
-                logging.error("error encountered while attempted to run git commit, exception=\"{}\"".format(str(e)))
-                sys.exit(1)
+            # Refreshing Git
+            with cd(publish_release_artifactory_local_path):
 
-            # git push
-            try:
-                result = subprocess.run(["git", "push", "origin", "master"], capture_output=True)
-                logging.info("rsync results.stdout=\"{}\"".format(result.stdout))
-                logging.info("rsync results.stderr=\"{}\"".format(result.stderr))
-            except Exception as e:
-                logging.error("error encountered while attempted to run git push, exception=\"{}\"".format(str(e)))
-                sys.exit(1)
+                try:
+                    result = subprocess.run(["git", "commit", "-m", git_commit_message], capture_output=True)
+                    logging.info("rsync results.stdout=\"{}\"".format(result.stdout))
+                    logging.info("rsync results.stderr=\"{}\"".format(result.stderr))
+                except Exception as e:
+                    logging.error("error encountered while attempted to run git commit, exception=\"{}\"".format(str(e)))
+                    sys.exit(1)
+
+                # git push
+                try:
+                    result = subprocess.run(["git", "push", "origin", "master"], capture_output=True)
+                    logging.info("rsync results.stdout=\"{}\"".format(result.stdout))
+                    logging.info("rsync results.stderr=\"{}\"".format(result.stderr))
+                except Exception as e:
+                    logging.error("error encountered while attempted to run git push, exception=\"{}\"".format(str(e)))
+                    sys.exit(1)
 
 sys.exit(0)
