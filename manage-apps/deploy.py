@@ -50,6 +50,9 @@ parser.add_argument('--deploy_onprem_target', dest='deploy_onprem_target')
 parser.add_argument('--deploy_onprem_splunk_username', dest='deploy_onprem_splunk_username')
 parser.add_argument('--deploy_onprem_splunk_password', dest='deploy_onprem_splunk_password')
 
+parser.add_argument('--publish_release_artifactory', dest='publish_release_artifactory')
+parser.add_argument('--publish_release_artifactory_local_path', dest='publish_release_artifactory_local_path')
+
 parser.add_argument('--useproxy', dest='useproxy', action='store_true')
 parser.add_argument('--proxy_url', dest='proxy_url')
 parser.add_argument('--proxy_port', dest='proxy_port')
@@ -94,6 +97,27 @@ if args.deployacs:
         deployacs = False
 else:
     deployacs = False
+
+# Set publish release artifactory
+if args.publish_release_artifactory:
+    publish_release_artifactory = args.publish_release_artifactory
+    if publish_release_artifactory == 'True':
+        publish_release_artifactory = True
+    else:
+        publish_release_artifactory = False
+else:
+    publish_release_artifactory = False
+
+# Set publish release artifactory local path
+if args.publish_release_artifactory_local_path:
+    publish_release_artifactory_local_path = args.publish_release_artifactory_local_path
+else:
+    publish_release_artifactory_local_path = None
+
+# check
+if publish_release_artifactory == 'True' and not publish_release_artifactory_local_path:
+    logging.error("publish_release_artifactory is set to True, but publish_release_artifactory_local_path is not set")
+    sys.exit(1)
 
 # Set deploy_onprem_standalone boolean
 if args.deploy_onprem_standalone:
@@ -1187,5 +1211,95 @@ else:
                             except Exception as e:
                                 logging.error("Splunk ACS deployment of app=\"{}\", an expection was encountered, exception=\"{}\"".format(file_name, e))
                                 raise ValueError("Splunk ACS deployment of app=\"{}\", an expection was encountered, exception=\"{}\"".format(file_name, e))
+
+
+        # if publish release
+        if publish_release_artifactory and publish_release_artifactory_local_path:
+            logging.info("Publishing the new release to the GitHub artifactory repository")
+
+            # Refreshing Git
+            with cd(publish_release_artifactory_local_path):
+
+                # git fetch
+                try:
+                    result = subprocess.run(["git", "fetch"], capture_output=True)
+                    logging.info("git fetch results.stdout=\"{}\"".format(result.stdout))
+                    logging.info("rsync results.stderr=\"{}\"".format(result.stderr))
+                except Exception as e:
+                    logging.error("error encountered while attempted to run git fetch, exception=\"{}\"".format(str(e)))
+                    sys.exit(1)
+
+                # git reset
+                try:
+                    result = subprocess.run(["git", "reset", "--hard", "HEAD"], capture_output=True)
+                    logging.info("git reset results.stdout=\"{}\"".format(result.stdout))
+                    logging.info("rsync results.stderr=\"{}\"".format(result.stderr))
+                except Exception as e:
+                    logging.error("error encountered while attempted to run git reset, exception=\"{}\"".format(str(e)))
+                    sys.exit(1)
+
+                # git clean
+                try:
+                    result = subprocess.run(["git", "clean", "-fd"], capture_output=True)
+                    logging.info("git clean results.stdout=\"{}\"".format(result.stdout))
+                    logging.info("rsync results.stderr=\"{}\"".format(result.stderr))
+                except Exception as e:
+                    logging.error("error encountered while attempted to run git clean, exception=\"{}\"".format(str(e)))
+                    sys.exit(1)
+
+                # git pull
+                try:
+                    result = subprocess.run(["git", "pull", "origin", "master"], capture_output=True)
+                    logging.info("rsync results.stdout=\"{}\"".format(result.stdout))
+                    logging.info("rsync results.stderr=\"{}\"".format(result.stderr))
+                except Exception as e:
+                    logging.error("error encountered while attempted to run git pull, exception=\"{}\"".format(str(e)))
+                    sys.exit(1)
+
+            # clean if exists already
+            if os.path.isdir(os.path.join(publish_release_artifactory_local_path, appID)):
+                try:
+                    shutil.rmtree(os.path.join(publish_release_artifactory_local_path, appID))
+                except Exception as e:
+                    logging.error("failed to remove artifactory directory=\"{}\", exception=\"{}\"".format(os.path.join(publish_release_artifactory_local_path, appID), str(e)))
+                    sys.exit(1)
+
+            # attempt copy
+            try:
+                shutil.copytree(os.path.join(output_dir, appID), os.path.join(publish_release_artifactory_local_path, appID))
+            except Exception as e:
+                logging.error("Could not copy the directory, exception=\"{}\"".format(str(e)))
+                sys.exit(1)
+
+            # attempt commit and publish
+
+            # git add
+            try:
+                result = subprocess.run(["git", "add", "--all"], capture_output=True)
+                logging.info("rsync results.stdout=\"{}\"".format(result.stdout))
+                logging.info("rsync results.stderr=\"{}\"".format(result.stderr))
+            except Exception as e:
+                logging.error("error encountered while attempted to run git add, exception=\"{}\"".format(str(e)))
+                sys.exit(1)
+
+            # git commit
+            git_commit_message = "Publish release app: " + str(appID) + ", version: " + str(appVersion) + ", build: " + str(buildNumber)
+
+            try:
+                result = subprocess.run(["git", "commit", "-m", git_commit_message], capture_output=True)
+                logging.info("rsync results.stdout=\"{}\"".format(result.stdout))
+                logging.info("rsync results.stderr=\"{}\"".format(result.stderr))
+            except Exception as e:
+                logging.error("error encountered while attempted to run git commit, exception=\"{}\"".format(str(e)))
+                sys.exit(1)
+
+            # git push
+            try:
+                result = subprocess.run(["git", "push", "origin", "master"], capture_output=True)
+                logging.info("rsync results.stdout=\"{}\"".format(result.stdout))
+                logging.info("rsync results.stderr=\"{}\"".format(result.stderr))
+            except Exception as e:
+                logging.error("error encountered while attempted to run git push, exception=\"{}\"".format(str(e)))
+                sys.exit(1)
 
 sys.exit(0)
