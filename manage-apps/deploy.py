@@ -1307,20 +1307,20 @@ else:
 
             # attempt commit and publish
 
-            # git add
-            try:
-                result = subprocess.run(["git", "add", "--all"], capture_output=True)
-                logging.info("rsync results.stdout=\"{}\"".format(result.stdout))
-                logging.info("rsync results.stderr=\"{}\"".format(result.stderr))
-            except Exception as e:
-                logging.error("error encountered while attempted to run git add, exception=\"{}\"".format(str(e)))
-                sys.exit(1)
-
-            # git commit
-            git_commit_message = "Publish release app: " + str(appID) + ", version: " + str(appVersion) + ", build: " + str(buildNumber)
-
-            # Refreshing Git
+            # Publish to Git
             with cd(publish_release_artifactory_local_path):
+
+                # git add
+                try:
+                    result = subprocess.run(["git", "add", "--all"], capture_output=True)
+                    logging.info("rsync results.stdout=\"{}\"".format(result.stdout))
+                    logging.info("rsync results.stderr=\"{}\"".format(result.stderr))
+                except Exception as e:
+                    logging.error("error encountered while attempted to run git add, exception=\"{}\"".format(str(e)))
+                    sys.exit(1)
+
+                # git commit
+                git_commit_message = "Publish release app: " + str(appID) + ", version: " + str(appVersion) + ", build: " + str(buildNumber)
 
                 try:
                     result = subprocess.run(["git", "commit", "-m", git_commit_message], capture_output=True)
