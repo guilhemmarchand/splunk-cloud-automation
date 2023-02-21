@@ -266,15 +266,15 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 root.addHandler(handler)
 
+# coloredlogs
+coloredlogs.install(isatty=True, level='INFO', logger=logging.getLogger())
+
 if debug:
     root.setLevel(logging.DEBUG)
     handler.setLevel(logging.DEBUG)
 else:
     root.setLevel(logging.INFO)
     handler.setLevel(logging.INFO)
-
-# coloredlogs
-# coloredlogs.install(level='INFO')
 
 # appConfig file
 appconf = "AppConfig.json"
@@ -460,7 +460,9 @@ else:
             # create the basic structure
             os.mkdir(os.path.join(appID, "default"))
             os.mkdir(os.path.join(appID, "metadata"))
-            os.mkdir(os.path.join(appID, "lookups"))
+            # create lookups dir only if merge
+            if appMerge == 'True':
+                os.mkdir(os.path.join(appID, "lookups"))
 
             # copy source metadata
             try:
@@ -548,6 +550,38 @@ else:
                                 else:
                                     source_conf_files.append(filename)
 
+                # set an empty list for local files
+                # for each, check if we have a default copy to manage, otherwise this config file will be pushed as is
+                # if there a source copy to be merged, and a local, it will be managed before we handle this
+                local_conf_files = []
+                if os.path.isdir(os.path.join(appID, "local")):
+                    with cd(os.path.join(appID, "local")):
+                        for filename in glob.iglob(f'*.conf'):
+
+                            if not filename in source_conf_files:
+
+                                # if not restricted, takes all *.conf
+                                if not configFilesAuthorized:
+
+                                    # unless forbidden
+                                    if configFilesDenied:
+                                        if filename not in configFilesDenied:
+                                            local_conf_files.append(filename)
+                                    else:
+                                        local_conf_files.append(filename)
+
+                                # if restricted, this should be in the allowed list of configuration files
+                                elif configFilesAuthorized:
+                                    if filename in configFilesAuthorized:
+
+                                        # unless forbidden
+                                        if configFilesAuthorized:
+                                            if filename not in configFilesDenied:
+                                                local_conf_files.append(filename)
+                                        else:
+                                            local_conf_files.append(filename)
+
+
                 # remove app.conf
                 if "app.conf" in source_conf_files:
                     source_conf_files.remove("app.conf")
@@ -613,6 +647,11 @@ else:
                     # there is no local, simply copy
                     else:
                         shutil.copyfile(os.path.join(appSource, "default", conf_file), os.path.join(output_dir, appID, "default", conf_file))
+
+                # manage conf file which exist only in the local copy
+                for conf_file in local_conf_files:
+                    logging.info("the config file {} only exists in the local application, copying as is.".format(conf_file))
+                    shutil.copyfile(os.path.join(appID, "local", conf_file), os.path.join(output_dir, appID, "default", conf_file))
 
                 # Manage app.conf
 
@@ -883,6 +922,7 @@ else:
                     'appserver',
                     'LICENSES',
                     'lib',
+                    'lookups',
                     "app.manifest"
                 ]
 
