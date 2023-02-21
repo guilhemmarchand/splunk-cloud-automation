@@ -1160,6 +1160,9 @@ else:
         # if requested, deploy to Splunk ACS
         if deployacs:
 
+            # if deploying to ACS, the artifacts should be published
+            publish_release_artifactory = True
+
             #
             # If create token is enabled, we first need to create an ephemeral token for to be used in the rest of the operations
             #
@@ -1264,11 +1267,42 @@ else:
                     logging.error("failed to remove artifactory directory=\"{}\", exception=\"{}\"".format(os.path.join(publish_release_artifactory_local_path, appID), str(e)))
                     sys.exit(1)
 
-            # attempt copy
+            # attempt copy artifacts
+
             try:
-                shutil.copytree(os.path.join(output_dir, appID), os.path.join(publish_release_artifactory_local_path, appID))
+                os.mkdir(os.path.join(publish_release_artifactory_local_path, appID))
             except Exception as e:
-                logging.error("Could not copy the directory, exception=\"{}\"".format(str(e)))
+                logging.error("failed to create directory=\"{}\", exception=\"{}\"".format(os.path.join(publish_release_artifactory_local_path, appID), str(e)))
+                sys.exit(1)
+
+            try:
+                shutil.copyfile(os.path.join(output_dir, tar_file), os.path.join(publish_release_artifactory_local_path, appID, tar_file))
+            except Exception as e:
+                logging.error("Could not copy the file=\"{}\", exception=\"{}\"".format(os.path.join(output_dir, tar_file), str(e)))
+                sys.exit(1)
+
+            try:
+                shutil.copyfile(os.path.join(output_dir, 'report_appinspect.html'), os.path.join(publish_release_artifactory_local_path, appID, 'report_appinspect.html'))
+            except Exception as e:
+                logging.error("Could not copy the file=\"{}\", exception=\"{}\"".format(os.path.join(output_dir, 'report_appinspect.html'), str(e)))
+                sys.exit(1)
+
+            try:
+                shutil.copyfile(os.path.join(output_dir, 'report_appinspect.json'), os.path.join(publish_release_artifactory_local_path, appID, 'report_appinspect.json'))
+            except Exception as e:
+                logging.error("Could not copy the file=\"{}\", exception=\"{}\"".format(os.path.join(output_dir, 'report_appinspect.json'), str(e)))
+                sys.exit(1)
+
+            try:
+                shutil.copyfile(os.path.join(output_dir, 'version.txt'), os.path.join(publish_release_artifactory_local_path, appID, 'version.txt'))
+            except Exception as e:
+                logging.error("Could not copy the file=\"{}\", exception=\"{}\"".format(os.path.join(output_dir, 'version.txt'), str(e)))
+                sys.exit(1)
+
+            try:
+                shutil.copyfile(os.path.join(output_dir, 'build.txt'), os.path.join(publish_release_artifactory_local_path, appID, 'build.txt'))
+            except Exception as e:
+                logging.error("Could not copy the file=\"{}\", exception=\"{}\"".format(os.path.join(output_dir, 'build.txt'), str(e)))
                 sys.exit(1)
 
             # attempt commit and publish
