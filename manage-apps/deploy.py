@@ -942,6 +942,7 @@ else:
                 content = [
                     'bin',
                     'README',
+                    'README.txt',
                     'static',
                     'appserver',
                     'LICENSES',
