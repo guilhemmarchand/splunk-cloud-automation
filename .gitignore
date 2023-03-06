@@ -12,3 +12,6 @@ manage-apps/libs/__pycache__
 manage-apps/*/output/*
 manage-apps/*/!output/README.txt
 manage-apps/*/!output/README.md
+
+# export
+export-apps/*.tgz
