@@ -27,3 +27,46 @@ org_Splunk_TA_windows/
                             ...
 AppConfig.json
 ```
+
+### AppConfig.json
+
+The file AppConfig.json will be used to define the operations as needed, the following can be implemented:
+
+```json
+{
+  "appAuthor": "My Company",
+  "appID": "org_Splunk_TA_windows",
+  "appLabel": "Splunk Add-on for Microsoft Windows",
+  "appDescription": "Splunk Add-on for Microsoft Windows",
+  "appMerge": "True",
+  "appSource": "Splunk_TA_windows",
+  "appVersion": "8.6.0"
+}
+```
+
+- appAuthor: appears as the author of the application in Splunk
+- appID: the application ID to be generated, it should differ from appSource and represents the final package the Python tool will create
+- appLabel: the label for the Splunk app
+- appDescription: the application description
+- appMerge: expects True | False, in the concept of merging, this should be defined to True and will instruct that we actually want to merge the AppSource content with the third party content and produce a final application to be deployed
+- appVersion: the version of the application to be created
+
+#### Additional options
+
+There are additional options that can be set in AppConfig.json:
+
+- configFilesAuthorized: An optional array listing the Splunk configuration files that are allowed to be merged and generated, example:
+
+```json
+  "configFilesAuthorized": ["props.conf", "transforms.conf"],
+```
+
+In this case, the Python backend will only consider these config files, anything else will be excluded.
+
+- configFilesDenied: An optional array listing Splunk configuration files which should be ignored, example:
+
+```json
+  "configFilesDenied": ["inputs.conf"],
+```
+
+On the opposite, you can specific a list of configuration files that will never be considered. (for instance inputs.conf, wmi.conf, eventgen.conf, and so forth)
