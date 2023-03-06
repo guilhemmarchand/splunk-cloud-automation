@@ -6,7 +6,7 @@
   "appMerge": "True",
   "appSource": "Splunk_TA_windows",
   "appVersion": "8.6.0",
-  "configFilesDenied": ["inputs.conf"],
-  "configAllowViews": ["True"],
-  "configAllowAlerts": ["True"]
+  "configFilesDenied": ["inputs.conf", "wmi.conf", "eventgen.conf"],
+  "configAllowViews": "True",
+  "configAllowAlerts": "True"
 }

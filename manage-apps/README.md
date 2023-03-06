@@ -82,3 +82,59 @@ On the opposite, you can specific a list of configuration files that will never 
 ```json
   "configAllowAlerts": "True",
 ```
+
+### Example of build
+
+Using the following AppConfig.json and for the example of the Splunk_TA_windows:
+
+```json
+{
+  "appAuthor": "My Company",
+  "appID": "org_Splunk_TA_windows",
+  "appLabel": "Splunk Add-on for Microsoft Windows",
+  "appDescription": "Splunk Add-on for Microsoft Windows",
+  "appMerge": "True",
+  "appSource": "Splunk_TA_windows",
+  "appVersion": "8.6.0",
+  "configFilesDenied": ["inputs.conf", "wmi.conf", "eventgen.conf"],
+  "configAllowViews": "True",
+  "configAllowAlerts": "True"
+}
+```
+
+You can generate the build calling:
+
+```shell
+deploy.py --appdir Splunk_TA_windows
+```
+
+The backend will parse the package and the options, to finally generate the release and its artifacts in the output directory:
+
+```shell
+output/
+        build.txt
+        org_Splunk_TA_windows_v<version_number>_<build_number>.tgz
+        version.txt
+```
+
+You can use the '--keep' option if you want to keep the extracted directory in the output directory:
+
+```shell
+deploy.py --appdir Splunk_TA_windows --keep
+```
+
+In such a case, we will have:
+
+```shell
+output/
+        build.txt
+        org_Splunk_TA_windows_v<version_number>_<build_number>
+        org_Splunk_TA_windows_v<version_number>_<build_number>.tgz
+        version.txt
+```
+
+Should we want to submit the application release for Appinspect vetting for the purposes of Splunk Cloud, you would:
+
+```shell
+python3 deploy.py --appdir Splunk_TA_windows --submitappinspect --userappinspect 'my_user' --passappinspect 'my_password'
+```

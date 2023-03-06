@@ -388,7 +388,7 @@ else:
             else:
                 configAllowAlerts = False
         except Exception as e:
-            configAllowAlerts = False
+            configAllowAlerts = None
 
         # log
         logging.info("Starting build buildNumber=\"{}\", appconf=\"{}\"".format(buildNumber, json.dumps(appconf, indent=2)))
@@ -923,7 +923,7 @@ else:
                 for directory in other_content:
                     if os.path.isdir(os.path.join(appSource, directory)):
 
-                        if directory in ('appserver') and not configAllowViews or configAllowAlerts:
+                        if directory in ('appserver') and not configAllowViews or not configAllowAlerts:
                             logging.info("ignoring appserver as nor configAllowsViews or configAllowsAlerts is set to True")
                         else:
                             try:
