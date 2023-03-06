@@ -70,3 +70,15 @@ In this case, the Python backend will only consider these config files, anything
 ```
 
 On the opposite, you can specific a list of configuration files that will never be considered. (for instance inputs.conf, wmi.conf, eventgen.conf, and so forth)
+
+- configAllowViews: True | False - this allows or prevents Splunk views (dashboards, etc) to be generated as part of the final package, in the use case of pure parsing TAs for instance, it may make sense to exclude any kind of views as there aren't generally of a great value in the end:
+
+```json
+  "configAllowViews": "True",
+```
+
+- configAllowAlerts: True | False - this allows or prevents Splunk alert actions, if any, to be part of the final package:
+
+```json
+  "configAllowAlerts": "True",
+```
