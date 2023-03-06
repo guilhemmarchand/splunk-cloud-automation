@@ -11,6 +11,13 @@ This Python tool allows to:
 - Authenticating and submit for Appinspect vetting, downloading results artifacts (Splunk Appinspect reports)
 - Deploying to Splunk Cloud using Splunk ACS API in a Pythonic fashion with error handling
 
+# Requirements
+
+The Python backend requires the following packages which can be installed using pip:
+
+- ksconf
+- coloredlogs
+
 ## Third party application merging
 
 The concept is the following:
