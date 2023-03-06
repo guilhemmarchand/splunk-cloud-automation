@@ -143,13 +143,13 @@ If the App vetting is passed, the backend outputs the results, downloads the art
 If the App vetting fails for some reasons, it will exist with exit code 1.
 
 ```shell
-2023-03-06 12:06:43 Guilhems-MacBook-Pro.local root[41121] INFO "appID="org_Splunk_TA_windows", Achive tar file creation, archive_file="org_Splunk_TA_windows_v860_3797097781.tgz"
-2023-03-06 12:06:45 Guilhems-MacBook-Pro.local root[41121] INFO Appsinspect: successfully logged in Appinspect API
-2023-03-06 12:06:45 Guilhems-MacBook-Pro.local root[41121] INFO Submitting to Appinspect API="org_Splunk_TA_windows_v860_3797097781.tgz"
-2023-03-06 12:06:57 Guilhems-MacBook-Pro.local root[41121] INFO Appinspect request_id="13d333b0-94e8-49f4-b542-774f0344e14e" was successfully processed
-2023-03-06 12:06:58 Guilhems-MacBook-Pro.local root[41121] INFO Appinspect written to report="report_appinspect.html"
-2023-03-06 12:06:59 Guilhems-MacBook-Pro.local root[41121] INFO Appinspect written to report="report_appinspect.json"
-2023-03-06 12:06:59 Guilhems-MacBook-Pro.local root[41121] INFO Appinspect request_id="13d333b0-94e8-49f4-b542-774f0344e14e" was successfully vetted, summary="{
+2023-03-06 12:06:43 xxxxxxxxxx root[41121] INFO "appID="org_Splunk_TA_windows", Achive tar file creation, archive_file="org_Splunk_TA_windows_v860_3797097781.tgz"
+2023-03-06 12:06:45 xxxxxxxxxx root[41121] INFO Appsinspect: successfully logged in Appinspect API
+2023-03-06 12:06:45 xxxxxxxxxx root[41121] INFO Submitting to Appinspect API="org_Splunk_TA_windows_v860_3797097781.tgz"
+2023-03-06 12:06:57 xxxxxxxxxx root[41121] INFO Appinspect request_id="13d333b0-94e8-49f4-b542-774f0344e14e" was successfully processed
+2023-03-06 12:06:58 xxxxxxxxxx root[41121] INFO Appinspect written to report="report_appinspect.html"
+2023-03-06 12:06:59 xxxxxxxxxx root[41121] INFO Appinspect written to report="report_appinspect.json"
+2023-03-06 12:06:59 xxxxxxxxxx root[41121] INFO Appinspect request_id="13d333b0-94e8-49f4-b542-774f0344e14e" was successfully vetted, summary="{
     "error": 0,
     "failure": 0,
     "skipped": 0,
