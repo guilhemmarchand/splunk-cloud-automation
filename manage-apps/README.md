@@ -159,3 +159,47 @@ If the App vetting fails for some reasons, it will exist with exit code 1.
     "success": 127
 }"
 ```
+
+Appinspect artifacts:
+
+```shell
+output/
+        report_appinspect.html
+        report_appinspect.json
+```
+
+## Private application management
+
+Similarly, the tool can be used to package, vet and deploy fully private Splunk applications.
+
+Example, we have the following private app:
+
+```shell
+TA-org-customapp
+                /local/
+                        props.conf
+                        xxx.conf
+                /metadata
+```
+
+With the following AppConfig.json:
+
+```json
+{
+  "appAuthor": "My Company",
+  "appID": "TA-org-customapp",
+  "appLabel": "Splunk Add-on of mine",
+  "appDescription": "Splunk Add-on of mine",
+  "appMerge": "False",
+  "appSource": "TA-org-customapp",
+  "appVersion": "1.0.0"
+}
+```
+
+In this case, the proces is simplier as we do not need to merge configuration from a third part app, however we would still merge configuration if we have both a default and local directory with conflicting configuration files.
+
+To build and submit to Appinspect
+
+```shell
+python3 deploy.py --appdir TA-org-customapp --submitappinspect --userappinspect 'my_user' --passappinspect 'my_password'
+```
