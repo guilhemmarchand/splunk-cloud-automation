@@ -1,26 +1,29 @@
 # Purpose
 
-The purpose of this is to build a custom restricted TA for parsing purposes for Cloud customers.
+The purpose of this tool is to build and manage Splunk applications for Splunk Cloud deployment, with the following concepts:
 
-The logic is based on the following:
+- Maintaining local configuration for third party public applications (such as Splunk Base Addons)
+- Maintaining fully custom private apps
 
-- A git repository contains the extracted version of a Splunk Base Add-on
-- In the same git repository, a custom version of the app contains only the local configuration that override any conflicting stanza from the base Add-on
-- The build.py generates a build release which is a controlled merged app from both using ksconf
-- The build release can then be submitted to Appinspect
+This Python tool allows to:
 
-# Usage
+- merge configuration using ksconf, such as merging local knowledge objects into a final package that can be vetted and published to Splunk Cloud
+- Authenticating and submit for Appinspect vetting, downloading results artifacts (Splunk Appinspect reports)
+- Deploying to Splunk Cloud using Splunk ACS API in a Pythonic fashion with error handling
 
-At the root of the Git repo, stands a JSON configuration file:
+## Third party application merging
 
-{
-"appAuthor": "My Company",
-"appID": "org_Splunk_TA_windows",
-"appLabel": "Splunk Add-on for Microsoft Windows",
-"appDecription": "Splunk Add-on for Microsoft Windows",
-"appMerge": "True",
-"appSource": "Splunk_TA_windows",
-"appVersion": "8.6.0"
-}
+The concept is the following:
 
-This defines the app.conf generation and the behaviour.
+- A main directory represents the Git repository, for instance "Splunk_TA_windows"
+- Within this directory, we will find this structure:
+
+```shell
+Splunk_TA_windows/<app content>
+org_Splunk_TA_windows/
+                      local/
+                            props.conf
+                            transforms.conf
+                            ...
+AppConfig.json
+```
