@@ -203,3 +203,25 @@ To build and submit to Appinspect
 ```shell
 python3 deploy.py --appdir TA-org-customapp --submitappinspect --userappinspect 'my_user' --passappinspect 'my_password'
 ```
+
+## Deploying to Splunk Cloud using Splunk ACS API
+
+You can request the deployment to your Splunk Cloud stack by submitting with the following options:
+
+```shell
+--deployacs True --stack <Splunk Cloud stack>
+```
+
+In addition, you can choose between a username/password authentication and the creation of Ephemeral tokens, or specify a static bearrer token, both approaches are possible, the ephemeral token approach is likely safer and has some advantages.
+
+To use ephemeral tokens:
+
+```shell
+--deployacs True --stack $stack --create_token --username '<myuser>' --password '<mypassword>' --token_audience "ACS"
+```
+
+To use a static bearrer token:
+
+```shell
+--deployacs True --stack $stack --create_token --tokenacs <bearrer token>
+```
