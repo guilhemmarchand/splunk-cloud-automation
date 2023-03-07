@@ -41,9 +41,18 @@ class cd:
 # Args
 parser = argparse.ArgumentParser()
 parser.add_argument('--debug', dest='debug', action='store_true')
+
+parser.add_argument('--test', dest='test', action='store_true')
+
 parser.add_argument('--target_url', dest='target_url')
+
+parser.add_argument('--auth_mode', dest='auth_mode')
+
 parser.add_argument('--username', dest='username')
 parser.add_argument('--password', dest='password')
+
+parser.add_argument('--token', dest='token')
+
 parser.add_argument('--app', dest='app')
 parser.add_argument('--ksconf_bin', dest='ksconf_bin')
 parser.add_argument('--promote_permissions', dest='promote_permissions', action='store_true')
@@ -69,9 +78,25 @@ if args.debug:
 else:
     debug = False
 
+# Set test boolean
+if args.test:
+    test = True
+else:
+    test = False
+
 #
 # main arguments
 #
+
+if args.auth_mode:
+    auth_mode = args.auth_mode
+else:
+    auth_mode = False
+
+if args.token:
+    token = args.token
+else:
+    token = False
 
 if args.username:
     username = args.username
@@ -82,6 +107,11 @@ if args.password:
     password = args.password
 else:
     password = False
+
+if args.token:
+    token = args.token
+else:
+    token = False
 
 if args.target_url:
     target_url = args.target_url
@@ -190,10 +220,30 @@ else:
     root.setLevel(logging.INFO)
     handler.setLevel(logging.INFO)
 
+#
 # check args
-if not username or not password or not target_url:
-    logging.error('arguments username, password, target_url, app must be set')
+#
+
+# Auth to Splunkd
+
+if not auth_mode:
+    auth_mode = 'basic'
+
+elif auth_mode not in ('basic', 'token'):
+    logging.error('invalid option for auth_mode, valid options are: basic, token')
     sys.exit(1)
+
+elif auth_mode == 'basic':
+    if not username or not password:
+        logging.error('authentication mode is set to basic, but either username or password was not set')
+        sys.exit(1)
+
+elif auth_mode == 'token':
+    if not token:
+        logging.error('authentication mode is set to basic, but either username or password was not set')
+        sys.exit(1)
+    else:
+        splunk_header = 'Bearer ' + str(token)
 
 # set url
 url = str(target_url) + '/services/toolbox/v1/export/export_app'
@@ -203,16 +253,54 @@ record = {
     'app': app,
 }
 
+# connectivity test
+if test:
+
+    # set url
+    url = str(target_url) + '/services/toolbox/v1/export/test_endpoint'
+
+    try:
+
+        if auth_mode == 'basic':
+            response = requests.get(url, auth = HTTPBasicAuth(username, password),  proxies=proxy_dict,
+                                    verify=False)
+        elif auth_mode == 'token':
+            response = requests.get(url, headers={'Authorization': splunk_header}, proxies=proxy_dict,
+                                    verify=False)
+
+        if response.status_code not in (200, 201, 204):
+            logging.error(
+                'request has failed!. url={}, data={}, HTTP Error={}, '
+                'content={}'.format(url, record, response.status_code, response.text))
+            sys.exit(1)
+        else:
+
+            # load the response in a dict
+            response_json = json.loads(response.text)
+            logging.info("response=\"{}\"".format(json.dumps(response_json, indent=2)))    
+            sys.exit(0)       
+
+    except Exception as e:
+        logging.error("failed to process the request, exception=\"{}\"".format(str(e)))
+        sys.exit(1)
+
 # run request
 logging.info("attempting to retrieve app=\"{}\" from target_url=\"{}\"".format(app, target_url))
 
 try:
-    response = requests.post(url, auth = HTTPBasicAuth(username, password),  proxies=proxy_dict, data=json.dumps(record),
-                            verify=False)
+
+    if auth_mode == 'basic':
+        response = requests.post(url, auth = HTTPBasicAuth(username, password),  proxies=proxy_dict, data=json.dumps(record),
+                                verify=False)
+    elif auth_mode == 'token':
+        response = requests.post(url, headers={'Authorization': splunk_header}, proxies=proxy_dict, data=json.dumps(record),
+                                verify=False)
+
     if response.status_code not in (200, 201, 204):
         logging.error(
             'request has failed!. url={}, data={}, HTTP Error={}, '
             'content={}'.format(url, record, response.status_code, response.text))
+        sys.exit(1)
     else:
 
         # load the response in a dict
@@ -221,6 +309,7 @@ try:
 
 except Exception as e:
     logging.error("failed to process the request, exception=\"{}\"".format(str(e)))
+    sys.exit(1)
 
 # load our items
 base64_bytesdata = response_json.get('base64')

@@ -47,3 +47,5 @@ which ksconf
 ```
 
 If this doesn't return the command, exit your terminal and reconnect.
+
+### Run time
