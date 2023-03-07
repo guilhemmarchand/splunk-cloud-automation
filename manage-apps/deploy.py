@@ -51,6 +51,7 @@ parser.add_argument('--proxy_username', dest='proxy_username')
 parser.add_argument('--proxy_password', dest='proxy_password')
 parser.set_defaults(debug=False)
 parser.set_defaults(keep=False)
+parser.set_defaults(create_token=False)
 parser.set_defaults(submitappinspect=False)
 args = parser.parse_args()
 
@@ -272,12 +273,17 @@ else:
 
         # if deployment to ACS is requested, we need to have some additional information
         if deployacs:
-            if create_token and not username or not password:
+            if create_token and (not username or not password):
                 logging.error("Deployment to ACS has been requested with ephemeral token creation, but username or password were not provided")
                 sys.exit(1)
             elif not create_token and not tokenacs:
                 logging.error("Deployment to ACS has been requested with a permanent token, but the token was not provided")
                 sys.exit(1)
+
+        # if deploy ACS, we need a stack
+        if deployacs and not stack:
+            logging.error("Deployment to ACS has been requested but the stack was not provided")
+            sys.exit(1)
 
         # get and set
         buildNumber = gen_build_number()
