@@ -7,6 +7,7 @@
 # Py build
 manage-indexes/libs/__pycache__
 manage-apps/libs/__pycache__
+export-apps/libs/__pycache__
 
 # output
 manage-apps/*/output/*
@@ -14,4 +15,7 @@ manage-apps/*/!output/README.txt
 manage-apps/*/!output/README.md
 
 # export
-export-apps/*.tgz
+export-apps/*
+!export-apps/libs
+!export-apps/*.py
+!export-apps/*.md
