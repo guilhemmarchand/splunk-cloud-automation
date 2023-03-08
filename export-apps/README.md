@@ -48,6 +48,28 @@ which ksconf
 
 If this doesn't return the command, exit your terminal and reconnect.
 
+## debug
+
+_To operate in debug mode, add:_
+
+```shell
+--debug
+```
+
+## proxy
+
+_To operate with a proxy, set:_
+
+```shell
+--useproxy --proxy_url <myproxy> --proxy_port 8080
+```
+
+_If the proxy requires authentication:_
+
+```shell
+--useproxy --proxy_url <myproxy> --proxy_port 8080 --proxy_username <my_proxy_user> --proxy_password <my_proxy_password>
+```
+
 ### Run time
 
 Let's export some variables to make our life easier, we will export:
@@ -222,3 +244,88 @@ Answer:
 ```
 
 As I am saying often in that case, "Voila!".
+
+#### Deploying
+
+You can the Python script "deploy_to_cloud.py" to deploy to a new Splunk Cloud stack, it will:
+
+- Run Appinspect
+- Deploy to Splunk Cloud using Splunk ACS API
+
+_To use an ACS token:_
+
+```shell
+export tokenacs='mytoken_acs'
+```
+
+_Then:_
+
+```shell
+python3 deploy_to_cloud.py --stack $stack --appfile TA-org-customapp_v100.tgz --userappinspect $userappinspect --passappinspect $passappinspect --tokenacs $tokenacs
+```
+
+_Answer:_
+
+```shell
+2023-03-08 11:17:10 xxxxxxxxxx root[89404] INFO Appsinspect: successfully logged in Appinspect API
+2023-03-08 11:17:10 xxxxxxxxxx root[89404] INFO Submitting to Appinspect API="TA-org-customapp_v100.tgz"
+2023-03-08 11:17:17 xxxxxxxxxx root[89404] INFO Appinspect request_id="1b45ba6f-25d3-4194-a57d-927c689a45c2" was successfully processed
+2023-03-08 11:17:20 xxxxxxxxxx root[89404] INFO Appinspect written to report="report_appinspect.html"
+2023-03-08 11:17:21 xxxxxxxxxx root[89404] INFO Appinspect written to report="report_appinspect.json"
+2023-03-08 11:17:21 xxxxxxxxxx root[89404] INFO Appinspect request_id="1b45ba6f-25d3-4194-a57d-927c689a45c2" was successfully vetted, summary="{
+    "error": 0,
+    "failure": 0,
+    "skipped": 0,
+    "manual_check": 0,
+    "not_applicable": 102,
+    "warning": 4,
+    "success": 117
+}"
+2023-03-08 11:17:24 xxxxxxxxxx root[89404] INFO Splunk ACS deployment of app="TA-org-customapp" was successful, summary="{
+    "appID": "TA-org-customapp",
+    "label": "Splunk Add-on of mine",
+    "name": "TA-org-customapp",
+    "status": "installed",
+    "version": "1.0.0"
+}"
+```
+
+_To use an epehmeral ACS token:_
+
+```shell
+export username='my_splunk_username'
+export password='mypass'
+```
+
+_Then:_
+
+```shell
+python3 deploy_to_cloud.py --stack $stack --appfile TA-org-customapp_v100.tgz --userappinspect $userappinspect --passappinspect $passappinspect --create_token --username $username --password $password --token_audience "Splunk ACS"
+```
+
+_Answer:_
+
+```shell
+023-03-08 11:17:57 xxxxxxxxxx root[89515] INFO Appsinspect: successfully logged in Appinspect API
+2023-03-08 11:17:57 xxxxxxxxxx root[89515] INFO Submitting to Appinspect API="TA-org-customapp_v100.tgz"
+2023-03-08 11:18:06 xxxxxxxxxx root[89515] INFO Appinspect request_id="fb82291a-54ee-488e-9b29-a9f32844395c" was successfully processed
+2023-03-08 11:18:07 xxxxxxxxxx root[89515] INFO Appinspect written to report="report_appinspect.html"
+2023-03-08 11:18:08 xxxxxxxxxx root[89515] INFO Appinspect written to report="report_appinspect.json"
+2023-03-08 11:18:08 xxxxxxxxxx root[89515] INFO Appinspect request_id="fb82291a-54ee-488e-9b29-a9f32844395c" was successfully vetted, summary="{
+    "error": 0,
+    "failure": 0,
+    "skipped": 0,
+    "manual_check": 0,
+    "not_applicable": 102,
+    "warning": 4,
+    "success": 117
+}"
+2023-03-08 11:18:09 xxxxxxxxxx root[89515] INFO Ephemeral token created successfully
+2023-03-08 11:18:12 xxxxxxxxxx root[89515] INFO Splunk ACS deployment of app="TA-org-customapp" was successful, summary="{
+    "appID": "TA-org-customapp",
+    "label": "Splunk Add-on of mine",
+    "name": "TA-org-customapp",
+    "status": "installed",
+    "version": "1.0.0"
+}"
+```
