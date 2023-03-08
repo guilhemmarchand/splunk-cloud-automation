@@ -227,15 +227,14 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 root.addHandler(handler)
 
-# coloredlogs
-coloredlogs.install(isatty=True, level='INFO', logger=logging.getLogger())
-
 if debug:
     root.setLevel(logging.DEBUG)
     handler.setLevel(logging.DEBUG)
+    coloredlogs.install(isatty=True, level='DEBUG', logger=logging.getLogger())
 else:
     root.setLevel(logging.INFO)
     handler.setLevel(logging.INFO)
+    coloredlogs.install(isatty=True, level='INFO', logger=logging.getLogger())
 
 # appConfig file
 appconf = "AppConfig.json"

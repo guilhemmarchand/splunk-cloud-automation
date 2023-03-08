@@ -10,7 +10,7 @@ __status__ = "PRODUCTION"
 
 import os, sys
 import json
-import logging
+import coloredlogs, logging
 import argparse
 import configparser
 
@@ -169,9 +169,11 @@ root.addHandler(handler)
 if debug:
     root.setLevel(logging.DEBUG)
     handler.setLevel(logging.DEBUG)
+    coloredlogs.install(isatty=True, level='DEBUG', logger=logging.getLogger())
 else:
     root.setLevel(logging.INFO)
     handler.setLevel(logging.INFO)
+    coloredlogs.install(isatty=True, level='INFO', logger=logging.getLogger())
 
 #
 # Program start
