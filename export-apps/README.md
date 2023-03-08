@@ -49,3 +49,174 @@ which ksconf
 If this doesn't return the command, exit your terminal and reconnect.
 
 ### Run time
+
+Let's export some variables to make our life easier, we will export:
+
+- stack: the name of your Splunk Cloud stack
+- userappinspect: your splunk.com username, for the purposes of Appinspect vetting
+- passappinspect: the password associated with your account
+- token: the bearer token value if you wish to connect to the splunkd API using a bearrer token
+- username and password if wish to authenticate against splunkd API using basic authentication instead
+
+```shell
+export stack='mystack'
+export userappinspect='myuser'
+export passappinspect='mypass'
+```
+
+Then either:
+
+```shell
+export token='my_bearrer_token'
+```
+
+Or:
+
+```shell
+export username='my_splunk_username'
+export password='mypass'
+```
+
+Let's test the connectivity first:
+
+_basic authentication:_
+
+```shell
+python3 get_app_from_cloud.py --auth_mode basic --username $username --password $password --target_url "https://$stack.splunkcloud.com:8089" --test
+```
+
+_bearrer authentication:_
+
+```shell
+python3 get_app_from_cloud.py --auth_mode token --token $token --target_url "https://$stack.splunkcloud.com:8089" --test
+```
+
+_In both cases, you expect the following answer:_
+
+```shell
+2023-03-08 09:36:07 xxxxxx root[80736] INFO response="{
+  "resource_endpoint": "test_endpoint",
+  "resource_response": "Welcome. Good to see you."
+}"
+```
+
+#### Exporting an application
+
+Now, let's export an application, we are going to use the argument run_build = False for a first execution, this means we that want to extract the application from the Splunk Cloud stack, unarchive locally and stop.
+
+In this case, we are not going to use ksconf to merge local objects to default for now:
+
+_basic authentication:_
+
+```shell
+python3 get_app_from_cloud.py --auth_mode basic --username $username --password $password --target_url "https://$stack.splunkcloud.com:8089" --app TA-org-customapp --run_build False
+```
+
+_bearrer authentication:_
+
+```shell
+python3 get_app_from_cloud.py --auth_mode token --token $token --target_url "https://$stack.splunkcloud.com:8089" --app TA-org-customapp --run_build False
+```
+
+If there are no local objects, and if the application exists, you will get an answer like:
+
+```shell
+2023-03-08 09:56:16 xxxxxxxxxx root[82481] INFO attempting to retrieve app="TA-org-customapp" from target_url="https://scde-dda6bndfb28rkta02.splunkcloud.com:8089"
+2023-03-08 09:56:17 xxxxxxxxxx root[82481] INFO successfully imported app="TA-org-customapp", version="1.0.0" , tarfile="TA-org-customapp_v100.tgz"
+2023-03-08 09:56:17 xxxxxxxxxx root[82481] INFO successfully extracted compressed archive="TA-org-customapp_v100.tgz" into directory="TA-org-customapp"
+2023-03-08 09:56:17 xxxxxxxxxx root[82481] INFO purging metadata/local.metadata
+2023-03-08 09:56:17 xxxxxxxxxx root[82481] INFO there are no local objects to be promoted, the compressed file="TA-org-customapp_v100.tgz" is ready to be used
+```
+
+If there are local objects, and the application exists, you will get the following answer:
+
+```shell
+2023-03-08 09:58:47 xxxxxxxxxx root[82724] INFO attempting to retrieve app="TA-org-customapp" from target_url="https://scde-dda6bndfb28rkta02.splunkcloud.com:8089"
+2023-03-08 09:58:47 xxxxxxxxxx root[82724] INFO successfully imported app="TA-org-customapp", version="1.0.0" , tarfile="TA-org-customapp_v100.tgz"
+2023-03-08 09:58:47 xxxxxxxxxx root[82724] INFO successfully extracted compressed archive="TA-org-customapp_v100.tgz" into directory="TA-org-customapp"
+```
+
+If the app does not exist, you will get:
+
+```shell
+2023-03-08 10:00:33 xxxxxxxxxx root[82890] INFO attempting to retrieve app="TA-org-custombad" from target_url="https://scde-dda6bndfb28rkta02.splunkcloud.com:8089"
+2023-03-08 10:00:34 xxxxxxxxxx root[82890] ERROR request has failed!. url=https://scde-dda6bndfb28rkta02.splunkcloud.com:8089/services/toolbox/v1/export/export_app, data={'app': 'TA-org-custombad'}, HTTP Error=500, content={"action":"failure","response":"The requested app=\"TA-org-custombad\" is not available","available_apps":["000-self-service","075-cloudworks","100-cloudworks-wlm","100-whisper","100-whisper-common","100-whisper-searchhead","alert_logevent","alert_webhook","appsbrowser","cloud-app-readiness","cloud_administration","data_manager","dmc","dynamic-data-self-storage-app","introspection_generator_addon","journald_input","launcher","learned","legacy","org_Splunk_TA_windows","prometheus","python_upgrade_readiness_app","sample_app","search","search_artifacts_helper","semicircle_donut","splunk-dashboard-studio","splunk_gdi","splunk_httpinput","splunk_instance_monitoring","splunk_instrumentation","splunk_internal_metrics","splunk_metrics_workspace","Splunk_ML_Toolkit","splunk_product_guidance","splunk_rapid_diag","Splunk_SA_CIM","Splunk_SA_Scientific_Python_linux_x86_64","splunk_secure_gateway","Splunk_TA_apache","Splunk_TA_juniper","Splunk_TA_linux","Splunk_TA_nginx","Splunk_TA_windows","splunkclouduf","TA-config-scde","TA-ms-teams-alert-action","TA-org-customapp","TA-splk-toolbox","TA_MS_Teams","timeline_app","tos","trackme"]}
+```
+
+After this step, we have a local tgz archive which is the exact Application content as it is on the Splunk Cloud search head, as well as an extracted directory of it.
+
+If we have any local objects in the app context, these will be available in the local directory.
+
+**Exporting, merging local objects and re-packaging:**
+
+Now, let's export the app and repackage it, this means:
+
+- local knowledge objects are merged into default using ksconf promote
+- permissions can be merged too using the argument --promote_permissions - if it is unset, the default behaviour is not to merge permissions
+- local views will be placed in default
+
+_basic authentication:_
+
+```shell
+python3 get_app_from_cloud.py --auth_mode basic --username $username --password $password --target_url "https://$stack.splunkcloud.com:8089" --app TA-org-customapp --run_build True
+```
+
+_bearrer authentication:_
+
+```shell
+python3 get_app_from_cloud.py --auth_mode token --token $token --target_url "https://$stack.splunkcloud.com:8089" --app TA-org-customapp --run_build True
+```
+
+Expected answer:
+
+```shell
+2023-03-08 10:04:26 xxxxxxxxxx root[83200] INFO attempting to retrieve app="TA-org-customapp" from target_url="https://scde-dda6bndfb28rkta02.splunkcloud.com:8089"
+2023-03-08 10:04:27 xxxxxxxxxx root[83200] INFO successfully imported app="TA-org-customapp", version="1.0.0" , tarfile="TA-org-customapp_v100.tgz"
+2023-03-08 10:04:27 xxxxxxxxxx root[83200] INFO successfully extracted compressed archive="TA-org-customapp_v100.tgz" into directory="TA-org-customapp"
+2023-03-08 10:04:27 xxxxxxxxxx root[83200] INFO purging metadata/local.metadata
+2023-03-08 10:04:27 xxxxxxxxxx root[83200] INFO discoverying local knowledge objects
+2023-03-08 10:04:27 xxxxxxxxxx root[83200] INFO discovered local config files="['props.conf']"
+2023-03-08 10:04:27 xxxxxxxxxx root[83200] INFO running ksconf promote -b TA-org-customapp/local/props.conf TA-org-customapp/default/props.conf
+2023-03-08 10:04:28 xxxxxxxxxx root[83200] INFO ksconf results.stdout="b''"
+2023-03-08 10:04:28 xxxxxxxxxx root[83200] INFO ksconf results.stderr="b''"
+2023-03-08 10:04:28 xxxxxxxxxx root[83200] INFO successfully purged the local directory before packaging the app
+2023-03-08 10:04:28 xxxxxxxxxx root[83200] INFO Creating compress tgz filename="TA-org-customapp_v100.tgz"
+2023-03-08 10:04:28 xxxxxxxxxx root[83200] INFO Achive tar file creation successful, archive_file="TA-org-customapp_v100.tgz"
+```
+
+This gives you a full packaged application, which would pass Appinspect, you can request an Appinspect verification straight away:
+
+```shell
+python3 get_app_from_cloud.py --auth_mode token --token $token --target_url "https://$stack.splunkcloud.com:8089" --app TA-org-customapp --run_build True --submitappinspect --userappinspect $userappinspect --passappinspect $passappinspect
+```
+
+Answer:
+
+```shell
+2023-03-08 10:05:37 xxxxxxxxxx root[83304] INFO attempting to retrieve app="TA-org-customapp" from target_url="https://scde-dda6bndfb28rkta02.splunkcloud.com:8089"
+2023-03-08 10:05:38 xxxxxxxxxx root[83304] INFO successfully imported app="TA-org-customapp", version="1.0.0" , tarfile="TA-org-customapp_v100.tgz"
+2023-03-08 10:05:38 xxxxxxxxxx root[83304] INFO successfully extracted compressed archive="TA-org-customapp_v100.tgz" into directory="TA-org-customapp"
+2023-03-08 10:05:38 xxxxxxxxxx root[83304] INFO purging metadata/local.metadata
+2023-03-08 10:05:38 xxxxxxxxxx root[83304] INFO discoverying local knowledge objects
+2023-03-08 10:05:38 xxxxxxxxxx root[83304] INFO discovered local config files="['props.conf']"
+2023-03-08 10:05:38 xxxxxxxxxx root[83304] INFO running ksconf promote -b TA-org-customapp/local/props.conf TA-org-customapp/default/props.conf
+2023-03-08 10:05:38 xxxxxxxxxx root[83304] INFO ksconf results.stdout="b''"
+2023-03-08 10:05:38 xxxxxxxxxx root[83304] INFO ksconf results.stderr="b''"
+2023-03-08 10:05:38 xxxxxxxxxx root[83304] INFO successfully purged the local directory before packaging the app
+2023-03-08 10:05:38 xxxxxxxxxx root[83304] INFO Creating compress tgz filename="TA-org-customapp_v100.tgz"
+2023-03-08 10:05:38 xxxxxxxxxx root[83304] INFO Achive tar file creation successful, archive_file="TA-org-customapp_v100.tgz"
+2023-03-08 10:05:39 xxxxxxxxxx root[83304] INFO Appsinspect: successfully logged in Appinspect API
+2023-03-08 10:05:39 xxxxxxxxxx root[83304] INFO Submitting to Appinspect API="TA-org-customapp_v100.tgz"
+2023-03-08 10:05:48 xxxxxxxxxx root[83304] INFO Appinspect request_id="833206a5-aab1-4603-87d3-e03a6204b74a" was successfully processed
+2023-03-08 10:05:48 xxxxxxxxxx root[83304] INFO Appinspect written to report="report_appinspect.html"
+2023-03-08 10:05:49 xxxxxxxxxx root[83304] INFO Appinspect written to report="report_appinspect.json"
+2023-03-08 10:05:49 xxxxxxxxxx root[83304] INFO Appinspect request_id="833206a5-aab1-4603-87d3-e03a6204b74a" was successfully vetted, summary="{
+    "error": 0,
+    "failure": 0,
+    "skipped": 0,
+    "manual_check": 0,
+    "not_applicable": 102,
+    "warning": 4,
+    "success": 117
+}"
+```

@@ -53,6 +53,8 @@ parser.add_argument('--password', dest='password')
 
 parser.add_argument('--token', dest='token')
 
+parser.add_argument('--run_build', dest='run_build')
+
 parser.add_argument('--app', dest='app')
 parser.add_argument('--ksconf_bin', dest='ksconf_bin')
 parser.add_argument('--promote_permissions', dest='promote_permissions', action='store_true')
@@ -83,6 +85,17 @@ if args.test:
     test = True
 else:
     test = False
+
+# Set run_build boolean
+if args.run_build:
+    if args.run_build == 'True':
+        run_build = True
+    elif args.run_build == 'False':
+        run_build = False
+    else:
+        run_build = True
+else:
+    run_build = True
 
 #
 # main arguments
@@ -351,6 +364,14 @@ try:
 
 except Exception as e:
     logging.error("failed to extract the compressed archive, exception=\"{}\"".format(str(e)))
+
+#
+# run build
+#
+
+# exit here unless requested otherwise
+if not run_build:
+    sys.exit(0)
 
 #
 # build package
