@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "2.0.1",
+  "info": {
+    "title": "TA-splk-import-app",
+    "id": {
+      "group": null,
+      "name": "TA-splk-import-app",
+      "version": "1.0.0"
+    },
+    "author": [
+      {
+        "name": "Splunk",
+        "email": null,
+        "company": "Splunk"
+      }
+    ],
+    "releaseDate": null,
+    "description": "This Addon contains utility tools",
+    "classification": {
+      "intendedAudience": null,
+      "categories": [],
+      "developmentStatus": null
+    },
+    "commonInformationModels": null,
+    "license": {
+      "name": null,
+      "text": null,
+      "uri": null
+    },
+    "privacyPolicy": {
+      "name": null,
+      "text": null,
+      "uri": null
+    },
+    "releaseNotes": {
+      "name": null,
+      "text": null,
+      "uri": null
+    }
+  },
+  "dependencies": null,
+  "tasks": null,
+  "inputGroups": null,
+  "incompatibleApps": null,
+  "platformRequirements": null,
+  "supportedDeployments": [
+    "_standalone",
+    "_distributed",
+    "_search_head_clustering"
+  ],
+  "targetWorkloads": [
+    "_search_heads"
+  ]
+}

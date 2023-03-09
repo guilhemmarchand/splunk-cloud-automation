@@ -1,0 +1,58 @@
+#.gitignore
+
+# local configuration files
+*/local/*
+*/local
+
+# local metadata
+*/metadata/local.meta
+
+# Compiled Python files
+*.pyo
+*.pyc
+
+# Backup files
+*~
+
+# pycharm
+.idea
+
+# Read the doc & Sphinx
+docs/_build
+docs/_static
+docs/_templates
+
+# backups local
+backups
+
+# spl
+*.spl
+
+# Mac OS X cached files
+.DS_Store
+
+# Visual Basic Code
+.vscode
+
+# appinspect reports
+appinspect_report*.html
+
+# build
+build/*.tgz
+build/release-sha256.txt
+
+# output
+output/*
+!output/README.txt
+
+# Python pickle
+*.pickle
+
+# TA-splk-import-app
+# build
+TA-splk-import-app/build/*.tgz
+TA-splk-import-app/build/release-sha256.txt
+
+# output
+TA-splk-import-app/output/*
+!TA-splk-import-app/output/README.txt
