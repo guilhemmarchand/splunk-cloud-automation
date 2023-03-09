@@ -77,7 +77,7 @@ Let's export some variables to make our life easier, we will export:
 - stack: the name of your Splunk Cloud stack
 - userappinspect: your splunk.com username, for the purposes of Appinspect vetting
 - passappinspect: the password associated with your account
-- token: the bearer token value if you wish to connect to the splunkd API using a bearrer token
+- token: the bearer token value if you wish to connect to the splunkd API using a bearer token
 - username and password if wish to authenticate against splunkd API using basic authentication instead
 
 ```shell
@@ -89,7 +89,7 @@ export passappinspect='mypass'
 Then either:
 
 ```shell
-export token='my_bearrer_token'
+export token='my_bearer_token'
 ```
 
 Or:
@@ -107,7 +107,7 @@ _basic authentication:_
 python3 get_app_from_cloud.py --auth_mode basic --username $username --password $password --target_url "https://$stack.splunkcloud.com:8089" --test
 ```
 
-_bearrer authentication:_
+_bearer authentication:_
 
 ```shell
 python3 get_app_from_cloud.py --auth_mode token --token $token --target_url "https://$stack.splunkcloud.com:8089" --test
@@ -134,7 +134,7 @@ _basic authentication:_
 python3 get_app_from_cloud.py --auth_mode basic --username $username --password $password --target_url "https://$stack.splunkcloud.com:8089" --app TA-org-customapp --run_build False
 ```
 
-_bearrer authentication:_
+_bearer authentication:_
 
 ```shell
 python3 get_app_from_cloud.py --auth_mode token --token $token --target_url "https://$stack.splunkcloud.com:8089" --app TA-org-customapp --run_build False
@@ -183,7 +183,7 @@ _basic authentication:_
 python3 get_app_from_cloud.py --auth_mode basic --username $username --password $password --target_url "https://$stack.splunkcloud.com:8089" --app TA-org-customapp --run_build True
 ```
 
-_bearrer authentication:_
+_bearer authentication:_
 
 ```shell
 python3 get_app_from_cloud.py --auth_mode token --token $token --target_url "https://$stack.splunkcloud.com:8089" --app TA-org-customapp --run_build True
