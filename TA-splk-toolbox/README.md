@@ -1,6 +1,6 @@
 # TA-splk-toolbox - Toolbox application designed for Splunk Cloud operations
 
-## Exporting Splunk applications from Splunk Cloud
+## Feature 1 - Exporting Splunk applications from Splunk Cloud
 
 This application exposes a REST API for the purposes of exporting Splunk applications from a Splunk CLoud deployment.
 

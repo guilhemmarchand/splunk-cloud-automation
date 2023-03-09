@@ -6,7 +6,7 @@ The purpose of this solution is to allow exporting a whole Splunk application, i
 
 **For this, we rely on a Splunk Application which is hosted in the following repository:**
 
-- https://github.com/guilhemmarchand/TA-splk-toolbox
+- https://github.com/guilhemmarchand/splunk-cloud-automation/tree/main/TA-splk-toolbox
 
 **The concept can be described in the main big steps:**
 
