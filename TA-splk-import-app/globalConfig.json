@@ -110,7 +110,7 @@
                         {
                             "type": "text",
                             "label": "post execution script",
-                            "help": "The path to a post execution script, receives in input argument --metadata <JSON metadata object>",
+                            "help": "The path to a post execution script, receives in input argument --file <full path to the tgz> --metadata <JSON metadata object>",
                             "field": "postexec_bin",
                             "options": {
                                 "display": true
@@ -261,7 +261,7 @@
     "meta": {
         "name": "TA-splk-import-app",
         "restRoot": "ta_splk_import_app",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "displayName": "Splunk utility app for Splunk Cloud integration",
         "schemaVersion": "0.0.3"
     }
