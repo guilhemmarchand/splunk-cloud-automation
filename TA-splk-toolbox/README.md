@@ -119,3 +119,163 @@ In addition, we have 3 main parameters:
 - The **ksconf finary path**, on the HF you need to install ksconf as a Splunk Application, see: https://ksconf.readthedocs.io
 
 - An optional **post execution script**, this script would optionally be called at part of the build process to run your CI/CD logic, we will come back on this in the further steps!
+
+## Run time and toolboxexport custom command
+
+The magic happens from Splunk Cloud, a custom command called `toolboxexport` perfoms a transaprent integration in SPL, both application provide now a bi-directional integration we are going to leverage.
+
+### Testing endpoints
+
+The TA-splk-import-app as well as the TA-splk-toolbox provide testing endpoints which can be used to validate the network connecttivity, as well as the authentication for both traffics. (yes!)
+
+#### Testing the configuration, network and authentication from Splunk Cloud to our Heavy Forwarder
+
+**In Splunk Cloud, run the following SPL command:**
+
+_Replace the account accordingly, this is the account ID you configured in Splunk Cloud:_
+
+```shell
+| toolboxexport account="lab" mode="test"
+```
+
+![screen004](img/screen004.png)
+
+Note that the API is very polite. (this is not always the case)
+
+**This validates that:**
+
+- The Splunk Cloud Search Head can communicate with your Heavy Forwarder splunkd API from a network perspective
+- The authentication on the Heavy Forwarder is successful
+- The REST API endpoint is behaviaving properly, and ready to server requests
+
+#### Testing the bi-directional configuration, network and authentication from Splunk Cloud to our Heavy Forwarder, our Heavy Forwarder back to Splunk Cloud
+
+**In Splunk Cloud, run the following SPL command:**
+
+_Replace the account accordingly, this is the account ID you configured in Splunk Cloud, the remote_account is the account ID you configured in your Heavy Forwarder:_
+
+```shell
+| toolboxexport account="lab" mode="sc_test" remote_account="scde"
+```
+
+![screen004](img/screen004.png)
+
+**This validates that:**
+
+- The Splunk Cloud Search Head can communicate with your Heavy Forwarder splunkd API from a network perspective
+- The authentication on the Heavy Forwarder is successful
+- The REST API endpoint is behaviaving properly, and ready to server requests (import API)
+- The Heavy Forwarder can communicate with the Splunk Cloud Search Head (export API), communication and authentication from the Heavy Forwarder to Splunk Cloud is successful.
+
+It's a kind of magic. (Surely you head the music too)
+
+### Exporting a Splunk Cloud application by triggering the action in SPL on Splunk Cloud
+
+**Let's get serious now, the following first example:**
+
+```shell
+| toolboxexport account="lab" mode="live" remote_account="scde" app="TA-org-customapp"
+```
+
+![screen005](img/screen005.png)
+
+**This Will:**
+
+- Calls the import API on the HF
+- The HF in return calls the export API on Splunk Cloud
+- It receives the Application export
+- It merges local objects using ksconf, and produces a final package, on the file-system we have the extracted directories as well as the archive ready to be used
+
+**Let's check the file-system:**
+
+![screen006](img/screen006.png)
+
+Very nice, now let's get with some more details about the options, we can for instance avoid running the build process to review what the local objects are:
+
+```shell
+| toolboxexport account="lab" mode="live" remote_account="scde" app="TA-org-customapp" run_build="False"
+```
+
+![screen007](img/screen007.png)
+
+Reviewing the file-system, we can see our local objects!
+
+![screen008](img/screen008.png)
+
+You can control whether you want to promote permisions or not, using:
+
+```shell
+promote_permissions="True"
+```
+
+The default is False.
+
+#### Post execution
+
+Ok, the magic isn't over! Very likely, you need to run an additional logic from here, whatever that logic is, and of course you need flexibility and control.
+
+You can now call the `post execution script` automatically (on the Heavy Forwarder) as long as it has been configured on the UI (on the Heavy Forwarder), and you submitted a post exec Metadata object.
+
+_Example:_
+
+```shell
+| toolboxexport account="lab" mode="live" remote_account="scde" app="TA-org-customapp" run_build="False" postexec_metadata="{\"user\": \"foobar\", \"branch\": \"main\", \"commit_message\": \"Because I deserve it.\""}
+```
+
+![screen009](img/screen009.png)
+
+Consider the following Python script example:
+
+```python
+#!/usr/bin/env python
+# coding=utf-8
+
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+__author__ = "Guilhem Marchand"
+
+import os, sys
+import json
+import logging
+import argparse
+import configparser
+
+# Args
+parser = argparse.ArgumentParser()
+parser.add_argument('--file', dest='file')
+parser.add_argument('--metadata', dest='metadata')
+args = parser.parse_args()
+
+# Set file
+if args.file:
+    file = args.file
+else:
+    logging.error("file argument was not provided, this is mandatory")
+    sys.exit(1)
+
+# Set metadata
+if args.metadata:
+    metadata = args.metadata
+else:
+    logging.error("metadata argument was not provided, this is mandatory")
+    sys.exit(1)
+
+# process
+
+metadata = json.loads(metadata)
+
+requester_user = metadata.get('user')
+requester_branch = metadata.get('branch')
+requester_commit_message = metadata.get('commit_message')
+
+print('received file=\"{}\", metadata=\"{}\"'.format(file, json.dumps(metadata, indent=2)))
+print('request from user=\"{}\"'.format(requester_user))
+print('request for branch=\"{}\"'.format(requester_branch))
+print('request for commit_message=\"{}\"'.format(requester_commit_message))
+```
+
+The Metadata post exec object can be anything, the smarter design would be to send a JSON object, which can then be loaded transparently as a proper object in Python, allowing all flexibility for the rest of your steps.
+
+You can add whatever makes sense for you, with the flexibiity of SPL, Javascript, Python and so forth.
+
+Voila!
