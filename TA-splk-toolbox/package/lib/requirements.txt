@@ -1,0 +1,2 @@
+splunktaucclib>=5.0.4
+ksconf>=0.10.0

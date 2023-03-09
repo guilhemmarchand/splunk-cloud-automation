@@ -19,3 +19,21 @@ export-apps/*
 !export-apps/libs
 !export-apps/*.py
 !export-apps/*.md
+
+# TA-splk-import-app
+# build
+TA-splk-import-app/build/*.tgz
+TA-splk-import-app/build/release-sha256.txt
+
+# output
+TA-splk-import-app/output/*
+!TA-splk-import-app/output/README.txt
+
+# TA-splk-toolbox
+# build
+TA-splk-toolbox/build/*.tgz
+TA-splk-toolbox/build/release-sha256.txt
+
+# output
+TA-splk-toolbox/output/*
+!TA-splk-toolbox/output/README.txt
