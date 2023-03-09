@@ -1,5 +1,9 @@
 # TA-splk-import-app
 
+**See the documentation here:**
+
+- https://github.com/guilhemmarchand/splunk-cloud-automation/tree/main/TA-splk-toolbox
+
 **Export env:**
 
 ```shell
