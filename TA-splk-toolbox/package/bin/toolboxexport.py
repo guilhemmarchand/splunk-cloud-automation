@@ -66,8 +66,25 @@ class ToolboxExport(GeneratingCommand):
         doc='''
         **Syntax:** **The app=****
         **Description:** Optional, the app value''',
-        require=False, default=None, validate=validators.Match("app", r"^.*$"))
+        require=False, default=None, validate=validators.Match("app", r".*"))
 
+    run_build = Option(
+        doc='''
+        **Syntax:** **run_build=****
+        **Description:** Optional, the run_build value''',
+        require=False, default='True', validate=validators.Match("run_build", r"^(True|False)$"))
+
+    promote_permissions = Option(
+        doc='''
+        **Syntax:** **promote_permissions=****
+        **Description:** Optional, the promote_permissions value''',
+        require=False, default='False', validate=validators.Match("promote_permissions", r"^(True|False)$"))
+
+    postexec_metadata = Option(
+        doc='''
+        **Syntax:** **postexec_metadata=****
+        **Description:** Optional, the postexec_metadata value''',
+        require=False, default=None, validate=validators.Match("postexec_metadata", r".*"))
 
     def generate(self, **kwargs):
 
@@ -405,7 +422,13 @@ class ToolboxExport(GeneratingCommand):
                     post_data = {
                         'account': self.remote_account,
                         'app': self.app,
+                        'run_build': self.run_build,
+                        'promote_permissions': self.promote_permissions,
                     }
+
+                    # Add metadata
+                    if self.postexec_metadata and self.postexec_metadata != 'None':
+                        post_data['postexec_metadata'] = self.postexec_metadata
 
                     try:
 

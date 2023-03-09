@@ -1157,7 +1157,8 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
             if postexec_bin and postexec_metadata:
 
                 try:
-                    result = subprocess.run([postexec_bin, "--metadata", postexec_metadata], capture_output=True)
+                    logging.info("Attempting to execute post exec script=\"{}\"".format(postexec_bin))
+                    result = subprocess.run([postexec_bin, "--file", os.path.join(target_path, filename_data), "--metadata", postexec_metadata], capture_output=True)
                     logging.info("post execution results.stdout=\"{}\"".format(result.stdout))
                     logging.info("post execution results.stderr=\"{}\"".format(result.stderr))
 
@@ -1192,11 +1193,16 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
                         "payload": response,
                         'status': 500
                     }
-                
-                # otherwise, add to the response
-                response['post_execution_stdout'] = result.stdout
-                response['post_execution_stderr'] = result.stderr
-                response['post_execution_metadata'] = postexec_metadata            
+
+                # Add to response                
+                try:
+                    # otherwise, add to the response
+                    response['post_execution_stdout'] = str(result.stdout)
+                    response['post_execution_stderr'] = str(result.stderr)
+                    response['post_execution_metadata'] = postexec_metadata
+
+                except Exception as e:
+                    logging.error("failed to add post execution results to the response, exception=\"{}\"".format(str(e)))
 
             # unless in debug, do not show the base64, nor the original response
             if not loglevel == 'DEBUG':
