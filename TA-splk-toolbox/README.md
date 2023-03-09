@@ -278,4 +278,6 @@ The Metadata post exec object can be anything, the smarter design would be to se
 
 You can add whatever makes sense for you, with the flexibiity of SPL, Javascript, Python and so forth.
 
-Voila!
+If some technical issues happen during the execution of the post exec script, this will noticed by the REST API which will return an action failure, as well as 500 HTTP code.
+
+**Voila!**
