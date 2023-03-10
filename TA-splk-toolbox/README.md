@@ -297,6 +297,14 @@ By relying on the source structure, we extract the Metadata information such as 
 
 ### Ingest CSV lookups
 
+#### Limitations
+
+The following list of fields cannot managed as part of the lookups:
+
+- index, sourcetype, source, host, punct, splunk_server, ah, linecount, timestamp, tag, tag::\*, eventtype, \_raw
+
+#### Ingest
+
 **Say you have the following directory structure:**
 
 ```shell
