@@ -22,6 +22,7 @@ splunkhome = os.environ['SPLUNK_HOME']
 # set logging
 filehandler = logging.FileHandler(splunkhome + "/var/log/splunk/massexecutor4csvgen.log", 'a')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(filename)s %(funcName)s %(lineno)d %(message)s')
+logging.Formatter.converter = time.gmtime
 filehandler.setFormatter(formatter)
 log = logging.getLogger()  # root logger - Good to get it only once.
 for hdlr in log.handlers[:]:  # remove the existing file handlers
