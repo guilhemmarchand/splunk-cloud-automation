@@ -299,7 +299,7 @@ By relying on the source structure, we extract the Metadata information such as 
 
 #### Limitations
 
-If there are conflicting fields in the lookups regarding Splunk indexed metadata fields, for instance if the lookup has a field named sourcetype, Splunk will automatically prefix these fields with `extracted\_` when these are indexed.
+If there are conflicting fields in the lookups regarding Splunk indexed metadata fields, for instance if the lookup has a field named sourcetype, Splunk will automatically prefix these fields with `extracted_` when these are indexed.
 
 Therefore, the logic manages this automatically such that you can any of these conflicting fields as part of the lookups, without having this representing an issue.
 
