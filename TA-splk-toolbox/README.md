@@ -281,3 +281,105 @@ You can add whatever makes sense for you, with the flexibiity of SPL, Javascript
 If some technical issues happen during the execution of the post exec script, this will noticed by the REST API which will return an action failure, as well as 500 HTTP code.
 
 **Voila!**
+
+## Feature 2 - Ingesting CSV lookups and mass executor generator
+
+In Splunk Cloud, you cannot update lookups by publishing an application if these lookups exist already, unlike the normal Splunk behaviour, this means:
+
+- At first deployment of an app containing lookups, the content of the lookups is the one expected as per your application
+- If a user modifies a lookup in Splunk Web, the change applies to the lookups/mylookup.csv as expected and is replicated automatically amongst the SHC members (if in SHC)
+- However, publishing a new release of your app will NOT override the content of the lookup
+- This means that once a lookup has been published in Splunk Cloud, you loose control on it from a deployment perspective
+
+The logic is this tooling is to ingest the CSV lookup by monitoring these using a UF / HF and a file monitor, if the lookup is updated, Splunk notices it and indexes its content in a CSV indexed manner.
+
+By relying on the source structure, we extract the Metadata information such as the app context, then a scheduled logic generates the SPL statements and a Python based mass executor executes the SPL statements sequentially to perform an outputlookup call accordingly.
+
+### Ingest CSV lookups
+
+**Say you have the following directory structure:**
+
+```shell
+/opt/github/myapp1/lookups/
+                            mylookup1.csv
+                            mylookup2.csv
+
+/opt/github/myapp2/lookups/
+                            mylookup3.csv
+                            mylookup4.csv
+```
+
+**Define a file monitor with the following props.conf: (checkout the source stanza here, this needs to match your context)**
+
+```shell
+# CSV ingest
+[csv_lookups]
+FIELD_DELIMITER=,
+FIELD_QUOTE="
+HEADER_FIELD_LINE_NUMBER=0
+INDEXED_EXTRACTIONS=csv
+SHOULD_LINEMERGE=false
+# Set timestamp now
+DATETIME_CONFIG = CURRENT
+# Do not allow KV_MODE exactions
+KV_MODE=none
+# Punct is very usefull here
+ANNOTATE_PUNCT=false
+
+# This should match all CSV lookup files we ingest
+[source::/opt/github/.../*.csv]
+CHECK_METHOD = entire_md5
+```
+
+Then, define an inputs.conf: (update the index name if you wish to do so)
+
+```shell
+# ingest for Git repos with the old structure, where the lookup directory is the root of the repository
+[monitor:///opt/github/*/lookups/*.csv]
+index = csv_lookups
+sourcetype = csv_lookups
+# source: we want the automatic source
+crcSalt = <SOURCE>
+```
+
+### Run the logic
+
+**BEFORE you start running the logic, the corresponding application should be deployed in Splunk Cloud.**
+
+This is because the capabilities of the outputlookup command are limited, it will override the good lookup in the right app namespace file ONLY if it defined already.
+
+If you have more than once the same named lookup in different app namespaces, then you cannot know really which app namespace will receive the update, you should avoid this use case.
+
+### Run time
+
+**First, make sure you deployed the TA-splk-toolbox application in Splunk Cloud.**
+
+**Then, Check the reports in the app, there are two reports:**
+
+- massexecutor4csvgen_abstract
+
+- massexecutor4csvgen_executor
+
+You need to enable both searches. (these are disabled by default)
+
+**If you changed the index target, you need to update the following macro:**
+
+- csvgen_root_constraint
+
+**First do a manual run of the abstract report, this will generate a list of spl statement assuming you have indexed data already:**
+
+![mass001](img/mass001.png)
+
+These statement are the ones the custom command is going to magically execute.
+
+**Now, run the massexecutor:**
+
+![mass002](img/mass002.png)
+
+The Python tool executes the statement and shows the results, its activity is looged in:
+
+```shell
+index=_internal sourcetype="splk_toolbox:massexecutor4csvgen"
+```
+
+![mass003](img/mass003.png)
