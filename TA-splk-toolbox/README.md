@@ -299,9 +299,11 @@ By relying on the source structure, we extract the Metadata information such as 
 
 #### Limitations
 
-The following list of fields cannot managed as part of the lookups:
+If there are conflicting fields in the lookups regarding Splunk indexed metadata fields, for instance if the lookup has a field named sourcetype, Splunk will automatically prefix these fields with `extracted\_` when these are indexed.
 
-- index, sourcetype, source, host, punct, splunk_server, ah, linecount, timestamp, tag, tag::\*, eventtype, \_raw
+Therefore, the logic manages this automatically such that you can any of these conflicting fields as part of the lookups, without having this representing an issue.
+
+However, this means none of the lookup can have field names starting with `extracted_*`, these would be ignored.
 
 #### Ingest
 
@@ -317,7 +319,7 @@ The following list of fields cannot managed as part of the lookups:
                             mylookup4.csv
 ```
 
-**Define a file monitor with the following props.conf: (checkout the source stanza here, this needs to match your context)**
+##### Define a file monitor with the following props.conf: (checkout the source stanza here, this needs to match your context)
 
 ```shell
 # CSV ingest
