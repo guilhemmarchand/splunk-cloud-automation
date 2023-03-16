@@ -19,7 +19,7 @@ import glob
 sys.path.append('libs')
 from tools import cd, gen_build_number, login_appinspect, submit_appinspect, verify_appinspect,\
     download_htmlreport_appinspect, download_jsonreport_appinspect, \
-    splunkacs_create_ephemeral_token, splunk_acs_deploy_app, get_apps_splunk_rest
+    splunkacs_create_ephemeral_token, splunk_acs_deploy_app, login_splunkrest, get_apps_splunk_rest
 
 # Args
 parser = argparse.ArgumentParser()
@@ -285,7 +285,20 @@ else:
 #     
 
 try:
-    splunk_apps_dict = get_apps_splunk_rest(tokenacs, stack, proxy_dict)
+
+    # use either splunk token or bearer token depending on the provided args
+    if create_token:
+        rest_auth_mode = 'bearer_token'
+        # run
+        splunk_apps_dict = get_apps_splunk_rest(rest_auth_mode, tokenacs, stack, proxy_dict)
+        
+    else:
+        rest_auth_mode = 'splunk_token'
+        splunk_rest_token = login_splunkrest(username, password, stack, proxy_dict)
+        # run
+        splunk_apps_dict = get_apps_splunk_rest(rest_auth_mode, splunk_rest_token, stack, proxy_dict)
+
+    # debug
     logging.debug(json.dumps(splunk_apps_dict, indent=2))
 
 except Exception as e:

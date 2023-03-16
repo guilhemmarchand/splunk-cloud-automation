@@ -17,6 +17,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 import json
 import logging
 import requests
+from urllib.parse import urlencode
 from requests.auth import HTTPBasicAuth
 from requests.structures import CaseInsensitiveDict
 
@@ -232,14 +233,42 @@ def splunk_acs_deploy_app(tokenacs, tokenappinspect, app, stack, proxy_dict):
 
         return response.text
 
+
+# login to Splunk REST API and return the token
+def login_splunkrest(username, password, stack, proxy_dict):
+
+    # set url
+    login_url = "https://%s.splunkcloud.com:8089/services/auth/login?output_mode=json" % (stack)
+
+    try:
+        response = requests.post(login_url, data=urlencode({'username':username, 'password':password}), verify=False, proxies=proxy_dict)
+        if response.status_code not in (200, 201, 204):
+            logging.error("Authentication to Splunk REST API has failed, url={},  HTTP Error={}, content={}".format(login_url, response.status_code, response.text))
+        else:
+            logging.debug("Authentication to Splunk REST API was successful, url=\"{}\", token=\"{}\"".format(login_url, response.text))
+
+    except Exception as e:
+        logging.error("Authentication to Splunk REST API has failed, url=\"{}\", exception=\"{}\"".format(login_url, e))
+
+    response_json = json.loads(response.text)
+    splunk_token = response_json['sessionKey']
+
+    return splunk_token
+
+
 # retrieve the list of application installed and their full details from Splunk API
 # Splunk ACS currently lacks the build number
 
-def get_apps_splunk_rest(token, stack, proxy_dict):
+def get_apps_splunk_rest(auth_rest_mode, token, stack, proxy_dict):
 
-    splunk_headers = {
-            'Authorization': 'Bearer %s' % token,
-        }
+    if auth_rest_mode == 'bearer_token':
+        splunk_headers = {
+                'Authorization': 'Bearer %s' % token,
+            }
+    elif auth_rest_mode == 'splunk_token':
+        splunk_headers = {
+                'Authorization': 'Splunk %s' % token,
+            }
 
     # submit
     validate_url = "https://%s.splunkcloud.com:8089/services/apps/local?output_mode=json&count=0" % (stack)
