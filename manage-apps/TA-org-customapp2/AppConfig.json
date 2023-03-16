@@ -1,0 +1,9 @@
+{
+  "appAuthor": "My Company",
+  "appID": "TA-org-customapp2",
+  "appLabel": "Splunk Add-on of mine v2",
+  "appDescription": "Splunk Add-on of mine v2",
+  "appMerge": "False",
+  "appSource": "TA-org-customapp2",
+  "appVersion": "1.0.0"
+}

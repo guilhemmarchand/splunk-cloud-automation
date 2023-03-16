@@ -79,8 +79,6 @@ if args.tokenrest:
     tokenrest = args.tokenrest
 else:
     tokenrest = False
-    logging.error('tokenrest must be provided to authenticate against Splunk REST API and retrieve the list of applications deployed')
-    sys.exit(1)
 
 # Set appinspect_username
 if args.userappinspect:
@@ -195,6 +193,11 @@ if args.create_token:
         sys.exit(1)
 else:
     create_token = False
+
+# check we can authenticate against Splunk REST API
+if not tokenrest or not (create_token and username and password):
+    logging.error('tokenrest or createtoken with username and password must be provided to authenticate against Splunk REST API and retrieve the list of applications deployed')
+    sys.exit(1)
 
 # if set
 if useproxy:
