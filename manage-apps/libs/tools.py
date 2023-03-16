@@ -12,6 +12,8 @@ import os
 import random
 import base64
 import fnmatch
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 import json
 import logging
 import requests
@@ -229,3 +231,28 @@ def splunk_acs_deploy_app(tokenacs, tokenappinspect, app, stack, proxy_dict):
             logging.error("Submission to Splunk ACS API has failed, url=\"{}\", exception=\"{}\"".format(submit_url, e))
 
         return response.text
+
+# retrieve the list of application installed and their full details from Splunk API
+# Splunk ACS currently lacks the build number
+
+def get_apps_splunk_rest(token, stack, proxy_dict):
+
+    splunk_headers = {
+            'Authorization': 'Bearer %s' % token,
+        }
+
+    # submit
+    validate_url = "https://%s.splunkcloud.com:8089/services/apps/local?output_mode=json&count=0" % (stack)
+
+    # run
+    try:
+        response = requests.get(validate_url, headers=splunk_headers, verify=False, proxies=proxy_dict)
+        if response.status_code not in (200, 201, 204):
+            logging.error("Request verification to Splunk API has failed, url={},  HTTP Error={}, content={}".format(validate_url, response.status_code, response.text))
+        else:
+            logging.debug("Request verification to Splunk API was successful, url=\"{}\", response=\"{}\"".format(validate_url, response.text))
+
+    except Exception as e:
+        logging.error("Request verification to Splunk API has failed, url=\"{}\", exception=\"{}\"".format(validate_url, e))
+
+    return json.loads(response.text).get('entry')
