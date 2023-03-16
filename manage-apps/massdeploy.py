@@ -195,7 +195,7 @@ else:
     create_token = False
 
 # check we can authenticate against Splunk REST API
-if not tokenrest or not (create_token and username and password):
+if not tokenrest and not (create_token and username and password):
     logging.error('tokenrest or createtoken with username and password must be provided to authenticate against Splunk REST API and retrieve the list of applications deployed')
     sys.exit(1)
 
