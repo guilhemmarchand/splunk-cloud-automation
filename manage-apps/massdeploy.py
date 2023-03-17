@@ -351,6 +351,20 @@ for appinfo in splunk_apps_dict:
             'build': appbuild,
         })
 
+    elif appversion:
+
+        remote_apps_dict[appname] = {
+            'name': appname,
+            'version': appversion,
+        }
+
+        remote_apps_list.append(appname)
+
+        logging.debug({
+            'name': appname,
+            'version': appversion,
+        })
+
 logging.debug("remote_apps_list=\"{}\"".format(json.dumps(remote_apps_dict, indent=2)))
 logging.debug("remote_apps_list=\"{}\"".format(remote_apps_list))
 
@@ -405,6 +419,23 @@ with cd(appdir):
                     'name': appname,
                     'version': appversion,
                     'build': appbuild,
+                    'archive': apparchive,
+                })
+
+            elif appversion:
+
+                apps_local_dict[appname] = {
+                    'name': appname,
+                    'version': appversion,
+                    'archive': apparchive,
+                }
+
+                apps_local_list.append(appname)
+
+                logging.debug({
+                    'name': appname,
+                    'version': appversion,
+                    'archive': apparchive,
                 })
 
 logging.debug("apps_local_list=\"{}\"".format(json.dumps(apps_local_dict, indent=2)))
@@ -418,9 +449,20 @@ for app in apps_local_list:
 
     logging.debug("handling local app=\"{}\", app_info=\"{}\"".format(app, json.dumps(apps_local_dict[app], indent=2)))
 
-    target_appversion = apps_local_dict[app].get('version')
-    target_appbuild = apps_local_dict[app].get('build')
-    target_apparchive = apps_local_dict[app].get('archive')
+    try:
+        target_appversion = apps_local_dict[app].get('version')
+    except Exception as e:
+        target_appversion = None
+    
+    try:
+        target_appbuild = apps_local_dict[app].get('build')
+    except Exception as e:
+        target_appbuild = None
+
+    try:
+        target_apparchive = apps_local_dict[app].get('archive')
+    except Exception as e:
+        target_apparchive = None
 
     deployment_reason = None
 
@@ -436,16 +478,37 @@ for app in apps_local_list:
         logging.debug("app=\"{}\" is installed on target stack=\"{}\", checking if it is up to date".format(app, stack))
 
         # set remote
-        remote_appversion = remote_apps_dict[app].get('version')
-        remote_appbuild = remote_apps_dict[app].get('build')
+        try:
+            remote_appversion = remote_apps_dict[app].get('version')
+        except Exception as e:
+            remote_appversion = None
 
-        # check version and build
-        if str(target_appversion) == str(remote_appversion) and int(target_appbuild) == int(remote_appbuild):
-            logging.info("app=\"{}\", app is up to date, local_version=\"{}\", remote_version=\"{}\", local_build=\"{}\", remote_build=\"{}\", nothing to do.".format(app, target_appversion, remote_appversion, target_appbuild, remote_appbuild))
+        try:    
+            remote_appbuild = remote_apps_dict[app].get('build')
+        except Exception as e:
+            remote_appbuild = None
 
-        else:
-            logging.info("app=\"{}\", detected mistmatch, local_version=\"{}\", remote_version=\"{}\", local_build=\"{}\", remote_build=\"{}\", deployment will be requested.".format(app, target_appversion, remote_appversion, target_appbuild, remote_appbuild))
-            deployment_reason = 'out_of_date'
+        # if we have both version and buid
+        if target_appversion and target_appbuild:
+
+            # check version and build
+            if str(target_appversion) == str(remote_appversion) and int(target_appbuild) == int(remote_appbuild):
+                logging.info("app=\"{}\", app is up to date, local_version=\"{}\", remote_version=\"{}\", local_build=\"{}\", remote_build=\"{}\", nothing to do.".format(app, target_appversion, remote_appversion, target_appbuild, remote_appbuild))
+
+            else:
+                logging.info("app=\"{}\", detected mistmatch, local_version=\"{}\", remote_version=\"{}\", local_build=\"{}\", remote_build=\"{}\", deployment will be requested.".format(app, target_appversion, remote_appversion, target_appbuild, remote_appbuild))
+                deployment_reason = 'out_of_date'
+
+        # if we only have a version
+        elif target_appversion:
+
+            # check version and build
+            if str(target_appversion) == str(remote_appversion):
+                logging.info("app=\"{}\", app is up to date, local_version=\"{}\", remote_version=\"{}\", nothing to do.".format(app, target_appversion, remote_appversion))
+
+            else:
+                logging.info("app=\"{}\", detected mistmatch, local_version=\"{}\", remote_version=\"{}\", deployment will be requested.".format(app, target_appversion, remote_appversion))
+                deployment_reason = 'out_of_date'
 
     # deploy as needed
 
