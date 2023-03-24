@@ -27,6 +27,8 @@ parser.add_argument('--appdir', dest='appdir')
 parser.add_argument('--debug', dest='debug', action='store_true')
 parser.add_argument('--keep', dest='keep', action='store_true')
 
+parser.add_argument('--appfilter', dest='appfilter')
+
 parser.add_argument('--mode', dest='mode')
 
 parser.add_argument('--tokenrest', dest='tokenrest')
@@ -58,6 +60,14 @@ if args.appdir:
 else:
     logging.error("appdir argument was not provided, this is mandatory")
     sys.exit(1)
+
+# Set appfilter (can be a comma separated list of values)
+if args.appfilter:
+    appfilter = args.appfilter
+    if not isinstance(appfilter, list):
+        appfilter = appfilter.split(",")
+else:
+    appfilter = False
 
 # Set debug boolean
 if args.debug:
@@ -406,37 +416,75 @@ with cd(appdir):
             # proceed
             if appversion and appbuild:
 
-                apps_local_dict[appname] = {
-                    'name': appname,
-                    'version': appversion,
-                    'build': appbuild,
-                    'archive': apparchive,
-                }
+                if appfilter and appname in appfilter:
 
-                apps_local_list.append(appname)
+                    apps_local_dict[appname] = {
+                        'name': appname,
+                        'version': appversion,
+                        'build': appbuild,
+                        'archive': apparchive,
+                    }
 
-                logging.debug({
-                    'name': appname,
-                    'version': appversion,
-                    'build': appbuild,
-                    'archive': apparchive,
-                })
+                    apps_local_list.append(appname)
+
+                    logging.debug({
+                        'name': appname,
+                        'version': appversion,
+                        'build': appbuild,
+                        'archive': apparchive,
+                    })
+
+                else:
+
+                    apps_local_dict[appname] = {
+                        'name': appname,
+                        'version': appversion,
+                        'build': appbuild,
+                        'archive': apparchive,
+                    }
+
+                    apps_local_list.append(appname)
+
+                    logging.debug({
+                        'name': appname,
+                        'version': appversion,
+                        'build': appbuild,
+                        'archive': apparchive,
+                    })
 
             elif appversion:
 
-                apps_local_dict[appname] = {
-                    'name': appname,
-                    'version': appversion,
-                    'archive': apparchive,
-                }
+                if appfilter and appname in appfilter:
 
-                apps_local_list.append(appname)
+                    apps_local_dict[appname] = {
+                        'name': appname,
+                        'version': appversion,
+                        'archive': apparchive,
+                    }
 
-                logging.debug({
-                    'name': appname,
-                    'version': appversion,
-                    'archive': apparchive,
-                })
+                    apps_local_list.append(appname)
+
+                    logging.debug({
+                        'name': appname,
+                        'version': appversion,
+                        'archive': apparchive,
+                    })
+
+                else:
+
+                    apps_local_dict[appname] = {
+                        'name': appname,
+                        'version': appversion,
+                        'archive': apparchive,
+                    }
+
+                    apps_local_list.append(appname)
+
+                    logging.debug({
+                        'name': appname,
+                        'version': appversion,
+                        'archive': apparchive,
+                    })
 
 logging.debug("apps_local_list=\"{}\"".format(json.dumps(apps_local_dict, indent=2)))
 logging.debug("apps_local_list=\"{}\"".format(apps_local_list))
