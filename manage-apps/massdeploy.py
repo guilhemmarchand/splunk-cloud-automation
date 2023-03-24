@@ -67,7 +67,7 @@ if args.appfilter:
     if not isinstance(appfilter, list):
         appfilter = appfilter.split(",")
 else:
-    appfilter = False
+    appfilter = []
 
 # Set debug boolean
 if args.debug:
@@ -321,6 +321,8 @@ except Exception as e:
 # Start message
 logging.info("********** starting program massdeploy.py with appdir=\"{}\", target_stack=\"{}\" **********".format(appdir, stack))
 
+logging.info("appfilter=\"{}\"".format(appfilter))
+
 # build the list of installed app
 remote_apps_dict = {}
 remote_apps_list = []
@@ -390,51 +392,34 @@ with cd(appdir):
     localappdirs = glob.glob('*')
     for localappdir in localappdirs:
         if os.path.isdir(localappdir):
-            logging.debug("handling local app=\"{}\"".format(localappdir))
 
-            appname = localappdir
-            appversion = None
-            appbuild = None
-            apparchive = None
+            if localappdir in appfilter or len(appfilter) == 0:
 
-            with cd(localappdir):
-                if os.path.isfile('version.txt'):
-                    with open('version.txt') as f:
-                        appversion = f.readline()
-                        logging.debug("app=\"{}\", version=\"{}\"".format(appname, appversion))
+                logging.debug("handling local app=\"{}\"".format(localappdir))
 
-                if os.path.isfile('build.txt'):
-                    with open('build.txt') as f:
-                        appbuild = f.readline()
-                        logging.debug("app=\"{}\", build=\"{}\"".format(appname, appbuild))
+                appname = localappdir
+                appversion = None
+                appbuild = None
+                apparchive = None
 
-                tgz = glob.glob(str(appname) + '*.tgz')
-                if os.path.isfile(tgz[0]):
-                    apparchive = tgz[0]
-                    logging.debug("app=\"{}\", apparchive=\"{}\"".format(appname, apparchive))
+                with cd(localappdir):
+                    if os.path.isfile('version.txt'):
+                        with open('version.txt') as f:
+                            appversion = f.readline()
+                            logging.debug("app=\"{}\", version=\"{}\"".format(appname, appversion))
 
-            # proceed
-            if appversion and appbuild:
+                    if os.path.isfile('build.txt'):
+                        with open('build.txt') as f:
+                            appbuild = f.readline()
+                            logging.debug("app=\"{}\", build=\"{}\"".format(appname, appbuild))
 
-                if appfilter and appname in appfilter:
+                    tgz = glob.glob(str(appname) + '*.tgz')
+                    if os.path.isfile(tgz[0]):
+                        apparchive = tgz[0]
+                        logging.debug("app=\"{}\", apparchive=\"{}\"".format(appname, apparchive))
 
-                    apps_local_dict[appname] = {
-                        'name': appname,
-                        'version': appversion,
-                        'build': appbuild,
-                        'archive': apparchive,
-                    }
-
-                    apps_local_list.append(appname)
-
-                    logging.debug({
-                        'name': appname,
-                        'version': appversion,
-                        'build': appbuild,
-                        'archive': apparchive,
-                    })
-
-                else:
+                # proceed
+                if appversion and appbuild:
 
                     apps_local_dict[appname] = {
                         'name': appname,
@@ -452,25 +437,7 @@ with cd(appdir):
                         'archive': apparchive,
                     })
 
-            elif appversion:
-
-                if appfilter and appname in appfilter:
-
-                    apps_local_dict[appname] = {
-                        'name': appname,
-                        'version': appversion,
-                        'archive': apparchive,
-                    }
-
-                    apps_local_list.append(appname)
-
-                    logging.debug({
-                        'name': appname,
-                        'version': appversion,
-                        'archive': apparchive,
-                    })
-
-                else:
+                elif appversion:
 
                     apps_local_dict[appname] = {
                         'name': appname,
@@ -488,6 +455,11 @@ with cd(appdir):
 
 logging.debug("apps_local_list=\"{}\"".format(json.dumps(apps_local_dict, indent=2)))
 logging.debug("apps_local_list=\"{}\"".format(apps_local_list))
+
+if len(apps_local_list) == 0:
+    logging.info("There are no applications to be deployed.")
+    logging.info("********** ending program massdeploy.py target_stack=\"{}\" **********".format(stack))
+    sys.exit(0)
 
 #
 # Loop, check and deploy as needed
