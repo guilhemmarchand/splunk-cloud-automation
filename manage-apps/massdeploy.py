@@ -321,8 +321,6 @@ except Exception as e:
 # Start message
 logging.info("********** starting program massdeploy.py with appdir=\"{}\", target_stack=\"{}\" **********".format(appdir, stack))
 
-logging.info("appfilter=\"{}\"".format(appfilter))
-
 # build the list of installed app
 remote_apps_dict = {}
 remote_apps_list = []
