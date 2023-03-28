@@ -336,9 +336,19 @@ KV_MODE=none
 # Punct is very usefull here
 ANNOTATE_PUNCT=false
 
+# use an INGEST_EVAL to create a unique md5 for each record, we will use this information as part of the break by statement
+TRANSFORMS-set-md5 = set-csvrecord-md5
+
 # This should match all CSV lookup files we ingest
 [source::/opt/github/.../*.csv]
 CHECK_METHOD = entire_md5
+```
+
+Create the associated transforms.conf stanza:
+
+```shell
+[set-csvrecord-md5]
+INGEST_EVAL = md5_record=md5(_raw)
 ```
 
 Then, define an inputs.conf: (update the index name if you wish to do so)
