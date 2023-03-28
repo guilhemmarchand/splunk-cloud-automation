@@ -348,7 +348,7 @@ Create the associated transforms.conf stanza:
 
 ```shell
 [set-csvrecord-md5]
-INGEST_EVAL = md5_record=md5(_raw)
+INGEST_EVAL = record_md5=md5(_raw)
 ```
 
 Then, define an inputs.conf: (update the index name if you wish to do so)
