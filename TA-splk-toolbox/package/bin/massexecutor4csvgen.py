@@ -12,6 +12,7 @@ import sys
 import splunk
 import splunk.entity
 import json
+import re
 import time
 import logging
 import urllib3
@@ -163,7 +164,7 @@ class MassExector4CsvGen(GeneratingCommand):
                 spl_statement = massexec_entity.get('spl')
 
                 # searches need to explicitely start with search
-                if not spl_statement.startswith("search"):
+                if not re.search(r'\|\s?tstats', spl_statement) and not spl_statement.startswith('search'):            
                     spl_statement = "search " + str(spl_statement)
                     massexec_entity['spl'] = spl_statement
 
