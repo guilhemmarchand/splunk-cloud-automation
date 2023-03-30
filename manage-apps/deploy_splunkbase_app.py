@@ -30,6 +30,7 @@ from tools import login_appinspect, login_splunkrest, get_apps_splunk_rest, \
 parser = argparse.ArgumentParser()
 parser.add_argument('--apps_dict_json', dest='apps_dict_json')
 parser.add_argument('--debug', dest='debug', action='store_true')
+parser.add_argument('--mode', dest='mode')
 parser.add_argument('--userappinspect', dest='userappinspect')
 parser.add_argument('--passappinspect', dest='passappinspect')
 parser.add_argument('--create_token', dest='create_token', action='store_true')
@@ -55,6 +56,15 @@ if args.debug:
     debug = True
 else:
     debug = False
+
+# Set mode
+if args.mode:
+    mode = args.mode
+    if not mode in ('live', 'simulation'):
+        logging.error('invalid value mode=\"{}\", valid options are simulation to show what we would do, live to proceed with ACS deployments accordingly')
+        sys.exit(1)
+else:
+    mode = "simulation"
 
 # Set apps_dict_json
 if args.apps_dict_json:
@@ -380,27 +390,30 @@ for record in apps_dict:
             logging.info("app=\"{}\", appId=\"{}\", nothing to do, version=\"{}\" matches requested version=\"{}\"".format(splunkbase_name, splunkbase_id, version_current, version))
         else:
             logging.info("app=\"{}\", appId=\"{}\", requesting update, version=\"{}\" does not matches requested version=\"{}\"".format(splunkbase_name, splunkbase_id, version_current, version))
-            splunkacs_response = splunk_acs_update_splunkbase_app(tokenacs, appinspect_token, splunkbase_name, version, license_ack, stack, proxy_dict)
+            if mode == 'live':
+                splunkacs_response = splunk_acs_update_splunkbase_app(tokenacs, appinspect_token, splunkbase_name, version, license_ack, stack, proxy_dict)
 
     else:
         # app is to be installed
-        splunkacs_response = splunk_acs_deploy_splunkbase_app(tokenacs, appinspect_token, splunkbase_id, license_ack, stack, proxy_dict)
+        if mode == 'live':
+            splunkacs_response = splunk_acs_deploy_splunkbase_app(tokenacs, appinspect_token, splunkbase_id, license_ack, stack, proxy_dict)
 
     # check
-    if splunkacs_response:
-        
-        try:
-            splunkacs_response = json.loads(splunkacs_response)
-            status_acs = splunkacs_response['status']
+    if mode == 'live':
+        if splunkacs_response:
+            
+            try:
+                splunkacs_response = json.loads(splunkacs_response)
+                status_acs = splunkacs_response['status']
 
-            if status_acs == 'installed':
-                logging.info("Splunk ACS deployment of app=\"{}\" was successful, summary=\"{}\"".format(splunkacs_response['appID'], json.dumps(splunkacs_response, indent=4)))
-            else:
-                logging.error("Splunk ACS deployment of app=\"{}\" has failed, summary=\"{}\"".format(splunkbase_id, json.dumps(splunkacs_response, indent=4)))
-                raise ValueError("Splunk ACS deployment of app=\"{}\" has failed, summary=\"{}\"".format(splunkbase_id, json.dumps(splunkacs_response, indent=4)))
+                if status_acs == 'installed':
+                    logging.info("Splunk ACS deployment of app=\"{}\" was successful, summary=\"{}\"".format(splunkacs_response['appID'], json.dumps(splunkacs_response, indent=4)))
+                else:
+                    logging.error("Splunk ACS deployment of app=\"{}\" has failed, summary=\"{}\"".format(splunkbase_id, json.dumps(splunkacs_response, indent=4)))
+                    raise ValueError("Splunk ACS deployment of app=\"{}\" has failed, summary=\"{}\"".format(splunkbase_id, json.dumps(splunkacs_response, indent=4)))
 
-        except Exception as e:
-            logging.error("Splunk ACS deployment of app=\"{}\", an expection was encountered, exception=\"{}\"".format(splunkbase_id, e))
-            raise ValueError("Splunk ACS deployment of app=\"{}\", an expection was encountered, exception=\"{}\"".format(splunkbase_id, e))
+            except Exception as e:
+                logging.error("Splunk ACS deployment of app=\"{}\", an expection was encountered, exception=\"{}\"".format(splunkbase_id, e))
+                raise ValueError("Splunk ACS deployment of app=\"{}\", an expection was encountered, exception=\"{}\"".format(splunkbase_id, e))
 
 sys.exit(0)

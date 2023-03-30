@@ -3,7 +3,6 @@
     "name": "trackme",
     "splunkbaseID": 4621,
     "licenseAck": "https://docs.trackme-solutions.com/license.html",
-    "upgrade": "True",
     "version": "2.0.15"
   }
 ]
