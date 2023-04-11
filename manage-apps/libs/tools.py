@@ -239,9 +239,12 @@ def splunk_acs_deploy_splunkbase_app(tokenacs, tokenappinspect, appId, licenseAc
 
     headers = CaseInsensitiveDict()
     headers["X-Splunkbase-Authorization"] = "%s" % tokenappinspect
+    headers["Content-Type"] = "application/x-www-form-urlencoded"
     headers["Authorization"] = "Bearer %s" % tokenacs
     headers["ACS-Legal-Ack"] = "Y"
     headers["ACS-Licensing-Ack"] = licenseAck
+
+    logging.info("header=\"{}\"".format(headers))
 
     # submit
     submit_url = "https://admin.splunk.com/%s/adminconfig/v2/apps/victoria?splunkbase=true" % stack
@@ -251,7 +254,7 @@ def splunk_acs_deploy_splunkbase_app(tokenacs, tokenappinspect, appId, licenseAc
     session = requests.Session()
 
     try:
-        response = session.patch(submit_url, headers=headers, data={'splunkbaseID': appId}, verify=True, proxies=proxy_dict)
+        response = session.post(submit_url, headers=headers, data={'splunkbaseID': appId}, verify=True, proxies=proxy_dict)
         if response.status_code not in (200, 201, 204):
             logging.error("Submission to Splunk ACS API has failed, url={},  HTTP Error={}, content={}".format(submit_url, response.status_code, response.text))
         else:
