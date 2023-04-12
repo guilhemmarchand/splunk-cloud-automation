@@ -23,7 +23,7 @@ import base64
 
 # load libs
 sys.path.append('libs')
-from tools import login_appinspect, login_splunkrest, get_apps_splunk_rest, \
+from tools import login_splunkbase, login_appinspect, login_splunkrest, get_apps_splunk_rest, \
     splunkacs_create_ephemeral_token, splunk_acs_deploy_splunkbase_app, splunk_acs_update_splunkbase_app
 
 # Args
@@ -251,6 +251,27 @@ if userappinspect and passappinspect:
 
     except Exception as e:
         logging.error("Appinspect: login failed, exception=\"{}\"".format(str(e)))
+
+#
+# SplunkBase
+#
+
+#
+# Appinspect
+#
+
+# login to SplunKBase
+try:
+    splunkbase_token = login_splunkbase(userappinspect, passappinspect, proxy_dict)
+
+    if appinspect_token:
+        logging.info("SplunkBase: successfully logged in SplunkBase API")
+    else:
+        logging.error("SplunkBase: login failed, response=\"{}\"".format(appinspect_token))
+
+except Exception as e:
+    logging.error("SplunkBase: login failed, exception=\"{}\"".format(str(e)))
+    
 
 #
 # ACS

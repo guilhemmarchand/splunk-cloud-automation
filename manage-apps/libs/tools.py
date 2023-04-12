@@ -20,7 +20,7 @@ import requests
 from urllib.parse import urlencode
 from requests.auth import HTTPBasicAuth
 from requests.structures import CaseInsensitiveDict
-
+import xml.etree.ElementTree as ET
 
 # context manager
 class cd:
@@ -35,9 +35,36 @@ class cd:
     def __exit__(self, etype, value, traceback):
         os.chdir(self.savedPath)
 
+
 # gen a random build number, digit of 10 digits
 def gen_build_number():
     return random.randint(0, 9999999999)
+
+
+def login_splunkbase(username, password, proxy_dict):
+    url = 'https://splunkbase.splunk.com/api/account:login'
+    data = {
+        'username': username,
+        'password': password
+    }
+
+    response = requests.post(url, data=data, proxies=proxy_dict)
+
+    # Check the response status and parse the XML response
+    if response.status_code == 200:
+        xml_response = response.text
+        root = ET.fromstring(xml_response)
+
+        # Extract the value for "id" and return it
+        id_element = root.find('{http://www.w3.org/2005/Atom}id')
+        if id_element is not None:
+            return id_element.text
+        else:
+            logging.error("Splunkbase login failed, id element not found in the XML response")
+            raise Exception("Splunkbase login failed, id element not found in the XML response")
+    else:
+        raise Exception(f"Splunkbase login Request failed with status code {response.status_code}")
+
 
 # login to Appinspect API and return the token
 def login_appinspect(username, password, proxy_dict):
@@ -235,10 +262,10 @@ def splunk_acs_deploy_app(tokenacs, tokenappinspect, app, stack, proxy_dict):
 
 
 # Deploy to Splunk Cloud through ACS for a SplunkBase app
-def splunk_acs_deploy_splunkbase_app(tokenacs, tokenappinspect, appId, licenseAck, stack, proxy_dict):
+def splunk_acs_deploy_splunkbase_app(tokenacs, tokensplunkbase, appId, licenseAck, stack, proxy_dict):
 
     headers = CaseInsensitiveDict()
-    headers["X-Splunkbase-Authorization"] = "%s" % tokenappinspect
+    headers["X-Splunkbase-Authorization"] = "%s" % tokensplunkbase
     headers["Content-Type"] = "application/x-www-form-urlencoded"
     headers["Authorization"] = "Bearer %s" % tokenacs
     headers["ACS-Legal-Ack"] = "Y"
@@ -267,16 +294,17 @@ def splunk_acs_deploy_splunkbase_app(tokenacs, tokenappinspect, appId, licenseAc
 
 
 # Deploy to Splunk Cloud through ACS for a SplunkBase app
-def splunk_acs_update_splunkbase_app(tokenacs, tokenappinspect, appName, version, licenseAck, stack, proxy_dict):
+def splunk_acs_update_splunkbase_app(tokenacs, tokensplunkbase, appName, version, licenseAck, stack, proxy_dict):
 
     headers = CaseInsensitiveDict()
-    headers["X-Splunkbase-Authorization"] = "%s" % tokenappinspect
+    headers["X-Splunkbase-Authorization"] = "%s" % tokensplunkbase
+    headers["Content-Type"] = 'application/x-www-form-urlencoded'
     headers["Authorization"] = "Bearer %s" % tokenacs
     headers["ACS-Legal-Ack"] = "Y"
     headers["ACS-Licensing-Ack"] = licenseAck
 
     # submit
-    submit_url = "https://admin.splunk.com/%s/adminconfig/v2/apps/victoria/%s" % (stack, appName)
+    submit_url = "https://admin.splunk.com/%s/adminconfig/v2/apps/victoria/%s?splunkbase=true" % (stack, appName)
 
     # run
 
