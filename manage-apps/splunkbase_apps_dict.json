@@ -3,7 +3,7 @@
     "name": "trackme",
     "splunkbaseID": 4621,
     "licenseAck": "https://docs.trackme-solutions.com/license.html",
-    "version": "2.0.15"
+    "version": "2.0.21"
   },
   {
     "name": "lookup_editor",

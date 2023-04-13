@@ -262,7 +262,7 @@ def splunk_acs_deploy_app(tokenacs, tokenappinspect, app, stack, proxy_dict):
 
 
 # Deploy to Splunk Cloud through ACS for a SplunkBase app
-def splunk_acs_deploy_splunkbase_app(tokenacs, tokensplunkbase, appId, licenseAck, stack, proxy_dict):
+def splunk_acs_deploy_splunkbase_app(tokenacs, tokensplunkbase, appId, version, licenseAck, stack, proxy_dict):
 
     headers = CaseInsensitiveDict()
     headers["X-Splunkbase-Authorization"] = "%s" % tokensplunkbase
@@ -270,8 +270,6 @@ def splunk_acs_deploy_splunkbase_app(tokenacs, tokensplunkbase, appId, licenseAc
     headers["Authorization"] = "Bearer %s" % tokenacs
     headers["ACS-Legal-Ack"] = "Y"
     headers["ACS-Licensing-Ack"] = licenseAck
-
-    logging.info("header=\"{}\"".format(headers))
 
     # submit
     submit_url = "https://admin.splunk.com/%s/adminconfig/v2/apps/victoria?splunkbase=true" % stack
@@ -281,8 +279,8 @@ def splunk_acs_deploy_splunkbase_app(tokenacs, tokensplunkbase, appId, licenseAc
     session = requests.Session()
 
     try:
-        response = session.post(submit_url, headers=headers, data={'splunkbaseID': appId}, verify=True, proxies=proxy_dict)
-        if response.status_code not in (200, 201, 204):
+        response = session.post(submit_url, headers=headers, data={'splunkbaseID': appId, 'version': version}, verify=True, proxies=proxy_dict)
+        if response.status_code not in (200, 201, 202, 204):
             logging.error("Submission to Splunk ACS API has failed, url={},  HTTP Error={}, content={}".format(submit_url, response.status_code, response.text))
         else:
             logging.debug("Submission to Splunk ACS API was successful, url=\"{}\", response=\"{}\"".format(submit_url, response.text))
@@ -312,7 +310,7 @@ def splunk_acs_update_splunkbase_app(tokenacs, tokensplunkbase, appName, version
 
     try:
         response = session.patch(submit_url, headers=headers, data={'version': version}, verify=True, proxies=proxy_dict)
-        if response.status_code not in (200, 201, 204):
+        if response.status_code not in (200, 201, 202, 204):
             logging.error("Submission to Splunk ACS API has failed, url={},  HTTP Error={}, content={}".format(submit_url, response.status_code, response.text))
         else:
             logging.debug("Submission to Splunk ACS API was successful, url=\"{}\", response=\"{}\"".format(submit_url, response.text))
@@ -334,7 +332,7 @@ def login_splunkrest(username, password, stack, proxy_dict):
         if response.status_code not in (200, 201, 204):
             logging.error("Authentication to Splunk REST API has failed, url={},  HTTP Error={}, content={}".format(login_url, response.status_code, response.text))
         else:
-            logging.debug("Authentication to Splunk REST API was successful, url=\"{}\", token=\"{}\"".format(login_url, response.text))
+            logging.info("Authentication to Splunk REST API was successful, url=\"{}\"".format(login_url))
 
     except Exception as e:
         logging.error("Authentication to Splunk REST API has failed, url=\"{}\", exception=\"{}\"".format(login_url, e))
@@ -358,6 +356,8 @@ def get_apps_splunk_rest(auth_rest_mode, token, stack, proxy_dict):
         splunk_headers = {
                 'Authorization': 'Splunk %s' % token,
             }
+        
+    logging.debug("headers=\"{}\"".format(splunk_headers))
 
     # submit
     validate_url = "https://%s.splunkcloud.com:8089/services/apps/local?output_mode=json&count=0" % (stack)

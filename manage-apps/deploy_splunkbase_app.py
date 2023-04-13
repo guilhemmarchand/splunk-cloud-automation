@@ -9,21 +9,13 @@ __maintainer__ = "TBD"
 __status__ = "PRODUCTION"
 
 import os, sys
-import time
-import shutil
-import tarfile
 import json
 import coloredlogs,logging
 import argparse
-import glob
-import subprocess
-import configparser
-import hashlib
-import base64
 
 # load libs
 sys.path.append('libs')
-from tools import login_splunkbase, login_appinspect, login_splunkrest, get_apps_splunk_rest, \
+from tools import login_splunkbase, login_splunkrest, get_apps_splunk_rest, \
     splunkacs_create_ephemeral_token, splunk_acs_deploy_splunkbase_app, splunk_acs_update_splunkbase_app
 
 # Args
@@ -31,15 +23,15 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--apps_dict_json', dest='apps_dict_json')
 parser.add_argument('--debug', dest='debug', action='store_true')
 parser.add_argument('--mode', dest='mode')
-parser.add_argument('--userappinspect', dest='userappinspect')
-parser.add_argument('--passappinspect', dest='passappinspect')
+parser.add_argument('--usersplunkbase', dest='usersplunkbase')
+parser.add_argument('--passsplunkbase', dest='passsplunkbase')
 parser.add_argument('--create_token', dest='create_token', action='store_true')
 parser.add_argument('--token_audience', dest='token_audience')
 parser.add_argument('--username', dest='username')
 parser.add_argument('--password', dest='password')
 parser.add_argument('--tokenacs', dest='tokenacs')
+parser.add_argument('--tokenrest', dest='tokenrest')
 parser.add_argument('--stack', dest='stack')
-parser.add_argument('--license_ack', dest='license_ack')
 parser.add_argument('--useproxy', dest='useproxy', action='store_true')
 parser.add_argument('--proxy_url', dest='proxy_url')
 parser.add_argument('--proxy_port', dest='proxy_port')
@@ -72,17 +64,17 @@ if args.apps_dict_json:
 else:
     apps_dict_json = False
 
-# Set appinspect_username
-if args.userappinspect:
-    userappinspect = args.userappinspect
+# Set usersplunkbase
+if args.usersplunkbase:
+    usersplunkbase = args.usersplunkbase
 else:
-    userappinspect = False
+    usersplunkbase = False
 
-# Set appinspect_password
-if args.passappinspect:
-    passappinspect = args.passappinspect
+# Set passsplunkbase
+if args.passsplunkbase:
+    passsplunkbase = args.passsplunkbase
 else:
-    passappinspect = False
+    passsplunkbase = False
 
 # Set tokenacs
 if args.tokenacs:
@@ -90,17 +82,17 @@ if args.tokenacs:
 else:
     tokenacs = False
 
+# Set tokenrest
+if args.tokenrest:
+    tokenrest = args.tokenrest
+else:
+    tokenrest = False
+
 # Set stack
 if args.stack:
     stack = args.stack
 else:
     stack = False
-
-# Set license_ack
-if args.license_ack:
-    license_ack = args.license_ack
-else:
-    license_ack = False
 
 # user login and password (required if create_token is set)
 if args.username:
@@ -235,39 +227,17 @@ else:
         logging.error('failed to load the apps dict json file=\"{}\", exception=\"{}\"'.format(apps_dict_json, str(e)))
 
 #
-# Appinspect
-#
-
-if userappinspect and passappinspect:
-
-    # login to Appinspect
-    try:
-        appinspect_token = login_appinspect(userappinspect, passappinspect, proxy_dict)
-
-        if appinspect_token:
-            logging.info("Appsinspect: successfully logged in Appinspect API")
-        else:
-            logging.error("Appinspect: login failed, response=\"{}\"".format(appinspect_token))
-
-    except Exception as e:
-        logging.error("Appinspect: login failed, exception=\"{}\"".format(str(e)))
-
-#
 # SplunkBase
-#
-
-#
-# Appinspect
 #
 
 # login to SplunKBase
 try:
-    splunkbase_token = login_splunkbase(userappinspect, passappinspect, proxy_dict)
+    splunkbase_token = login_splunkbase(usersplunkbase, passsplunkbase, proxy_dict)
 
-    if appinspect_token:
+    if splunkbase_token:
         logging.info("SplunkBase: successfully logged in SplunkBase API")
     else:
-        logging.error("SplunkBase: login failed, response=\"{}\"".format(appinspect_token))
+        logging.error("SplunkBase: login failed, response=\"{}\"".format(splunkbase_token))
 
 except Exception as e:
     logging.error("SplunkBase: login failed, exception=\"{}\"".format(str(e)))
@@ -304,12 +274,14 @@ if not tokenacs:
 try:
 
     # use either splunk token or bearer token depending on the provided args
-    if create_token:
+    if tokenrest:
+        logging.info("Authentication to Splunk API using bearer auth")
         rest_auth_mode = 'bearer_token'
         # run
-        splunk_apps_dict = get_apps_splunk_rest(rest_auth_mode, tokenacs, stack, proxy_dict)
+        splunk_apps_dict = get_apps_splunk_rest(rest_auth_mode, tokenrest, stack, proxy_dict)
         
     else:
+        logging.info("Authentication to Splunk API using basic auth")
         rest_auth_mode = 'splunk_token'
         splunk_rest_token = login_splunkrest(username, password, stack, proxy_dict)
         # run
@@ -387,6 +359,8 @@ for record in apps_dict:
     splunkbase_id = record.get('splunkbaseID')
     license_ack = record.get('licenseAck')
 
+    logging.info("inspecting app=\"{}\", id=\"{}\"".format(splunkbase_name, splunkbase_id))
+
     # the requested version
     version = record.get('version')
 
@@ -411,12 +385,14 @@ for record in apps_dict:
         else:
             logging.info("app=\"{}\", appId=\"{}\", requesting update, version=\"{}\" does not matches requested version=\"{}\"".format(splunkbase_name, splunkbase_id, version_current, version))
             if mode == 'live':
-                splunkacs_response = splunk_acs_update_splunkbase_app(tokenacs, appinspect_token, splunkbase_name, version, license_ack, stack, proxy_dict)
+                splunkacs_response = splunk_acs_update_splunkbase_app(tokenacs, splunkbase_token, splunkbase_name, version, license_ack, stack, proxy_dict)
 
     else:
         # app is to be installed
         if mode == 'live':
-            splunkacs_response = splunk_acs_deploy_splunkbase_app(tokenacs, appinspect_token, splunkbase_id, license_ack, stack, proxy_dict)
+            splunkacs_response = splunk_acs_deploy_splunkbase_app(tokenacs, splunkbase_token, splunkbase_id, version, license_ack, stack, proxy_dict)
+        else:
+            logging.info("app=\"{}\", appId=\"{}\", this app is not installed yet, run with mode=live to proceed with its deployment".format(splunkbase_name, splunkbase_id))
 
     # check
     if mode == 'live':
@@ -426,7 +402,7 @@ for record in apps_dict:
                 splunkacs_response = json.loads(splunkacs_response)
                 status_acs = splunkacs_response['status']
 
-                if status_acs == 'installed':
+                if status_acs == 'installed' or status_acs == 'processing':
                     logging.info("Splunk ACS deployment of app=\"{}\" was successful, summary=\"{}\"".format(splunkacs_response['appID'], json.dumps(splunkacs_response, indent=4)))
                 else:
                     logging.error("Splunk ACS deployment of app=\"{}\" has failed, summary=\"{}\"".format(splunkbase_id, json.dumps(splunkacs_response, indent=4)))
