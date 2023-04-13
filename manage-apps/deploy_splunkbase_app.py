@@ -18,179 +18,76 @@ sys.path.append('libs')
 from tools import login_splunkbase, login_splunkrest, get_apps_splunk_rest, \
     splunkacs_create_ephemeral_token, splunk_acs_deploy_splunkbase_app, splunk_acs_update_splunkbase_app
 
-# Args
-parser = argparse.ArgumentParser()
-parser.add_argument('--apps_dict_json', dest='apps_dict_json')
-parser.add_argument('--debug', dest='debug', action='store_true')
-parser.add_argument('--mode', dest='mode')
-parser.add_argument('--usersplunkbase', dest='usersplunkbase')
-parser.add_argument('--passsplunkbase', dest='passsplunkbase')
-parser.add_argument('--create_token', dest='create_token', action='store_true')
-parser.add_argument('--token_audience', dest='token_audience')
-parser.add_argument('--username', dest='username')
-parser.add_argument('--password', dest='password')
-parser.add_argument('--tokenacs', dest='tokenacs')
-parser.add_argument('--tokenrest', dest='tokenrest')
-parser.add_argument('--stack', dest='stack')
-parser.add_argument('--useproxy', dest='useproxy', action='store_true')
-parser.add_argument('--proxy_url', dest='proxy_url')
-parser.add_argument('--proxy_port', dest='proxy_port')
-parser.add_argument('--proxy_username', dest='proxy_username')
-parser.add_argument('--proxy_password', dest='proxy_password')
-parser.set_defaults(debug=False)
-parser.set_defaults(keep=False)
-parser.set_defaults(create_token=False)
-parser.set_defaults(submitappinspect=False)
-args = parser.parse_args()
 
-# Set debug boolean
-if args.debug:
-    debug = True
-else:
-    debug = False
+def set_argument_value(args, arg_name, default_value=None):
+    value = getattr(args, arg_name)
+    return value if value is not None else default_value
 
-# Set mode
-if args.mode:
-    mode = args.mode
-    if not mode in ('live', 'simulation'):
-        logging.error('invalid value mode=\"{}\", valid options are simulation to show what we would do, live to proceed with ACS deployments accordingly')
-        sys.exit(1)
-else:
-    mode = "simulation"
 
-# Set apps_dict_json
-if args.apps_dict_json:
-    apps_dict_json = args.apps_dict_json
-else:
-    apps_dict_json = False
+def exit_with_error(message):
+    logging.error(message)
+    sys.exit(1)
 
-# Set usersplunkbase
-if args.usersplunkbase:
-    usersplunkbase = args.usersplunkbase
-else:
-    usersplunkbase = False
 
-# Set passsplunkbase
-if args.passsplunkbase:
-    passsplunkbase = args.passsplunkbase
-else:
-    passsplunkbase = False
+def create_proxy_dict(args):
+    if args.useproxy:
+        if not args.proxy_url or not args.proxy_port:
+            exit_with_error("useproxy is enabled, but proxy_url or proxy_port were not provided")
 
-# Set tokenacs
-if args.tokenacs:
-    tokenacs = args.tokenacs
-else:
-    tokenacs = False
-
-# Set tokenrest
-if args.tokenrest:
-    tokenrest = args.tokenrest
-else:
-    tokenrest = False
-
-# Set stack
-if args.stack:
-    stack = args.stack
-else:
-    stack = False
-
-# user login and password (required if create_token is set)
-if args.username:
-    username = args.username
-else:
-    username = False
-
-if args.password:
-    password = args.password
-else:
-    password = False
-
-if args.token_audience:
-    token_audience = args.token_audience
-else:
-    token_audience = False
-
-# Create token boolean
-if args.create_token:
-    create_token = True
-    if not username or not password or not token_audience:
-        logging.error("create_token is enabled, but username, password or token_audience were not provided")
-        sys.exit(1)
-else:
-    create_token = False
-
-# Set useproxy boolean
-if args.useproxy:
-    useproxy = True
-else:
-    useproxy = False
-
-# proxy_url settings
-if args.proxy_url:
-    proxy_url = args.proxy_url
-else:
-    proxy_url = False
-
-if args.proxy_port:
-    proxy_port = args.proxy_port
-else:
-    proxy_port = False
-
-if args.proxy_username:
-    proxy_username = args.proxy_username
-else:
-    proxy_username = False
-
-if args.proxy_password:
-    proxy_password = args.proxy_password
-else:
-    proxy_password = False
-
-# if set
-if useproxy:
-
-    if not proxy_url or not proxy_port:
-        logging.error("useproxy is enabled, but proxy_url or proxy_port were not provided")
-        sys.exit(1)
-
-    if not proxy_username or not proxy_password:
-        proxy_dict= {
-            "http" : proxy_url + ":" + proxy_port,
-            "https" : proxy_url + ":" + proxy_port
+        if not args.proxy_username or not args.proxy_password:
+            return {
+                "http": f"{args.proxy_url}:{args.proxy_port}",
+                "https": f"{args.proxy_url}:{args.proxy_port}",
+            }
+        else:
+            return {
+                "http": f"http://{args.proxy_username}:{args.proxy_password}@{args.proxy_url}:{args.proxy_port}",
+                "https": f"https://{args.proxy_username}:{args.proxy_password}@{args.proxy_url}:{args.proxy_port}",
             }
     else:
-        proxy_dict= {
-            "http" : "http://" + proxy_username + ":" + proxy_password + "@" + proxy_url + ":" + proxy_port,
-            "https" : "https://" + proxy_username + ":" + proxy_password + "@" + proxy_url + ":" + proxy_port
-            }
-else:
-    proxy_dict = {}
+        return {}
 
-# Splunk ACS
-# user login and password (required if create_token is set)
-if args.username:
-    username = args.username
-else:
-    username = False
 
-if args.password:
-    password = args.password
-else:
-    password = False
+parser = argparse.ArgumentParser()
+parser.add_argument('--apps_dict_json')
+parser.add_argument('--debug', action='store_true')
+parser.add_argument('--mode')
+parser.add_argument('--usersplunkbase')
+parser.add_argument('--passsplunkbase')
+parser.add_argument('--create_token', action='store_true')
+parser.add_argument('--token_audience')
+parser.add_argument('--username')
+parser.add_argument('--password')
+parser.add_argument('--tokenacs')
+parser.add_argument('--tokenrest')
+parser.add_argument('--stack')
+parser.add_argument('--useproxy', action='store_true')
+parser.add_argument('--proxy_url')
+parser.add_argument('--proxy_port')
+parser.add_argument('--proxy_username')
+parser.add_argument('--proxy_password')
+args = parser.parse_args()
 
-if args.token_audience:
-    token_audience = args.token_audience
-else:
-    token_audience = False
+debug = args.debug
+mode = set_argument_value(args, 'mode', 'simulation')
+if mode not in ('live', 'simulation'):
+    exit_with_error(f'Invalid value mode="{mode}", valid options are "simulation" to show what we would do, "live" to proceed with ACS deployments accordingly')
 
-# Create token boolean
-if args.create_token:
-    create_token = True
-    if not username or not password or not token_audience:
-        logging.error("create_token is enabled, but username, password or token_audience were not provided")
-        sys.exit(1)
-else:
-    create_token = False
+apps_dict_json = set_argument_value(args, 'apps_dict_json', False)
+usersplunkbase = set_argument_value(args, 'usersplunkbase', False)
+passsplunkbase = set_argument_value(args, 'passsplunkbase', False)
+tokenacs = set_argument_value(args, 'tokenacs', False)
+tokenrest = set_argument_value(args, 'tokenrest', False)
+stack = set_argument_value(args, 'stack', False)
+username = set_argument_value(args, 'username', False)
+password = set_argument_value(args, 'password', False)
+token_audience = set_argument_value(args, 'token_audience', False)
+create_token = args.create_token
+
+if create_token and (not username or not password or not token_audience):
+    exit_with_error("create_token is enabled, but username, password, or token_audience were not provided")
+
+proxy_dict = create_proxy_dict(args)
 
 # set logging
 root = logging.getLogger()
@@ -402,7 +299,7 @@ for record in apps_dict:
                 splunkacs_response = json.loads(splunkacs_response)
                 status_acs = splunkacs_response['status']
 
-                if status_acs == 'installed' or status_acs == 'processing':
+                if status_acs == 'installed' or status_acs =='processing':
                     logging.info("Splunk ACS deployment of app=\"{}\" was successful, summary=\"{}\"".format(splunkacs_response['appID'], json.dumps(splunkacs_response, indent=4)))
                 else:
                     logging.error("Splunk ACS deployment of app=\"{}\" has failed, summary=\"{}\"".format(splunkbase_id, json.dumps(splunkacs_response, indent=4)))
