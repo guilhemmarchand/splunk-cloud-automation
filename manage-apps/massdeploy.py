@@ -605,7 +605,7 @@ for app in apps_local_list:
                     splunkacs_response = json.loads(splunkacs_response)
                     status_acs = splunkacs_response['status']
 
-                    if status_acs == 'installed':
+                    if status_acs in ('installed', 'uploaded'):
                         logging.info("Splunk ACS deployment of app=\"{}\" was successful, summary=\"{}\"".format(splunkacs_response['appID'], json.dumps(splunkacs_response, indent=4)))
                     else:
                         logging.error("Splunk ACS deployment of app=\"{}\" has failed, summary=\"{}\"".format(file_name, json.dumps(splunkacs_response, indent=4)))
