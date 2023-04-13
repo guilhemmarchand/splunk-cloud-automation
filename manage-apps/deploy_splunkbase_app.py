@@ -15,7 +15,7 @@ import argparse
 
 # load libs
 sys.path.append('libs')
-from tools import login_splunkbase, login_splunkrest, get_apps_splunk_rest, \
+from tools import login_splunkbase, get_apps_splunk_rest, \
     splunkacs_create_ephemeral_token, splunk_acs_deploy_splunkbase_app, splunk_acs_update_splunkbase_app
 
 
@@ -59,7 +59,6 @@ parser.add_argument('--token_audience')
 parser.add_argument('--username')
 parser.add_argument('--password')
 parser.add_argument('--tokenacs')
-parser.add_argument('--tokenrest')
 parser.add_argument('--stack')
 parser.add_argument('--useproxy', action='store_true')
 parser.add_argument('--proxy_url')
@@ -77,7 +76,6 @@ apps_dict_json = set_argument_value(args, 'apps_dict_json', False)
 usersplunkbase = set_argument_value(args, 'usersplunkbase', False)
 passsplunkbase = set_argument_value(args, 'passsplunkbase', False)
 tokenacs = set_argument_value(args, 'tokenacs', False)
-tokenrest = set_argument_value(args, 'tokenrest', False)
 stack = set_argument_value(args, 'stack', False)
 username = set_argument_value(args, 'username', False)
 password = set_argument_value(args, 'password', False)
@@ -170,19 +168,11 @@ if not tokenacs:
 
 try:
 
-    # use either splunk token or bearer token depending on the provided args
-    if tokenrest:
-        logging.info("Authentication to Splunk API using bearer auth")
-        rest_auth_mode = 'bearer_token'
-        # run
-        splunk_apps_dict = get_apps_splunk_rest(rest_auth_mode, tokenrest, stack, proxy_dict)
-        
-    else:
-        logging.info("Authentication to Splunk API using basic auth")
-        rest_auth_mode = 'splunk_token'
-        splunk_rest_token = login_splunkrest(username, password, stack, proxy_dict)
-        # run
-        splunk_apps_dict = get_apps_splunk_rest(rest_auth_mode, splunk_rest_token, stack, proxy_dict)
+    # use either ephemeral token or bearer token depending on the provided args
+    logging.info("Authentication to Splunk API using bearer auth")
+    rest_auth_mode = 'bearer_token'
+    # run
+    splunk_apps_dict = get_apps_splunk_rest(rest_auth_mode, tokenacs, stack, proxy_dict)
 
     # debug
     logging.debug(json.dumps(splunk_apps_dict, indent=2))

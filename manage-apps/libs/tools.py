@@ -645,64 +645,6 @@ def splunk_acs_update_splunkbase_app(tokenacs, tokensplunkbase, appName, version
         ) from e
 
 
-def login_splunkrest(username, password, stack, proxy_dict):
-    """
-    Login to Splunk REST API and return the token.
-
-    Args:
-        username (str): The username for the authentication.
-        password (str): The password for the authentication.
-        stack (str): The stack to use for the request.
-        proxy_dict (dict): Proxy settings to use for the request.
-
-    Returns:
-        str: The Splunk token if the authentication is successful.
-
-    Raises:
-        Exception: If the authentication to Splunk REST API fails.
-    """
-    login_url = f"https://{stack}.splunkcloud.com:8089/services/auth/login?output_mode=json"
-
-    try:
-        response = requests.post(
-            login_url,
-            data=urlencode({"username": username, "password": password}),
-            verify=False,
-            proxies=proxy_dict,
-        )
-
-        if response.status_code not in (200, 201, 204):
-            logging.error(
-                f"Authentication to Splunk REST API failed, "
-                f"url={login_url}, "
-                f"HTTP Error={response.status_code}, "
-                f"content={response.text}"
-            )
-            raise Exception(
-                f"Authentication to Splunk REST API failed, "
-                f"url={login_url}, "
-                f"response={response.text}"
-            )
-        else:
-            logging.info(f"Authentication to Splunk REST API successful, url={login_url}")
-
-        response_json = json.loads(response.text)
-        splunk_token = response_json["sessionKey"]
-        return splunk_token
-
-    except Exception as e:
-        logging.error(
-            f"Authentication to Splunk REST API failed, "
-            f"url={login_url}, "
-            f"exception={e}"
-        )
-        raise Exception(
-            f"Authentication to Splunk REST API failed, "
-            f"url={login_url}, "
-            f"exception={e}"
-        ) from e
-
-
 def get_apps_splunk_rest(auth_rest_mode, token, stack, proxy_dict):
     """
     Retrieve the list of installed applications and their full details from Splunk API.
@@ -724,8 +666,6 @@ def get_apps_splunk_rest(auth_rest_mode, token, stack, proxy_dict):
         splunk_headers = {"Authorization": f"Bearer {token}"}
     elif auth_rest_mode == "splunk_token":
         splunk_headers = {"Authorization": f"Splunk {token}"}
-
-    logging.debug(f"headers={splunk_headers}")
 
     validate_url = f"https://{stack}.splunkcloud.com:8089/services/apps/local?output_mode=json&count=0"
 
