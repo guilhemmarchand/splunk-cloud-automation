@@ -1068,6 +1068,79 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
                                             'status': 500
                                         }
 
+                        #
+                        # nav packaging
+                        #
+
+                        if os.path.isfile(os.path.join(app, 'local', 'data', 'ui', 'nav', 'default.xml')):
+                            logging.info("processing promotion of local nav default.xml file")
+
+                            # if the view does not exist in default, then it is a simple copy (but we need create the structure first if needed)
+                            # otherwise, this is an override
+
+                            if not os.path.isdir(os.path.join(app, 'default', 'data', 'ui', 'nav')):
+                                try:
+                                    os.makedirs(os.path.join(app, 'default', 'data', 'ui', 'nav'))
+                                except Exception as e:
+                                    logging.error('failed to create target directory structure=\"{}\", exception=\"{}\"'.format(os.path.join(app, 'default', 'data', 'ui', 'nav'), str(e)))
+
+                                    response = {
+                                        'action': 'failure',
+                                        'message': 'failed to create target directory structure=\"{}\"'.format(os.path.join(app, 'default', 'data', 'ui', 'nav')),
+                                        'exception': str(e),
+                                        'account': account,
+                                        'url': splunk_url,
+                                    }
+
+                                    return {
+                                        "payload": response,
+                                        'status': 500
+                                    }
+
+                            if not os.path.isfile(os.path.join(app, 'default', 'data', 'ui', 'nav', 'default.xml')):
+
+                                try:
+                                    shutil.copyfile(os.path.join(app, "local", 'data', 'ui', 'nav', 'default.xml'), os.path.join(app, "default", 'data', 'ui', 'nav', 'default.xml'))
+                                    logging.info("local nav=\"default.xml\" has no default, promoting the nav")
+
+                                except Exception as e:
+                                    logging.error('failed to promote local nav=\"default.xml\" with exception=\"{}\"'.format(str(e)))
+
+                                    response = {
+                                        'action': 'failure',
+                                        'message': 'failed to promote local nav=\"default.xml\"',
+                                        'exception': str(e),
+                                        'account': account,
+                                        'url': splunk_url,
+                                    }
+
+                                    return {
+                                        "payload": response,
+                                        'status': 500
+                                    }
+
+                            else:
+
+                                try:
+                                    shutil.copyfile(os.path.join(app, "local", 'data', 'ui', 'nav', 'default.xml'), os.path.join(app, "default", 'data', 'ui', 'nav', 'default.xml'))
+                                    logging.info("local nav=\"default.xml\" has a default equivalent, promoting the nav")
+
+                                except Exception as e:
+                                    logging.error('failed to promote local nav=\"default.xml\" with exception=\"{}\"'.format(str(e)))
+
+                                    response = {
+                                        'action': 'failure',
+                                        'message': 'failed to promote local nav=\"default.xml\"',
+                                        'exception': str(e),
+                                        'account': account,
+                                        'url': splunk_url,
+                                    }
+
+                                    return {
+                                        "payload": response,
+                                        'status': 500
+                                    }
+
                         # re-package
                         try:
                             shutil.rmtree(os.path.join(app, 'local'))
