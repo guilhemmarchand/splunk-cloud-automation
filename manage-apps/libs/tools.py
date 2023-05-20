@@ -704,3 +704,58 @@ def get_apps_splunk_rest(auth_rest_mode, token, stack, proxy_dict):
             f"url={validate_url}, "
             f"exception={e}"
         ) from e
+
+
+def get_apps_splunk_acs(tokenacs, stack, proxy_dict):
+    """
+    Retrieve the list of installed applications and their full details from Splunk ACS API.
+    Splunk ACS currently lacks the build number.
+
+    Returns:
+        list: A list of installed applications and their full details.
+
+    Raises:
+        Exception: If the request to Splunk API fails.
+    """
+    headers = {
+        "Authorization": f"Bearer {tokenacs}",
+    }
+
+    submit_url = f"https://admin.splunk.com/{stack}/adminconfig/v2/apps/victoria?splunkbase=true"
+
+    try:
+        response = requests.get(submit_url, headers=headers, verify=False, proxies=proxy_dict)
+
+        if response.status_code not in (200, 201, 204):
+            logging.error(
+                f"Request verification to Splunk ACS API failed, "
+                f"url={submit_url}, "
+                f"HTTP Error={response.status_code}, "
+                f"content={response.text}"
+            )
+            raise Exception(
+                f"Request verification to Splunk ACS API failed, "
+                f"url={submit_url}, "
+                f"response={response.text}"
+            )
+        else:
+            logging.debug(
+                f"Request verification to Splunk ACS API successful, "
+                f"url={submit_url}, "
+                f"response={response.text}"
+            )
+
+        return json.loads(response.text).get("apps")
+
+    except Exception as e:
+        logging.error(
+            f"Request verification to Splunk API failed, "
+            f"url={submit_url}, "
+            f"exception={e}"
+        )
+        raise Exception(
+            f"Request verification to Splunk API failed, "
+            f"url={submit_url}, "
+            f"exception={e}"
+        ) from e
+

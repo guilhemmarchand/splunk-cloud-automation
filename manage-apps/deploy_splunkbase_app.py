@@ -15,7 +15,7 @@ import argparse
 
 # load libs
 sys.path.append('libs')
-from tools import login_splunkbase, get_apps_splunk_rest, \
+from tools import login_splunkbase, get_apps_splunk_acs, \
     splunkacs_create_ephemeral_token, splunk_acs_deploy_splunkbase_app, splunk_acs_update_splunkbase_app
 
 
@@ -172,7 +172,7 @@ try:
     logging.info("Authentication to Splunk API using bearer auth")
     rest_auth_mode = 'bearer_token'
     # run
-    splunk_apps_dict = get_apps_splunk_rest(rest_auth_mode, tokenacs, stack, proxy_dict)
+    splunk_apps_dict = get_apps_splunk_acs(tokenacs, stack, proxy_dict)
 
     # debug
     logging.debug(json.dumps(splunk_apps_dict, indent=2))
@@ -188,19 +188,19 @@ remote_apps_list = []
 for appinfo in splunk_apps_dict:
 
     # appname
-    appname = appinfo.get('name')
+    appname = appinfo.get('appID')
     appversion = None
     appbuild = None
 
     # get version
     try:
-        appversion = appinfo['content']['version']
+        appversion = appinfo['version']
     except Exception as e:
-        logging.debug("app=\"{}\" has no version information, will be ignored".format(appinfo.get('name')))
+        logging.debug("app=\"{}\" has no version information, will be ignored".format(appinfo.get('appID')))
 
     # get build
     try:
-        appbuild = appinfo['content']['build']
+        appbuild = appinfo['build']
     except Exception as e:
         logging.debug("app=\"{}\" has no build information, will be ignored".format(appinfo.get('name')))
 
