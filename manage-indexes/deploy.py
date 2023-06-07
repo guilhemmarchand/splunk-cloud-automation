@@ -304,7 +304,7 @@ try:
 
                     index_definition = {
                         "name": stanza,
-                        "datatype": "event",
+                        "datatype": datatype,
                         "maxDataSizeMB": int(maxDataSizeMB),
                         "searchableDays": int(searchableDays),
                     }
