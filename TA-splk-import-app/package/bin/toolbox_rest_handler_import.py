@@ -936,6 +936,7 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
                                     'tags.conf',
                                     'savedsearches.conf',
                                     'macros.conf',
+                                    'collections.conf',
                                 ]
 
                                 if filename in allowed_conf_files:
