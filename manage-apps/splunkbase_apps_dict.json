@@ -15,7 +15,7 @@
     "name": "lookup_editor",
     "splunkbaseID": 1724,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "3.6.0"
+    "version": "4.0.1"
   },
   {
     "name": "Splunk_ML_Toolkit",
