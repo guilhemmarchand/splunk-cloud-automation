@@ -1026,18 +1026,18 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
                                             'status': 500
                                         }
 
-                                if not os.path.isfile(os.path.join(app, 'default', 'data', 'ui', 'views', filename)):
+                                if not os.path.isfile(os.path.join(app, 'default', 'data', 'ui', 'views', local_view)):
 
                                     try:
-                                        shutil.copyfile(os.path.join(app, "local", 'data', 'ui', 'views', filename), os.path.join(app, "default", 'data', 'ui', 'views', filename))
-                                        logging.info("local view=\"{}\" has no default equivalent, promoting the view".format(filename))
+                                        shutil.copyfile(os.path.join(app, "local", 'data', 'ui', 'views', local_view), os.path.join(app, "default", 'data', 'ui', 'views', local_view))
+                                        logging.info("local view=\"{}\" has no default equivalent, promoting the view".format(local_view))
 
                                     except Exception as e:
-                                        logging.error('failed to promote local view=\"{}\" with exception=\"{}\"'.format(filename, str(e)))
+                                        logging.error('failed to promote local view=\"{}\" with exception=\"{}\"'.format(local_view, str(e)))
 
                                         response = {
                                             'action': 'failure',
-                                            'message': 'failed to promote local view=\"{}\"'.format(filename),
+                                            'message': 'failed to promote local view=\"{}\"'.format(local_view),
                                             'exception': str(e),
                                             'account': account,
                                             'url': splunk_url,
@@ -1051,15 +1051,15 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
                                 else:
 
                                     try:
-                                        shutil.copyfile(os.path.join(app, "local", 'data', 'ui', 'views', filename), os.path.join(app, "default", 'data', 'ui', 'views', filename))
-                                        logging.info("local view=\"{}\" has a default equivalent, promoting the view".format(filename))
+                                        shutil.copyfile(os.path.join(app, "local", 'data', 'ui', 'views', local_view), os.path.join(app, "default", 'data', 'ui', 'views', local_view))
+                                        logging.info("local view=\"{}\" has a default equivalent, promoting the view".format(local_view))
 
                                     except Exception as e:
-                                        logging.error('failed to promote local view=\"{}\" with exception=\"{}\"'.format(filename, str(e)))
+                                        logging.error('failed to promote local view=\"{}\" with exception=\"{}\"'.format(local_view, str(e)))
 
                                         response = {
                                             'action': 'failure',
-                                            'message': 'failed to promote local view=\"{}\"'.format(filename),
+                                            'message': 'failed to promote local view=\"{}\"'.format(local_view),
                                             'exception': str(e),
                                             'account': account,
                                             'url': splunk_url,
