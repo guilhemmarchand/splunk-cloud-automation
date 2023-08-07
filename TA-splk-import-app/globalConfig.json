@@ -117,6 +117,24 @@
                             },
                             "defaultValue": "postexec_bin",
                             "required": false
+                        },
+                        {
+                            "type": "text",
+                            "label": "Timeout",
+                            "help": "The timeout value in seconds, applies to the import call request",
+                            "field": "timeout",
+                            "options": {
+                                "display": true
+                            },
+                            "defaultValue": "120",
+                            "validators": [
+                                {
+                                    "type": "regex",
+                                    "errorMsg": "Only digits are accepted.",
+                                    "pattern": "^[0-9]*$"
+                                }
+                            ],
+                            "required": true
                         }
                     ]
                 },

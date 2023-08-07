@@ -500,6 +500,7 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
         target_path = None
         ksconf_bin = None
         postexec_bin = None
+        timeout = 120
         for stanza in confs:
             if stanza.name == 'configuration':
                 for stanzakey, stanzavalue in stanza.content.items():
@@ -509,6 +510,8 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
                         ksconf_bin = stanzavalue
                     if stanzakey == "postexec_bin":
                         postexec_bin = stanzavalue
+                    if stanzakey == "timeout":
+                        timeout = int(stanzavalue)                        
 
         # Set run_build boolean
         if run_build == 'True':
@@ -625,7 +628,7 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
             try:
 
                 response = requests.post(url, headers={'Authorization': header}, data=json.dumps({'app': app}), proxies=proxy_dict,
-                                            verify=False, timeout=30)
+                                            verify=False, timeout=timeout)
 
                 if response.status_code not in (200, 201, 204):
 
