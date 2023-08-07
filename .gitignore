@@ -37,3 +37,6 @@ TA-splk-toolbox/build/release-sha256.txt
 # output
 TA-splk-toolbox/output/*
 !TA-splk-toolbox/output/README.txt
+
+# pyc
+*.pyc
