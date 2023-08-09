@@ -1236,7 +1236,7 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
 
                 try:
                     logging.info("Attempting to execute post exec script=\"{}\"".format(postexec_bin))
-                    result = subprocess.run([postexec_bin, "--file", os.path.join(target_path, filename_data), "--metadata", postexec_metadata], capture_output=True)
+                    result = subprocess.run([postexec_bin, "--server_rest_uri", request_info.server_rest_uri, "--session_key", request_info.session_key, "--file", os.path.join(target_path, filename_data), "--metadata", postexec_metadata], capture_output=True)
                     logging.info("post execution results.stdout=\"{}\"".format(result.stdout))
                     logging.info("post execution results.stderr=\"{}\"".format(result.stderr))
 
@@ -1262,7 +1262,7 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
                     response = {
                         'action': 'failure',
                         'message': "post execution script=\"{}\" has returned errors".format(postexec_bin),
-                        'exception': result.stderr,
+                        'exception': str(result.stderr),
                         'account': account,
                         'url': splunk_url,
                     }

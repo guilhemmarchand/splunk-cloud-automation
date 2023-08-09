@@ -2,26 +2,31 @@ import os
 import re
 import sys
 import json
+import logging
+from urllib.parse import urlparse
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 from splunk.persistconn.application import PersistentServerConnectionApplication
 
-if sys.platform == "win32":
-    import msvcrt
-    # Binary mode is required for persistent mode on Windows.
-    msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
-    msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
-    msvcrt.setmode(sys.stderr.fileno(), os.O_BINARY)
 
 class RequestInfo(object):
     """
     This represents the request.
     """
 
-    def __init__(self, user, session_key, method, path, query, raw_args):
+    def __init__(self, user, session_key, system_authtoken, server_rest_uri, server_rest_host, server_rest_port, server_hostname, \
+                server_servername, connection_src_ip, connection_listening_port, method, path, query, raw_args):
         self.user = user
         self.session_key = session_key
+        self.system_authtoken = system_authtoken
+        self.server_rest_uri = server_rest_uri
+        self.server_rest_host = server_rest_host
+        self.server_rest_port = server_rest_port
+        self.server_hostname = server_hostname
+        self.server_servername = server_servername
+        self.connection_src_ip = connection_src_ip
+        self.connection_listening_port = connection_listening_port
         self.method = method
         self.path = path
         self.query = query
@@ -113,14 +118,53 @@ class RESTHandler(PersistentServerConnectionApplication):
     def handle(self, in_string):
         try:
 
-            self.logger.debug("Handling a request")
+            # log
+            self.logger.debug("trackme_rest_handler, handling incoming request.")
 
             # Parse the arguments
             args = self.parse_in_string(in_string)
 
-            # Get the user information
+            #
+            # user info - add to request_info
+            #
+
             session_key = args['session']['authtoken']
             user = args['session']['user']
+
+            #
+            # system auth
+            #
+
+            # If passSystemAuth = True, add system_authtoken
+            try:
+                system_authtoken = args['system_authtoken']
+            except Exception as e:
+                system_authtoken = None
+
+            #
+            # server info
+            #
+
+            server_rest_uri = args['server']['rest_uri']
+
+            # extract rest host and port
+            parsed_uri = urlparse(server_rest_uri)
+            server_rest_host = parsed_uri.hostname
+            server_rest_port = parsed_uri.port
+
+            server_hostname = args['server']['hostname']
+            server_servername = args['server']['servername']
+
+            #
+            # connection info
+            #
+
+            connection_src_ip = args['connection']['src_ip']
+            connection_listening_port = args['connection']['listening_port']
+
+            #
+            # http method
+            #
 
             # Get the method
             method = args['method']
@@ -149,8 +193,13 @@ class RESTHandler(PersistentServerConnectionApplication):
             else:
                 query = args['query_parameters']
 
+            #
+            # finally add to the request_info
+            #
+
             # Make the request info object
-            request_info = RequestInfo(user, session_key, method, path, query, args)
+            request_info = RequestInfo(user, session_key, system_authtoken, server_rest_uri, server_rest_host, server_rest_port, server_hostname, \
+                                    server_servername, connection_src_ip, connection_listening_port, method, path, query, args)
 
             # Get the function signature
             function_name = self.get_function_signature(method, path)

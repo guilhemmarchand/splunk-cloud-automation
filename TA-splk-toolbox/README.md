@@ -35,7 +35,7 @@ curl -X POST "https://admin.splunk.com/$stack/adminconfig/v2/access/outbound-por
 You can check your config as:
 
 ```shell
-curl "https://admin.splunk.com/$token/adminconfig/v2/access/outbound-ports/8089" \
+curl "https://admin.splunk.com/$stack/adminconfig/v2/access/outbound-ports/8089" \
 --header "Authorization: Bearer $token"
 ```
 
@@ -239,12 +239,34 @@ import json
 import logging
 import argparse
 import configparser
+from urllib.parse import urlparse
 
 # Args
 parser = argparse.ArgumentParser()
+parser.add_argument("--session_key", dest="session_key")
+parser.add_argument("--server_rest_uri", dest="server_rest_uri")
 parser.add_argument('--file', dest='file')
 parser.add_argument('--metadata', dest='metadata')
 args = parser.parse_args()
+
+# get session_key
+if args.session_key:
+    session_key = args.session_key
+else:
+    logging.error("session_key argument was not provided, this is mandatory")
+    sys.exit(1)
+
+# get server_rest_uri
+if args.server_rest_uri:
+    server_rest_uri = args.server_rest_uri
+else:
+    logging.error("server_rest_uri argument was not provided, this is mandatory")
+    sys.exit(1)
+
+# extract rest host and port
+parsed_uri = urlparse(server_rest_uri)
+server_rest_host = parsed_uri.hostname
+server_rest_port = parsed_uri.port
 
 # Set file
 if args.file:
