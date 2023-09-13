@@ -8,7 +8,7 @@
   {
     "name": "Splunk_SA_CIM",
     "splunkbaseID": 1621,
-    "licenseAck": "http://www.splunk.com/view/SP-CAAAAFA",
+    "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
     "version": "5.1.1"
   },
   {
@@ -20,7 +20,7 @@
   {
     "name": "Splunk_ML_Toolkit",
     "splunkbaseID": 2890,
-    "licenseAck": "http://www.splunk.com/en_us/legal/splunk-software-license-agreement.html",
+    "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
     "version": "5.4.0"
   },
   {
@@ -44,7 +44,7 @@
   {
     "name": "Splunk_TA_nix",
     "splunkbaseID": 833,
-    "licenseAck": "http://www.splunk.com/view/SP-CAAAAFA",
+    "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
     "version": "8.10.0"
   },
   {
@@ -56,19 +56,19 @@
   {
     "name": "Splunk_TA_juniper",
     "splunkbaseID": 2847,
-    "licenseAck": "http://www.splunk.com/view/SP-CAAAAFA",
+    "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
     "version": "1.5.5rfb1b492"
   },
   {
     "name": "Splunk_TA_apache",
     "splunkbaseID": 3186,
-    "licenseAck": "http://www.splunk.com/view/SP-CAAAAFA",
+    "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
     "version": "2.1.0"
   },
   {
     "name": "Splunk_TA_nginx",
     "splunkbaseID": 3258,
-    "licenseAck": "http://www.splunk.com/view/SP-CAAAAFA",
+    "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
     "version": "3.2.1"
   }
 ]
