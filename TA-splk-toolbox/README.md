@@ -47,20 +47,25 @@ You can nowadays allow this traffic straight from the Splunk Cloud configuration
 
 #### Example
 
-To export a Splunk Application and all its content in a gzip compressed tarball archived:
+**To export a Splunk Application and all its content in a gzip compressed tarball archived:**
 
 ```shell
 export login='myuser'
 export pass='mypassword'
 export stack='https://$mystack.splunkcloud.com:8089'
-curl -k -u $muyser:"$mypassowrd" -X POST $stack/services/toolbox/v1/export/export_app -d '{"app": "Splunk_TA_juniper"}'
 ```
 
-The response will be similar to:
+**Then, you can call the export API endpoint:**
+
+```shell
+curl -k -u $login:"$pass" -X POST $stack/services/toolbox/v1/export/export_app -d '{"app": "Splunk_TA_juniper"}'
+```
+
+**The response will be similar to the following example:**
 
 ```json
 {
-  "base64": "b'<encoded_base64>'",
+  "base64": "b'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'",
   "app": "Splunk_TA_juniper",
   "version": "1.5.5rfb1b492",
   "filename": "Splunk_TA_juniper_v155rfb1b492.tgz",
@@ -71,6 +76,8 @@ The response will be similar to:
 **More details about the programmatic behaviour can be found here:**
 
 - https://github.com/guilhemmarchand/splunk-cloud-automation/tree/main/export-apps
+
+This API response is what the TA-splk-import-app is going to handle, it will read the base64 accordingly and will re-create the provided package on the file-system.
 
 ### Configuration parameters
 
