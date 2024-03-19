@@ -16,8 +16,8 @@
                                 "field": "name"
                             },
                             {
-                                "label": "Auth Type",
-                                "field": "auth_type"
+                                "label": "Target",
+                                "field": "splunk_url"
                             }
                         ]
                     },
@@ -170,7 +170,8 @@
                                 ]
                             },
                             "defaultValue": "INFO",
-                            "field": "loglevel"
+                            "field": "loglevel",
+                            "required": true
                         }
                     ],
                     "title": "Logging"
@@ -279,7 +280,7 @@
     "meta": {
         "name": "TA-splk-import-app",
         "restRoot": "ta_splk_import_app",
-        "version": "1.0.6",
+        "version": "1.0.7",
         "displayName": "Splunk utility app for Splunk Cloud integration",
         "schemaVersion": "0.0.3"
     }
