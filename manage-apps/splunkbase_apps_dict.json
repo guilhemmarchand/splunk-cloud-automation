@@ -3,31 +3,31 @@
     "name": "trackme",
     "splunkbaseID": 4621,
     "licenseAck": "https://docs.trackme-solutions.com/license.html",
-    "version": "2.0.55"
+    "version": "2.0.83"
   },
   {
     "name": "Splunk_SA_CIM",
     "splunkbaseID": 1621,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "5.2.0"
+    "version": "5.3.1"
   },
   {
     "name": "lookup_editor",
     "splunkbaseID": 1724,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "4.0.1"
+    "version": "4.0.2"
   },
   {
     "name": "Splunk_ML_Toolkit",
     "splunkbaseID": 2890,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "5.4.0"
+    "version": "5.4.1"
   },
   {
     "name": "Splunk_SA_Scientific_Python_linux_x86_64",
     "splunkbaseID": 2882,
     "licenseAck": "https://github.com/splunk/Splunk-python-for-scientific-computing/blob/master/LICENSE",
-    "version": "4.1.2"
+    "version": "4.2.0"
   },
   {
     "name": "semicircle_donut",
@@ -45,19 +45,19 @@
     "name": "Splunk_TA_nix",
     "splunkbaseID": 833,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "8.10.0"
+    "version": "9.0.0"
   },
   {
     "name": "Splunk_TA_windows",
     "splunkbaseID": 742,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "8.7.0"
+    "version": "8.8.0"
   },
   {
     "name": "Splunk_TA_juniper",
     "splunkbaseID": 2847,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "1.5.5rfb1b492"
+    "version": "1.6.0"
   },
   {
     "name": "Splunk_TA_apache",
@@ -69,6 +69,36 @@
     "name": "Splunk_TA_nginx",
     "splunkbaseID": 3258,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "3.2.1"
+    "version": "3.2.2"
+  },
+  {
+    "name": "splunk_app_soar",
+    "splunkbaseID": 6361,
+    "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
+    "version": "1.0.41"
+  },
+  {
+    "name": "phantom",
+    "splunkbaseID": 3411,
+    "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
+    "version": "4.3.2"
+  },
+  {
+    "name": "TA-jira-service-desk-simple-addon",
+    "splunkbaseID": 4958,
+    "licenseAck": "http://www.opensource.org/licenses/Apache-2.0",
+    "version": "2.0.15"
+  },
+  {
+    "name": "slack_alerts",
+    "splunkbaseID": 2878,
+    "licenseAck": "https://github.com/splunk/slack-alerts/blob/main/LICENSE",
+    "version": "2.3.0"
+  },
+  {
+    "name": "sa-littlehelper",
+    "splunkbaseID": 6368,
+    "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
+    "version": "1.2.0"
   }
 ]
