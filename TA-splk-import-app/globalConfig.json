@@ -121,12 +121,12 @@
                         {
                             "type": "text",
                             "label": "Timeout",
-                            "help": "The timeout value in seconds, applies to the import call request",
+                            "help": "The timeout value in seconds, applies to the import call request. Very large applications may require a longer timeout.",
                             "field": "timeout",
                             "options": {
                                 "display": true
                             },
-                            "defaultValue": "900",
+                            "defaultValue": "1800",
                             "validators": [
                                 {
                                     "type": "regex",

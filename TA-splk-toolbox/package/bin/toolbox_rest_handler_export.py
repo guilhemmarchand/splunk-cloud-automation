@@ -76,7 +76,7 @@ class ToolboxExport_v1(toolbox_rest_handler.RESTHandler):
         if resp_dict is not None:
             try:
                 describe = resp_dict["describe"]
-                if describe in ("true", "True"):
+                if str(describe).lower() in ("true", "t"):
                     describe = True
             except Exception as e:
                 describe = False

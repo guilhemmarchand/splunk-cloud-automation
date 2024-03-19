@@ -7,19 +7,12 @@ __author__ = "Guilhem Marchand"
 __version__ = "0.1.0"
 
 import os
-import random
-import base64
-import fnmatch
-import json
-import logging
-import requests
-from requests.auth import HTTPBasicAuth
-from requests.structures import CaseInsensitiveDict
 
 
 # context manager
 class cd:
     """Context manager for changing the current working directory"""
+
     def __init__(self, newPath):
         self.newPath = os.path.expanduser(newPath)
 

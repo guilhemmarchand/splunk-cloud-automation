@@ -359,7 +359,7 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
         if resp_dict is not None:
             try:
                 describe = resp_dict["describe"]
-                if describe in ("true", "True"):
+                if isinstance(describe, str) and describe.lower() == "true":
                     describe = True
             except Exception as e:
                 describe = False
@@ -386,13 +386,21 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
 
                 # get run_build (optional)
                 try:
-                    run_build = resp_dict["run_build"]
+                    run_build = resp_dict.get("run_build", True)
+                    if isinstance(run_build, str):
+                        run_build = run_build.lower() == "true"
+                    else:
+                        run_build = bool(run_build)
                 except Exception as e:
                     run_build = True
 
                 # promote permissions (optional)
                 try:
-                    promote_permissions = resp_dict["promote_permissions"]
+                    promote_permissions = resp_dict.get("promote_permissions", False)
+                    if isinstance(promote_permissions, str):
+                        promote_permissions = promote_permissions.lower() == "true"
+                    else:
+                        promote_permissions = bool(promote_permissions)
                 except Exception as e:
                     promote_permissions = False
 
@@ -527,22 +535,6 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
                         postexec_bin = stanzavalue
                     if stanzakey == "timeout":
                         timeout = int(stanzavalue)
-
-        # Set run_build boolean
-        if run_build == "True":
-            run_build = True
-        elif run_build == "False":
-            run_build = False
-        else:
-            run_build = True
-
-        # Set promote_permissions boolean
-        if promote_permissions == "True":
-            promote_permissions = True
-        elif promote_permissions == "False":
-            promote_permissions = False
-        else:
-            promote_permissions = False
 
         # Splunk credentials store
         storage_passwords = service.storage_passwords
