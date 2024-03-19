@@ -7,6 +7,8 @@ __author__ = "Guilhem Marchand"
 __version__ = "0.1.0"
 
 import os
+import tarfile
+import logging
 
 
 # context manager
@@ -22,3 +24,36 @@ class cd:
 
     def __exit__(self, etype, value, traceback):
         os.chdir(self.savedPath)
+
+
+def create_tarfile_excluding_large_files(
+    app_directory, tar_file, exclude_large_files, large_file_size_mb
+):
+    """
+    Create a tar.gz file excluding files larger than the specified size if required.
+
+    Parameters:
+    - app_directory: The directory of the app to be archived.
+    - tar_file: The output tar.gz file path.
+    - exclude_large_files: Boolean indicating whether to exclude large files.
+    - large_file_size_mb: The size threshold in MB for excluding large files.
+    """
+    large_file_size_bytes = large_file_size_mb * 1024 * 1024  # Convert MB to bytes
+
+    try:
+        with tarfile.open(tar_file, mode="w:gz") as tar:
+            for root, dirs, files in os.walk(app_directory):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    if exclude_large_files:
+                        if os.path.getsize(file_path) > large_file_size_bytes:
+                            logging.info(f"Excluding large file: {file_path}")
+                            continue
+                    tar.add(
+                        file_path,
+                        arcname=os.path.relpath(file_path, start=app_directory),
+                    )
+
+    except Exception as e:
+        logging.error(f"Error creating tar.gz file: {e}")
+        raise e

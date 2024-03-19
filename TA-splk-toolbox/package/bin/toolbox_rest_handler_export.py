@@ -11,7 +11,6 @@ import splunk.Intersplunk
 import json
 import logging
 from logging.handlers import RotatingFileHandler
-import tarfile
 import base64
 
 splunkhome = os.environ["SPLUNK_HOME"]
@@ -42,7 +41,7 @@ sys.path.append(os.path.join(splunkhome, "etc", "apps", "TA-splk-toolbox", "lib"
 import toolbox_rest_handler
 
 # import toolbox libs
-from libs_toolbox import cd
+from libs_toolbox import cd, create_tarfile_excluding_large_files
 
 # import SDK client
 import splunklib.client as client
@@ -81,6 +80,8 @@ class ToolboxExport_v1(toolbox_rest_handler.RESTHandler):
             except Exception as e:
                 describe = False
             if not describe:
+
+                # app
                 try:
                     app_target = resp_dict["app"]
                 except Exception as e:
@@ -94,6 +95,22 @@ class ToolboxExport_v1(toolbox_rest_handler.RESTHandler):
                         "status": 500,
                     }
 
+                # exclude_large_files, if not provided, defaults to True
+                try:
+                    exclude_large_files = resp_dict["exclude_large_files"]
+                    if str(exclude_large_files).lower() in ("true", "t"):
+                        exclude_large_files = True
+                    else:
+                        exclude_large_files = False
+                except Exception as e:
+                    exclude_large_files = True
+
+                # large_file_size, if not provided, defaults to 100MB
+                try:
+                    large_file_size = int(resp_dict["large_file_size"])
+                except Exception as e:
+                    large_file_size = 100
+
         else:
             # body is required in this endpoint, if not submitted describe the usage
             describe = True
@@ -105,6 +122,8 @@ class ToolboxExport_v1(toolbox_rest_handler.RESTHandler):
                 "options": [
                     {
                         "app": "The application to be exported",
+                        "exclude_large_files": "Exclude large files from the export, True or False. Defaults to True",
+                        "large_file_size": "The size in MB to consider a file as large. Defaults to 100MB",
                     }
                 ],
             }
@@ -201,37 +220,27 @@ class ToolboxExport_v1(toolbox_rest_handler.RESTHandler):
 
         # create the tar file
         tar_file = os.path.join(output_dir, tar_name)
-        logging.info('Creating compress tgz, filename="{}"'.format(tar_file))
+        app_directory = os.path.join(splunkhome, "etc", "apps", app_target)
 
-        out = tarfile.open(tar_file, mode="w:gz")
-
-        with cd(os.path.join(splunkhome, "etc", "apps")):
-            try:
-                out.add(str(app_target))
-            except Exception as e:
-                logging.error(
-                    'appID="{}", archive file="{}" creation failed'.format(
-                        app_target, tar_file
-                    )
+        try:
+            create_tarfile_excluding_large_files(
+                app_directory, tar_file, exclude_large_files, large_file_size
+            )
+        except Exception as e:
+            logging.error(
+                'failed to create tar_file="{}", exception="{}"'.format(
+                    tar_file, str(e)
                 )
-                return {
-                    "payload": {
-                        "action": "failure",
-                        "response": 'The requested app="{}" is not available'.format(
-                            app_target
-                        ),
-                        "exception": str(e),
-                    },
-                    "status": 500,
-                }
-
-            finally:
-                logging.info(
-                    '"appID="{}", Achive tar file creation, archive_file="{}"'.format(
-                        app_target, tar_file
-                    )
-                )
-                out.close()
+            )
+            return {
+                "payload": {
+                    "action": "failure",
+                    "response": 'failed to create tar_file="{}", exception="{}"'.format(
+                        tar_file, str(e)
+                    ),
+                },
+                "status": 500,
+            }
 
         # load the tgz
         with open(tar_file, "rb") as f:
