@@ -4,6 +4,7 @@ __name__ = "toolbox_rest_handler_import.py"
 __author__ = "Guilhem Marchand"
 
 import logging
+from logging.handlers import RotatingFileHandler
 import os, sys
 import shutil
 import splunk
@@ -27,8 +28,11 @@ splunkhome = os.environ["SPLUNK_HOME"]
 
 # set logging
 logger = logging.getLogger(__name__)
-filehandler = logging.FileHandler(
-    f"{splunkhome}/var/log/splunk/toolbox_rest_api.log", "a"
+filehandler = RotatingFileHandler(
+    "%s/var/log/splunk/toolbox_rest_api.log" % splunkhome,
+    mode="a",
+    maxBytes=10000000,
+    backupCount=1,
 )
 formatter = logging.Formatter(
     "%(asctime)s %(levelname)s %(filename)s %(funcName)s %(lineno)d %(message)s"

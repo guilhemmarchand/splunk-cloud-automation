@@ -349,6 +349,8 @@ def splunk_acs_deploy_app(tokenacs, tokenappinspect, app, stack, proxy_dict):
 
 
 # Stream base64 encoded data to a file while decoding
+# This previous version is kept for archive purposes, pre-processing is not required anymore.
+"""
 def stream_base64_to_file(base64_data, output_path):
     # Preprocess the base64 string to remove the pseudo bytes literal and the last character if needed
     cleaned_base64_data = base64_data.replace("b'", "").rstrip("'")
@@ -357,3 +359,9 @@ def stream_base64_to_file(base64_data, output_path):
     with open(output_path, "wb") as file:
         decoded_data = base64.b64decode(cleaned_base64_data)
         file.write(decoded_data)
+"""
+
+
+def stream_base64_to_file(base64_data, output_path):
+    with open(output_path, "wb") as f:
+        f.write(base64.b64decode(base64_data))
