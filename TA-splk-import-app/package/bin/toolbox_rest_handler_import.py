@@ -410,6 +410,22 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
                 except Exception as e:
                     postexec_metadata = None
 
+                # exclude_large_files, if not provided, defaults to True
+                try:
+                    exclude_large_files = resp_dict["exclude_large_files"]
+                    if str(exclude_large_files).lower() in ("true", "t"):
+                        exclude_large_files = True
+                    else:
+                        exclude_large_files = False
+                except Exception as e:
+                    exclude_large_files = True
+
+                # large_file_size, if not provided, defaults to 100MB
+                try:
+                    large_file_size = int(resp_dict["large_file_size"])
+                except Exception as e:
+                    large_file_size = 100
+
         else:
             # body is required
             describe = True
@@ -427,6 +443,8 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
                         "run_build": "Run the building package, which means merging local configuration using ksconf, valid options are: True | False",
                         "promote_permissions": "If run_build=True, you can decide to promote or not the local permissions, default to False, valid options are: True | False",
                         "postexec_metadata": "Metadata for the post execution script, this should be a JSON object",
+                        "exclude_large_files": "Exclude large files from the export, True or False. Defaults to True",
+                        "large_file_size": "The size in MB to consider a file as large. Defaults to 100MB",
                     }
                 ],
             }
@@ -637,7 +655,13 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
                 response = requests.post(
                     url,
                     headers={"Authorization": header},
-                    data=json.dumps({"app": app}),
+                    data=json.dumps(
+                        {
+                            "app": app,
+                            "exclude_large_files": exclude_large_files,
+                            "large_file_size": large_file_size,
+                        }
+                    ),
                     proxies=proxy_dict,
                     verify=False,
                     timeout=timeout,
@@ -685,7 +709,7 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
             # Process
             #
 
-            # check target path
+            # target_path is the top root directory where we are going to store the exported app
             if not os.path.isdir(target_path):
                 logging.error(
                     f'target_path="{target_path}" does not exist, invalid configuration, exception="{str(e)}"'
@@ -701,55 +725,60 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
 
                 return {"payload": response, "status": 500}
 
-            else:
-                target_path = os.path.join(target_path, account)
+            # create woorkspace_path as {target_path}/{account}
+            workspace_path = os.path.join(target_path, account)
+            if not os.path.isdir(workspace_path):
+                try:
+                    os.mkdir(workspace_path)
+                except Exception as e:
+                    logging.error(
+                        f'workspace_path="{workspace_path}" could not be created, invalid configuration, exception="{str(e)}"'
+                    )
+                    response = {
+                        "action": "failure",
+                        "message": f'workspace_path="{workspace_path}" could not be created, invalid configuration',
+                        "exception": str(e),
+                        "account": account,
+                        "url": splunk_url,
+                    }
 
-                # create dir as needed
-                if not os.path.isdir(target_path):
-                    try:
-                        os.mkdir(target_path)
-                    except Exception as e:
-                        logging.error(
-                            f'target_path="{target_path}" could not be created, invalid configuration, exception="{str(e)}"'
-                        )
-                        response = {
-                            "action": "failure",
-                            "message": f'target_path="{target_path}" could not be created, invalid configuration',
-                            "exception": str(e),
-                            "account": account,
-                            "url": splunk_url,
-                        }
+                    return {"payload": response, "status": 500}
+
+            # set the extraction path
+            extraction_path = os.path.join(
+                target_path, account, app
+            )  # /downloads/my_environment/my_app
+
+            # if extraction path exists, remove it
+            if os.path.isdir(extraction_path):
+                try:
+                    shutil.rmtree(extraction_path)
+                except Exception as e:
+                    logging.error(
+                        f'failed to remove existing extraction_path="{extraction_path}", exception="{str(e)}"'
+                    )
+
+                    response = {
+                        "action": "failure",
+                        "message": f'failed to remove existing extraction_path="{extraction_path}"',
+                        "exception": str(e),
+                        "account": account,
+                        "url": splunk_url,
+                    }
 
                     return {"payload": response, "status": 500}
 
             # load our items
-            base64_bytesdata = response_json.get("base64")
             version_data = response_json.get("version")
             filename_data = response_json.get("filename")
-
             base64_data = response_json.get("base64")
-            output_file_path = os.path.join(target_path, filename_data)
+
+            # set the full path of the tgz
+            output_file_path = os.path.join(
+                target_path, account, filename_data
+            )  # /downloads/my_environment/my_app.tar.gz
 
             with cd(target_path):
-
-                # before generating, remove the file, if any
-                if os.path.isfile(filename_data):
-                    try:
-                        os.remove(filename_data)
-                    except Exception as e:
-                        logging.error(
-                            f'failed to remove existing output archive="{filename_data}", exception="{str(e)}"'
-                        )
-
-                        response = {
-                            "action": "failure",
-                            "message": f'failed to remove existing output archive="{filename_data}"',
-                            "exception": str(e),
-                            "account": account,
-                            "url": splunk_url,
-                        }
-
-                        return {"payload": response, "status": 500}
 
                 # Get
                 try:
@@ -770,32 +799,15 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
                     }
                     return {"payload": response, "status": 500}
 
-                # before extracting, purge the local directory, if any
-                if os.path.isdir(app):
-                    try:
-                        shutil.rmtree(app)
-                    except Exception as e:
-                        logging.error(
-                            f'failed to remove existing output directory="{app}", exception="{str(e)}"'
-                        )
-
-                        response = {
-                            "action": "failure",
-                            "message": f'failed to remove existing output directory="{app}"',
-                            "exception": str(e),
-                            "account": account,
-                            "url": splunk_url,
-                        }
-
-                        return {"payload": response, "status": 500}
-
                 # extract the generated archive in the target directory
                 try:
-                    my_tar = tarfile.open(filename_data)
-                    my_tar.extractall("./")  # specify which folder to extract to
+                    my_tar = tarfile.open(output_file_path)
+                    my_tar.extractall(
+                        extraction_path
+                    )  # specify which folder to extract to
                     my_tar.close()
                     logging.info(
-                        f'successfully extracted compressed archive="{filename_data}" into directory="{app}"'
+                        f'successfully extracted compressed archive="{output_file_path}" into directory="{extraction_path}"'
                     )
 
                 except Exception as e:
@@ -819,7 +831,7 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
 
             if run_build:
 
-                with cd(target_path):
+                with cd(workspace_path):
 
                     # manage local.metadata
 
@@ -1038,7 +1050,11 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
                                     try:
                                         os.makedirs(
                                             os.path.join(
-                                                app, "default", "data", "ui", "views"
+                                                app,
+                                                "default",
+                                                "data",
+                                                "ui",
+                                                "views",
                                             )
                                         )
                                     except Exception as e:
@@ -1187,7 +1203,12 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
 
                             if not os.path.isfile(
                                 os.path.join(
-                                    app, "default", "data", "ui", "nav", "default.xml"
+                                    app,
+                                    "default",
+                                    "data",
+                                    "ui",
+                                    "nav",
+                                    "default.xml",
                                 )
                             ):
 
@@ -1348,6 +1369,8 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
                 "url": splunk_url,
                 "run_build": run_build,
                 "promote_permissions": promote_permissions,
+                "exclude_large_files": exclude_large_files,
+                "large_file_size": large_file_size,
             }
 
             # postexec_bin
@@ -1439,5 +1462,5 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
                     )
             """
 
-            # render
-            return {"payload": response, "status": 200}
+        # render
+        return {"payload": response, "status": 200}
