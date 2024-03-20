@@ -23,8 +23,14 @@ curl -k -H "Authorization: Bearer $tokenhf" -X GET $target/services/toolbox/v1/i
 curl -k -H "Authorization: Bearer $tokenhf" -X POST $target/services/toolbox/v1/import/test_sc_connectivity -d '{"account": "scde"}'
 ```
 
-**Get app:**
+**Export an application:**
 
 ```shell
 curl -k -H "Authorization: Bearer $tokenhf" -H "Content-Type: application/json" -X POST $target/services/toolbox/v1/import/import_app -d '{"account": "scde", "app": "TA-org-customapp"}'
+```
+
+**Export an application without packing:**
+
+```shell
+curl -k -H "Authorization: Bearer $tokenhf" -H "Content-Type: application/json" -X POST $target/services/toolbox/v1/import/import_app -d '{"account": "scde", "app": "TA-org-customapp", "run_build": "false"}'
 ```

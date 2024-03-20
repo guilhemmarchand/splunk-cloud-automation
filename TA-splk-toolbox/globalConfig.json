@@ -16,8 +16,8 @@
                                 "field": "name"
                             },
                             {
-                                "label": "Auth Type",
-                                "field": "auth_type"
+                                "label": "Target",
+                                "field": "splunk_url"
                             }
                         ]
                     },
