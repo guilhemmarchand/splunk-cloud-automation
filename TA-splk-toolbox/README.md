@@ -15,6 +15,12 @@ This application exposes a REST API for the purposes of exporting Splunk applica
 - The only requirement is to have access to the Splunk Splunk Cloud Search Head Splunk API, which you can configure in Splunk Web
 - Authentication is performed against Splunkd using valid credential you provide as part of the API requester arguments
 
+### Important note
+
+- This documentation details in depth all options and features you can use with this feature.
+- Depending on your preferences, you totally can choose which part of the feature you want to use.
+- For example, you don't necessarly need to export apps from Splunk Cloud in Splunk Cloud using the custom command (which requires connectivity from Cloud to HF), you can also interact with your HF instead. (which will interact with Cloud!)
+
 #### Requirements for the couple TA-splk-toolbox / TA-splk-import-app
 
 - The Splunk Cloud Search Head needs to be able to access to your Heavy Forwarder on Splunkd API 8089, for this you need to allow the outgoing traffic on ACS:
@@ -126,6 +132,63 @@ In addition, we have 3 main parameters:
 - The **ksconf finary path**, on the HF you need to install ksconf as a Splunk Application, see: https://ksconf.readthedocs.io
 
 - An optional **post execution script**, this script would optionally be called at part of the build process to run your CI/CD logic, we will come back on this in the further steps!
+
+## Simplified example of setup - interract with you HF
+
+Once the Heavy Forwarder is connected to your Splunk Cloud stack, just do:
+
+```shell
+export target="https://localhost:8089"
+export tokenhf="my bearer token on the HF"
+```
+
+Then you can export an app in one curl command:
+
+```shell
+curl -k -H "Authorization: Bearer $tokenhf" -H "Content-Type: application/json" -X POST $target/services/toolbox/v1/import/import_app -d '{"account": "scde", "app": "DA-ESS-sandbox", "run_build": "True"}'
+```
+
+To disable performing the build:
+
+```shell
+curl -k -H "Authorization: Bearer $tokenhf" -H "Content-Type: application/json" -X POST $target/services/toolbox/v1/import/import_app -d '{"account": "scde", "app": "DA-ESS-sandbox", "run_build": "False"}'
+```
+
+To specify large files exclusions options:
+
+```shell
+curl -k -H "Authorization: Bearer $tokenhf" -H "Content-Type: application/json" -X POST $target/services/toolbox/v1/import/import_app -d '{"account": "scde", "app": "DA-ESS-sandbox", "run_build": "False", "exclude_large_files": "True", "large_file_size": 100}'
+```
+
+You will receive a response such as:
+
+```json
+{
+  "action": "success",
+  "account": "scde",
+  "url": "https://scde-3omlxvajzn05de2xk.splunkcloud.com:8089",
+  "run_build": true,
+  "promote_permissions": false,
+  "exclude_large_files": true,
+  "large_file_size": 100,
+  "excluded_files": [
+    {
+      "path": "/opt/splunk/etc/apps/DA-ESS-sandbox/lookups/crazy_large.csv",
+      "size_mb": 275.029
+    }
+  ],
+  "post_execution": false
+}
+```
+
+On the Heavy Forwarder file-system:
+
+```shell
+ls -ltr /download/scde/
+total 732
+drwx--x--- 5 splunk splunk   4096 Mar 20 20:31 DA-ESS-sandbox
+-rw------- 1 splunk splunk 742212 Mar 20 20:31 DA-ESS-sandbox_v100.tgz
+```
 
 ## Run time and toolboxexport custom command
 
@@ -310,6 +373,20 @@ You can add whatever makes sense for you, with the flexibiity of SPL, Javascript
 If some technical issues happen during the execution of the post exec script, this will noticed by the REST API which will return an action failure, as well as 500 HTTP code.
 
 **Voila!**
+
+#### Available options summary
+
+```json
+{
+    "account": "The account configuration identifier",
+    "app": "The application to be exported",
+    "run_build": "Run the building package, which means merging local configuration using ksconf, valid options are: True | False",
+    "promote_permissions": "If run_build=True, you can decide to promote or not the local permissions, default to False, valid options are: True | False",
+    "postexec_metadata": "Metadata for the post execution script, this should be a JSON object",
+    "exclude_large_files": "Exclude large files from the export, True or False. Defaults to True",
+    "large_file_size": "The size in MB to consider a file as large. Defaults to 100MB"
+}
+```
 
 ## Feature 2 - Ingesting CSV lookups and mass executor generator
 
