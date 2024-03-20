@@ -772,6 +772,7 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
             version_data = response_json.get("version")
             filename_data = response_json.get("filename")
             base64_data = response_json.get("base64")
+            excluded_files = response_json.get("excluded_files", [])
 
             # set the full path of the tgz
             output_file_path = os.path.join(
@@ -1371,6 +1372,7 @@ class ToolboxImport_v1(toolbox_rest_handler.RESTHandler):
                 "promote_permissions": promote_permissions,
                 "exclude_large_files": exclude_large_files,
                 "large_file_size": large_file_size,
+                "excluded_files": excluded_files,
             }
 
             # postexec_bin

@@ -223,8 +223,11 @@ class ToolboxExport_v1(toolbox_rest_handler.RESTHandler):
         app_directory = os.path.join(splunkhome, "etc", "apps", app_target)
 
         try:
-            create_tarfile_excluding_large_files(
-                app_directory, tar_file, exclude_large_files, large_file_size
+            excluded_files = create_tarfile_excluding_large_files(
+                app_directory=app_directory,
+                tar_file=tar_file,
+                exclude_large_files=True,
+                large_file_size_mb=large_file_size,
             )
         except Exception as e:
             logging.error(
@@ -267,6 +270,7 @@ class ToolboxExport_v1(toolbox_rest_handler.RESTHandler):
             "app": app_target,
             "version": apps_dict[app_target].get("version"),
             "filename": tar_name,
+            "excluded_files": excluded_files,
             "result": "The package is now ready in base64.",
         }
 
