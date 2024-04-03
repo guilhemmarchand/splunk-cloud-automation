@@ -222,8 +222,9 @@
     "meta": {
         "name": "TA-splk-toolbox",
         "restRoot": "ta_splk_toolbox",
-        "version": "1.0.12",
+        "version": "1.0.13",
         "displayName": "Splunk Utility ToolBox",
-        "schemaVersion": "0.0.3"
+        "schemaVersion": "0.0.3",
+        "_uccVersion": "5.39.1"
     }
 }

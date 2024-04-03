@@ -280,7 +280,7 @@
     "meta": {
         "name": "TA-splk-import-app",
         "restRoot": "ta_splk_import_app",
-        "version": "1.0.7",
+        "version": "1.0.8",
         "displayName": "Splunk utility app for Splunk Cloud integration",
         "schemaVersion": "0.0.3",
         "_uccVersion": "5.39.1"
