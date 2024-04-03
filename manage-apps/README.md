@@ -18,6 +18,65 @@ The Python backend requires the following packages which can be installed using 
 - ksconf
 - coloredlogs
 
+## Maintaining Splunk Base applications in your Splunk Cloud stack
+
+When it comes to Splunk Base applications, Splunk Cloud allows you to install and update through Splunk Web, or via Splunk ACS API.
+
+While it can be convenient for quick wins, using Splunk Web is far from being flexible, shows outdated information regarding the releases available, and is really tedious to deal with at scale.
+
+Instead, using the ACS API is really a much better, much safer and reliable way of maintaining Splunk Base application in your Splunk Cloud stack!
+
+The concept is the following:
+
+- You maintain a list of Splunk applications in a JSON reference file, with basic information such as the Splunk Base ID and the requested version.
+- When calling the backend, it will verify for each application if it is already deployed and the version that is currently deployed.
+- Depending on the use cases, it will either upgrade or ensure to maintain the request version by upgrading or downgrading, if necessary.
+
+JSON Content (splunkbase_apps_dict.json):
+
+```json
+[
+  {
+    "name": "trackme",
+    "splunkbaseID": 4621,
+    "licenseAck": "https://docs.trackme-solutions.com/license.html",
+    "version": "2.0.87"
+  },
+  {
+    "name": "Splunk_SA_CIM",
+    "splunkbaseID": 1621,
+    "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
+    "version": "5.3.1"
+  }
+]
+```
+
+Then, your CI/CD (or yourself manually) can run the logic in a single command:
+
+```shell
+
+export stack="your_stack"
+export tokenacs="your_acs_token"
+export usersplunkbase="your_splunk_base_login"
+export passsplunkbase="your_splunk_base_password"
+
+python deploy_splunkbase_app.py --apps_dict_json splunkbase_apps_dict.json --mode live --usersplunkbase $usersplunkbase --passsplunkbase $passsplunkbase --stack $stack --tokenacs $tokenacs
+
+```
+
+Note: you can run in mode="simulation" to review what the backend will do.
+
+Result execution example:
+
+```shell
+2024-04-03 12:07:52 Guilhems-Mac.local root[58606] INFO SplunkBase: successfully logged in SplunkBase API
+2024-04-03 12:07:52 Guilhems-Mac.local root[58606] INFO Authentication to Splunk API using bearer auth
+2024-04-03 12:07:54 Guilhems-Mac.local root[58606] INFO inspecting app="trackme", id="4621"
+2024-04-03 12:07:54 Guilhems-Mac.local root[58606] INFO app="trackme", appId="4621", nothing to do, version="2.0.87" matches requested version="2.0.87"
+2024-04-03 12:07:54 Guilhems-Mac.local root[58606] INFO inspecting app="Splunk_SA_CIM", id="1621"
+2024-04-03 12:07:54 Guilhems-Mac.local root[58606] INFO app="Splunk_SA_CIM", appId="1621", nothing to do, version="5.3.1" matches requested version="5.3.1"
+```
+
 ## Third party application merging
 
 The concept is the following:
