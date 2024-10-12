@@ -40,3 +40,8 @@ TA-splk-toolbox/output/*
 
 # pyc
 *.pyc
+
+# for ease of testing
+manage-apps/run.sh
+manage-indexes/run.sh
+
