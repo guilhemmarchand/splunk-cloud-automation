@@ -38,9 +38,6 @@
                                     "pattern": "^[0-9a-z_]*$"
                                 }
                             ],
-                            "options": {
-                                "placeholder": "Required"
-                            },
                             "field": "name",
                             "help": "Enter a unique name for this Splunk remote environment. (lower case alphanumeric characters and underscores)",
                             "required": true
@@ -139,42 +136,7 @@
                     ]
                 },
                 {
-                    "name": "logging",
-                    "entity": [
-                        {
-                            "type": "singleSelect",
-                            "label": "Log level",
-                            "options": {
-                                "disableSearch": true,
-                                "autoCompleteFields": [
-                                    {
-                                        "value": "DEBUG",
-                                        "label": "DEBUG"
-                                    },
-                                    {
-                                        "value": "INFO",
-                                        "label": "INFO"
-                                    },
-                                    {
-                                        "value": "WARNING",
-                                        "label": "WARNING"
-                                    },
-                                    {
-                                        "value": "ERROR",
-                                        "label": "ERROR"
-                                    },
-                                    {
-                                        "value": "CRITICAL",
-                                        "label": "CRITICAL"
-                                    }
-                                ]
-                            },
-                            "defaultValue": "INFO",
-                            "field": "loglevel",
-                            "required": true
-                        }
-                    ],
-                    "title": "Logging"
+                    "type": "loggingTab"
                 },
                 {
                     "name": "proxy",
@@ -280,9 +242,9 @@
     "meta": {
         "name": "TA-splk-import-app",
         "restRoot": "ta_splk_import_app",
-        "version": "1.0.8",
+        "version": "1.0.9",
         "displayName": "Splunk utility app for Splunk Cloud integration",
-        "schemaVersion": "0.0.3",
-        "_uccVersion": "5.39.1"
+        "schemaVersion": "0.0.7",
+        "_uccVersion": "5.48.2"
     }
 }
