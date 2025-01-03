@@ -3,55 +3,49 @@
     "name": "trackme",
     "splunkbaseID": 4621,
     "licenseAck": "https://docs.trackme-solutions.com/license.html",
-    "version": "2.0.87"
+    "version": "2.1.6"
   },
   {
     "name": "Splunk_SA_CIM",
     "splunkbaseID": 1621,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "5.3.1"
+    "version": "6.0.0"
   },
   {
     "name": "lookup_editor",
     "splunkbaseID": 1724,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "4.0.2"
+    "version": "4.0.4"
   },
   {
     "name": "Splunk_ML_Toolkit",
     "splunkbaseID": 2890,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "5.4.1"
+    "version": "5.5.0"
   },
   {
     "name": "Splunk_SA_Scientific_Python_linux_x86_64",
     "splunkbaseID": 2882,
     "licenseAck": "https://github.com/splunk/Splunk-python-for-scientific-computing/blob/master/LICENSE",
-    "version": "4.2.0"
+    "version": "4.2.2"
   },
   {
     "name": "semicircle_donut",
     "splunkbaseID": 4378,
     "licenseAck": "https://github.com/ChrisYounger/semicircle_donut/blob/master/LICENSE",
-    "version": "1.2.5"
-  },
-  {
-    "name": "timeline_app",
-    "splunkbaseID": 3120,
-    "licenseAck": "http://www.splunk.com/view/SP-CAAAAFA",
-    "version": "1.6.2"
-  },
-  {
-    "name": "Splunk_TA_nix",
-    "splunkbaseID": 833,
-    "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "9.0.0"
+    "version": "1.2.6"
   },
   {
     "name": "Splunk_TA_windows",
     "splunkbaseID": 742,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "8.8.0"
+    "version": "9.0.1"
+  },  
+  {
+    "name": "Splunk_TA_nix",
+    "splunkbaseID": 833,
+    "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
+    "version": "9.2.0"
   },
   {
     "name": "Splunk_TA_juniper",
@@ -69,25 +63,25 @@
     "name": "Splunk_TA_nginx",
     "splunkbaseID": 3258,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "3.2.2"
+    "version": "3.3.0"
   },
   {
     "name": "splunk_app_soar",
     "splunkbaseID": 6361,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "1.0.41"
+    "version": "1.0.67"
   },
   {
     "name": "phantom",
     "splunkbaseID": 3411,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "4.3.2"
+    "version": "4.3.21"
   },
   {
     "name": "TA-jira-service-desk-simple-addon",
     "splunkbaseID": 4958,
     "licenseAck": "http://www.opensource.org/licenses/Apache-2.0",
-    "version": "2.0.15"
+    "version": "2.0.18"
   },
   {
     "name": "slack_alerts",
@@ -99,6 +93,18 @@
     "name": "sa-littlehelper",
     "splunkbaseID": 6368,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "1.2.0"
+    "version": "1.4.1"
+  },
+  {
+    "name": "SA-metricator-for-nmon",
+    "splunkbaseID": 3949,
+    "licenseAck": "https://www.octamis.com/services/metricator",
+    "version": "1.0.5"
+  },
+  {
+    "name": "metricator-for-nmon",
+    "splunkbaseID": 3947,
+    "licenseAck": "https://www.octamis.com/services/metricator",
+    "version": "2.0.1"
   }
 ]
