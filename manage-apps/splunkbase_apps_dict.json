@@ -3,31 +3,31 @@
     "name": "trackme",
     "splunkbaseID": 4621,
     "licenseAck": "https://docs.trackme-solutions.com/license.html",
-    "version": "2.1.6"
-  },
+    "version": "2.1.18"
+  },  
   {
     "name": "Splunk_SA_CIM",
     "splunkbaseID": 1621,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "6.0.0"
+    "version": "6.0.4"
   },
   {
     "name": "lookup_editor",
     "splunkbaseID": 1724,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "4.0.4"
+    "version": "4.0.5"
   },
   {
     "name": "Splunk_ML_Toolkit",
     "splunkbaseID": 2890,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "5.5.0"
+    "version": "5.6.0"
   },
   {
     "name": "Splunk_SA_Scientific_Python_linux_x86_64",
     "splunkbaseID": 2882,
     "licenseAck": "https://github.com/splunk/Splunk-python-for-scientific-computing/blob/master/LICENSE",
-    "version": "4.2.2"
+    "version": "4.2.3"
   },
   {
     "name": "semicircle_donut",
@@ -45,7 +45,7 @@
     "name": "Splunk_TA_nix",
     "splunkbaseID": 833,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "9.2.0"
+    "version": "10.1.0"
   },
   {
     "name": "Splunk_TA_juniper",
@@ -69,31 +69,25 @@
     "name": "splunk_app_soar",
     "splunkbaseID": 6361,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "1.0.67"
+    "version": "1.0.71"
   },
   {
     "name": "phantom",
     "splunkbaseID": 3411,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "4.3.21"
+    "version": "4.3.25"
   },
   {
     "name": "TA-jira-service-desk-simple-addon",
     "splunkbaseID": 4958,
     "licenseAck": "http://www.opensource.org/licenses/Apache-2.0",
-    "version": "2.0.18"
-  },
-  {
-    "name": "slack_alerts",
-    "splunkbaseID": 2878,
-    "licenseAck": "https://github.com/splunk/slack-alerts/blob/main/LICENSE",
-    "version": "2.3.0"
+    "version": "2.1.0"
   },
   {
     "name": "sa-littlehelper",
     "splunkbaseID": 6368,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "1.4.1"
+    "version": "1.5.0"
   },
   {
     "name": "SA-metricator-for-nmon",
@@ -105,6 +99,6 @@
     "name": "metricator-for-nmon",
     "splunkbaseID": 3947,
     "licenseAck": "https://www.octamis.com/services/metricator",
-    "version": "2.0.1"
+    "version": "2.0.2"
   }
 ]
