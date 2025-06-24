@@ -332,7 +332,9 @@ try:
     logging.info("Authentication to Splunk ACS API using bearer auth")
     rest_auth_mode = "bearer_token"
     # run
-    splunk_apps_dict = get_apps_splunk_acs(tokenacs, stack, proxy_dict)
+    splunk_apps_dict = get_apps_splunk_acs(
+        tokenacs, stack, proxy_dict, splunkbase=False
+    )
 
     # debug
     logging.debug(json.dumps(splunk_apps_dict, indent=2))

@@ -720,7 +720,7 @@ def get_apps_splunk_rest(auth_rest_mode, token, stack, proxy_dict):
         ) from e
 
 
-def get_apps_splunk_acs(tokenacs, stack, proxy_dict):
+def get_apps_splunk_acs(tokenacs, stack, proxy_dict, splunkbase=True):
     """
     Retrieve the list of installed applications and their full details from Splunk ACS API.
     Splunk ACS currently lacks the build number.
@@ -735,7 +735,10 @@ def get_apps_splunk_acs(tokenacs, stack, proxy_dict):
         "Authorization": f"Bearer {tokenacs}",
     }
 
-    submit_url = f"https://admin.splunk.com/{stack}/adminconfig/v2/apps/victoria?splunkbase=true&count=0"
+    if splunkbase:
+        submit_url = f"https://admin.splunk.com/{stack}/adminconfig/v2/apps/victoria?splunkbase=true&count=0"
+    else:
+        submit_url = f"https://admin.splunk.com/{stack}/adminconfig/v2/apps/victoria?splunkbase=false&count=0"
 
     try:
         response = requests.get(
