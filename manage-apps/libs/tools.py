@@ -12,6 +12,7 @@ import os
 import random
 import base64
 import urllib3
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 import json
 import logging
@@ -21,9 +22,11 @@ from requests.structures import CaseInsensitiveDict
 from urllib.parse import urlencode
 import xml.etree.ElementTree as ET
 
+
 # context manager
 class cd:
     """Context manager for changing the current working directory"""
+
     def __init__(self, newPath):
         self.newPath = os.path.expanduser(newPath)
 
@@ -55,11 +58,8 @@ def login_splunkbase(username, password, proxy_dict):
     Raises:
         Exception: If the login request to Splunkbase fails.
     """
-    url = 'https://splunkbase.splunk.com/api/account:login'
-    data = {
-        'username': username,
-        'password': password
-    }
+    url = "https://splunkbase.splunk.com/api/account:login"
+    data = {"username": username, "password": password}
 
     try:
         response = requests.post(url, data=data, proxies=proxy_dict)
@@ -68,16 +68,24 @@ def login_splunkbase(username, password, proxy_dict):
             xml_response = response.text
             root = ET.fromstring(xml_response)
 
-            id_element = root.find('{http://www.w3.org/2005/Atom}id')
+            id_element = root.find("{http://www.w3.org/2005/Atom}id")
 
             if id_element is not None:
                 return id_element.text
             else:
-                logging.error("Splunkbase login failed, ID element not found in the XML response")
-                raise Exception("Splunkbase login failed, ID element not found in the XML response")
+                logging.error(
+                    "Splunkbase login failed, ID element not found in the XML response"
+                )
+                raise Exception(
+                    "Splunkbase login failed, ID element not found in the XML response"
+                )
         else:
-            logging.error(f"Splunkbase login request failed with status code {response.status_code}")
-            raise Exception(f"Splunkbase login request failed with status code {response.status_code}")
+            logging.error(
+                f"Splunkbase login request failed with status code {response.status_code}"
+            )
+            raise Exception(
+                f"Splunkbase login request failed with status code {response.status_code}"
+            )
 
     except Exception as e:
         logging.error(f"Splunkbase login failed: exception={e}")
@@ -107,7 +115,7 @@ def login_appinspect(username, password, proxy_dict):
             login_url,
             auth=HTTPBasicAuth(username, password),
             verify=True,
-            proxies=proxy_dict
+            proxies=proxy_dict,
         )
 
         if response.status_code not in (200, 201, 204):
@@ -120,7 +128,7 @@ def login_appinspect(username, password, proxy_dict):
             raise Exception("Authentication to Splunk AppInspect API failed")
 
         response_json = response.json()
-        appinspect_token = response_json['data']['token']
+        appinspect_token = response_json["data"]["token"]
         logging.debug(
             f"Authentication to Splunk AppInspect API successful: "
             f"url={login_url}, token={appinspect_token}"
@@ -151,12 +159,12 @@ def submit_appinspect(token, app, proxy_dict):
         Exception: If the submission to the AppInspect API fails.
     """
     appinspect_headers = {
-        'Authorization': f'Bearer {token}',
+        "Authorization": f"Bearer {token}",
     }
 
     files = {
-        'app_package': open(app, 'rb'),
-        'included_tags': (None, 'cloud'),
+        "app_package": open(app, "rb"),
+        "included_tags": (None, "cloud"),
     }
 
     validate_url = "https://appinspect.splunk.com/v1/app/validate"
@@ -212,7 +220,7 @@ def verify_appinspect(token, request_id, proxy_dict):
         Exception: If the verification request to the AppInspect API fails.
     """
     appinspect_headers = {
-        'Authorization': f'Bearer {token}',
+        "Authorization": f"Bearer {token}",
     }
 
     validate_url = f"https://appinspect.splunk.com/v1/app/validate/status/{request_id}"
@@ -266,8 +274,8 @@ def download_htmlreport_appinspect(token, request_id, proxy_dict):
         Exception: If the request to download the report fails.
     """
     appinspect_headers = {
-        'Authorization': f'Bearer {token}',
-        'Content-Type': 'text/html',
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "text/html",
     }
 
     validate_url = f"https://appinspect.splunk.com/v1/app/report/{request_id}"
@@ -321,8 +329,8 @@ def download_jsonreport_appinspect(token, request_id, proxy_dict):
         Exception: If the request to download the report fails.
     """
     appinspect_headers = {
-        'Authorization': f'Bearer {token}',
-        'Content-Type': 'application/json',
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
     }
 
     validate_url = f"https://appinspect.splunk.com/v1/app/report/{request_id}"
@@ -377,10 +385,10 @@ def splunkacs_create_ephemeral_token(stack, username, password, audience, proxy_
     Raises:
         Exception: If the request to create the token fails.
     """
-    b64_auth = base64.b64encode(f'{username}:{password}'.encode()).decode()
+    b64_auth = base64.b64encode(f"{username}:{password}".encode()).decode()
     headers = {
-        'Authorization': f'Basic {b64_auth}',
-        'Content-Type': 'application/json',
+        "Authorization": f"Basic {b64_auth}",
+        "Content-Type": "application/json",
     }
 
     data = {
@@ -429,9 +437,7 @@ def splunkacs_create_ephemeral_token(stack, username, password, audience, proxy_
             f"exception={e}"
         )
         raise Exception(
-            f"Splunk ACS call failed, "
-            f"url={submit_url}, "
-            f"exception={e}"
+            f"Splunk ACS call failed, " f"url={submit_url}, " f"exception={e}"
         ) from e
 
 
@@ -460,7 +466,7 @@ def splunk_acs_deploy_app(tokenacs, tokenappinspect, app, stack, proxy_dict):
 
     submit_url = f"https://admin.splunk.com/{stack}/adminconfig/v2/apps/victoria"
 
-    with open(app, 'rb') as f:
+    with open(app, "rb") as f:
         try:
             response = requests.post(
                 submit_url,
@@ -503,7 +509,9 @@ def splunk_acs_deploy_app(tokenacs, tokenappinspect, app, stack, proxy_dict):
             ) from e
 
 
-def splunk_acs_deploy_splunkbase_app(tokenacs, tokensplunkbase, appId, version, licenseAck, stack, proxy_dict):
+def splunk_acs_deploy_splunkbase_app(
+    tokenacs, tokensplunkbase, appId, version, licenseAck, stack, proxy_dict
+):
     """
     Deploy to Splunk Cloud through ACS for a SplunkBase app.
 
@@ -530,13 +538,15 @@ def splunk_acs_deploy_splunkbase_app(tokenacs, tokensplunkbase, appId, version, 
         "ACS-Licensing-Ack": licenseAck,
     }
 
-    submit_url = f"https://admin.splunk.com/{stack}/adminconfig/v2/apps/victoria?splunkbase=true"
+    submit_url = (
+        f"https://admin.splunk.com/{stack}/adminconfig/v2/apps/victoria?splunkbase=true"
+    )
 
     try:
         response = requests.post(
             submit_url,
             headers=headers,
-            data={'splunkbaseID': appId, 'version': version},
+            data={"splunkbaseID": appId, "version": version},
             verify=True,
             proxies=proxy_dict,
         )
@@ -574,7 +584,9 @@ def splunk_acs_deploy_splunkbase_app(tokenacs, tokensplunkbase, appId, version, 
         ) from e
 
 
-def splunk_acs_update_splunkbase_app(tokenacs, tokensplunkbase, appName, version, licenseAck, stack, proxy_dict):
+def splunk_acs_update_splunkbase_app(
+    tokenacs, tokensplunkbase, appName, version, licenseAck, stack, proxy_dict
+):
     """
     Update a SplunkBase app deployed to Splunk Cloud through ACS.
 
@@ -607,7 +619,7 @@ def splunk_acs_update_splunkbase_app(tokenacs, tokensplunkbase, appName, version
         response = requests.patch(
             submit_url,
             headers=headers,
-            data={'version': version},
+            data={"version": version},
             verify=True,
             proxies=proxy_dict,
         )
@@ -670,7 +682,9 @@ def get_apps_splunk_rest(auth_rest_mode, token, stack, proxy_dict):
     validate_url = f"https://{stack}.splunkcloud.com:8089/services/apps/local?output_mode=json&count=0"
 
     try:
-        response = requests.get(validate_url, headers=splunk_headers, verify=False, proxies=proxy_dict)
+        response = requests.get(
+            validate_url, headers=splunk_headers, verify=False, proxies=proxy_dict
+        )
 
         if response.status_code not in (200, 201, 204):
             logging.error(
@@ -721,10 +735,12 @@ def get_apps_splunk_acs(tokenacs, stack, proxy_dict):
         "Authorization": f"Bearer {tokenacs}",
     }
 
-    submit_url = f"https://admin.splunk.com/{stack}/adminconfig/v2/apps/victoria?splunkbase=true"
+    submit_url = f"https://admin.splunk.com/{stack}/adminconfig/v2/apps/victoria?splunkbase=true&count=0"
 
     try:
-        response = requests.get(submit_url, headers=headers, verify=False, proxies=proxy_dict)
+        response = requests.get(
+            submit_url, headers=headers, verify=False, proxies=proxy_dict
+        )
 
         if response.status_code not in (200, 201, 204):
             logging.error(
@@ -758,4 +774,3 @@ def get_apps_splunk_acs(tokenacs, stack, proxy_dict):
             f"url={submit_url}, "
             f"exception={e}"
         ) from e
-
