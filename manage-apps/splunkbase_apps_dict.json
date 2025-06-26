@@ -9,7 +9,7 @@
     "name": "Splunk_SA_CIM",
     "splunkbaseID": 1621,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "6.0.4"
+    "version": "6.1.0"
   },
   {
     "name": "lookup_editor",
@@ -69,19 +69,19 @@
     "name": "splunk_app_soar",
     "splunkbaseID": 6361,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "1.0.71"
+    "version": "1.0.72"
   },
   {
     "name": "phantom",
     "splunkbaseID": 3411,
     "licenseAck": "https://www.splunk.com/en_us/legal/splunk-general-terms.html",
-    "version": "4.3.25"
+    "version": "4.3.26"
   },
   {
     "name": "TA-jira-service-desk-simple-addon",
     "splunkbaseID": 4958,
     "licenseAck": "http://www.opensource.org/licenses/Apache-2.0",
-    "version": "2.1.0"
+    "version": "2.1.1"
   },
   {
     "name": "sa-littlehelper",
