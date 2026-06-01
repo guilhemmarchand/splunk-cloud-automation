@@ -328,11 +328,7 @@ base64_bytesdata = response_json.get('base64')
 version_data = response_json.get('version')
 filename_data = response_json.get('filename')
 
-# get rid of pseudo bytes litteral, there should be a better way to do that
-base64_bytesdata = base64_bytesdata.replace('b\'', '')
-base64_bytesdata = base64_bytesdata[:-1]
-
-# dedcode base64
+# decode base64
 base64_bytesdata = base64.b64decode(base64_bytesdata)
 
 # Write the archive
