@@ -40,3 +40,6 @@ TA-splk-toolbox/output/*
 
 # pyc
 *.pyc
+
+# run.sh
+*/run.sh
